@@ -17,7 +17,7 @@
   }
 
   body {
-    @apply m-0 min-h-screen min-w-80 bg-slate-100 text-zinc-950 antialiased transition-colors dark:bg-zinc-950 dark:text-stone-100;
+    @apply m-0 min-h-screen min-w-80 bg-transparent text-zinc-950 antialiased transition-colors dark:text-stone-100;
   }
   a {
     @apply text-inherit;
