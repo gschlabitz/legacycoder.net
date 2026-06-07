@@ -1,0 +1,18 @@
+:root {
+  /*
+    font family fallbacks
+    system-ui  - try the OS system font
+    sans-serif - gimme whatever you got
+  */
+  font-family: Figtree, system-ui, sans-serif;
+
+  /* prevent fake bold/italics for missing weights */
+  font-synthesis: none;
+
+  /* enable kerning and ligatures */
+  text-rendering: optimizeLegibility;
+
+  /* lighter text for WebKit and Gecko */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

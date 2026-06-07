@@ -1,0 +1,30 @@
+/*
+ * OKLCH is a perceptually-uniform color space — a 10% lightness
+ * increase looks like 10% to the human eye, unlike HSL/hex.
+ * Hue is consistent regardless of lightness/chroma, making it
+ * easy to create tonal palettes by varying just lightness (L)
+ * and chroma (C).
+ * https://evilmartians.com/chronicles/oklch-in-css-why-quit-rgb-hsl
+ *
+ * Browser support: ~94% globally (all modern browsers since 2023).
+ * https://caniuse.com/mdn-css_types_color_oklch
+ */
+
+:root {
+  color-scheme: light dark;
+
+  --primary-blue-100: oklch(95.1% 0.025 236.8);
+  --primary-blue-300: oklch(80.9% 0.096 251.8);
+  --primary-blue-400: oklch(74.7% 0.122 244.5);
+  --primary-blue-500: oklch(68.5% 0.148 237.3);
+  --primary-blue-900: oklch(39.1% 0.085 240.9);
+
+  --color-accent: oklch(64.5% 0.215 16.4);
+
+  --color-neutral-50: light-dark(oklch(98.5% 0.002 247.8), oklch(0% 0 none));
+  --color-neutral-100: oklch(96.7% 0.003 264.5);
+  --color-neutral-900: oklch(21% 0.032 264.7);
+
+  --color-text: light-dark(oklch(21% 0.032 264.7), oklch(98.5% 0.002 247.8));
+  --color-text-muted: light-dark(oklch(44.2% 0.015 285.8), oklch(86.9% 0.004 56.4));
+}

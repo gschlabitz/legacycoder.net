@@ -1,0 +1,9 @@
+html {
+  background-color: var(--color-neutral-50);
+}
+
+body {
+  min-height: 100vh;
+  min-width: 20rem;
+  color: var(--color-text);
+}

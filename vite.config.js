@@ -1,6 +1,16 @@
 import { defineConfig } from "vite";
-import tailwindcss from "@tailwindcss/vite";
+import { resolve } from "path";
+import { fileURLToPath } from "url";
+
+const dir = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
-  plugins: [tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(dir, "index.html"),
+        "design-system": resolve(dir, "design-system.html"),
+      },
+    },
+  },
 });

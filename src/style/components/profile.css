@@ -1,0 +1,59 @@
+.page {
+  min-height: 100vh;
+  padding: 2rem 1.25rem;
+
+  @media (width >= 640px) {
+    display: grid;
+    place-items: center;
+  }
+}
+
+.profile {
+  width: 100%;
+  max-width: 380px;
+  margin-inline: auto;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.intro {
+  margin-top: 2.5rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--primary-blue-500);
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-family: "IBM Plex Serif", serif;
+  font-style: italic;
+  font-size: 3rem;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0.0375em;
+  /*word-spacing: 0.19em;*/
+  color: var(--primary-blue-400);
+
+  @media (width >= 640px) {
+    font-size: 3.75rem;
+  }
+}
+
+.bio {
+  margin-top: 1.25rem;
+  max-width: none;
+  text-align: justify;
+  font-size: 1rem;
+  line-height: 1.75rem;
+  color: var(--color-text-muted);
+}
