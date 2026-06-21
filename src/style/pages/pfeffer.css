@@ -54,6 +54,21 @@
   }
 }
 
+/* With many players the sheet needs the full width, so the rules stack below. */
+.pf-layout--stacked {
+  grid-template-columns: 1fr;
+}
+
+/* Once wrapped below, keep the rules at their original right-column width
+   (0.85 of the two-column split, minus the gap) and center them. Wide
+   screens only — the mobile breakpoint keeps them full width. */
+@media (min-width: 821px) {
+  .pf-layout--stacked .pf-rules {
+    width: calc((100% - 2.5rem) * 0.425);
+    margin-inline: auto;
+  }
+}
+
 .pf-section-title {
   font-size: 1.25rem;
   font-weight: 700;
@@ -115,6 +130,11 @@
 
 .pf-td-round {
   position: relative;
+}
+
+/* The always-present trailing row reads as a faint, pending "next" round. */
+.pf-row--new .pf-td-round {
+  opacity: 0.4;
 }
 
 .pf-playerhead {
@@ -225,11 +245,10 @@
 }
 
 /* ── Controls / buttons ──────────────────────────────────────────── */
-.pf-controls {
+.pf-sheet__actions {
   display: flex;
-  gap: 0.75rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .pf-btn {
@@ -262,6 +281,15 @@
 .pf-btn:focus-visible {
   outline: 2px solid var(--primary-blue-400);
   outline-offset: 2px;
+}
+
+.pf-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pf-btn:disabled:hover {
+  background: transparent;
 }
 
 .pf-hint {
@@ -359,7 +387,7 @@ ul.pf-rules__list {
 .pf-die {
   width: 2.5rem;
   height: 2.5rem;
-  color: var(--color-text);
+  color: var(--primary-blue-500);
 }
 
 .pf-die__body {
