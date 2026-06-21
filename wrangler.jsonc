@@ -1,0 +1,8 @@
+{
+  // Static-asset-only Worker: serves the Vite build output in dist/.
+  "name": "legacycoder-net",
+  "compatibility_date": "2026-06-21",
+  "assets": {
+    "directory": "./dist"
+  }
+}

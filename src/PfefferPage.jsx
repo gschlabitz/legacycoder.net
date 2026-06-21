@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTheme } from "./hooks/useTheme";
 
 const WINNING_SCORE = 10000;
 const ROUND_MINIMUM = 350;
 const MIN_PLAYERS = 2;
 const MAX_PLAYERS = 8;
+const STORAGE_KEY = "pfeffer.players";
 
 // Pip positions on a 100×100 die, by face value.
 const PIPS = {
@@ -106,10 +107,41 @@ function emptyPlayer(name, rounds = 0) {
   return { id: makeId(), name, scores: Array(rounds).fill("") };
 }
 
+function defaultPlayers() {
+  return [emptyPlayer("Player 1"), emptyPlayer("Player 2")];
+}
+
+// Restore the saved sheet so scores survive a refresh. Falls back to a fresh
+// two-player sheet if nothing valid is stored.
+function loadPlayers() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    const valid =
+      Array.isArray(parsed) &&
+      parsed.length >= MIN_PLAYERS &&
+      parsed.every((p) => p && typeof p.name === "string" && Array.isArray(p.scores) && Number.isFinite(p.id));
+    if (!valid) return defaultPlayers();
+    // Keep the id counter ahead of any restored ids so new players stay unique.
+    makeId.n = Math.max(makeId.n || 0, ...parsed.map((p) => p.id));
+    return parsed;
+  } catch {
+    return defaultPlayers();
+  }
+}
+
 export default function Pfeffer() {
   const { theme, toggleTheme, icon: themeIcon, label: themeLabel } = useTheme();
 
-  const [players, setPlayers] = useState(() => [emptyPlayer("Player 1"), emptyPlayer("Player 2")]);
+  const [players, setPlayers] = useState(loadPlayers);
+
+  // Persist the sheet on every change so it survives refreshes.
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
+    } catch {
+      // ignore quota / unavailable storage
+    }
+  }, [players]);
 
   const totals = useMemo(() => players.map((p) => p.scores.reduce((sum, s) => sum + (Number(s) || 0), 0)), [players]);
 
