@@ -1,10 +1,10 @@
-import "./styles.css";
-import "./style/pages/design-system.css";
-import { getActiveTheme, applyTheme, getStoredTheme, systemTheme } from "./theme.js";
-import sunIcon from "./icons/sun.svg?raw";
-import moonIcon from "./icons/moon.svg?raw";
-import briefcaseIcon from "./icons/briefcase.svg?raw";
-import mailIcon from "./icons/mail.svg?raw";
+import "@/styles.css";
+import "@/style/pages/design.css";
+import { getActiveTheme, applyTheme, getStoredTheme, systemTheme } from "@/theme.js";
+import sunIcon from "@/icons/sun.svg?raw";
+import moonIcon from "@/icons/moon.svg?raw";
+import briefcaseIcon from "@/icons/briefcase.svg?raw";
+import mailIcon from "@/icons/mail.svg?raw";
 
 const colors = [
   { var: "--primary-blue-100", value: "oklch(95.1% 0.025 236.8)" },

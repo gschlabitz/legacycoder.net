@@ -7,6 +7,8 @@ import { fileURLToPath } from "url";
 const dir = fileURLToPath(new URL(".", import.meta.url));
 
 export default defineConfig({
+  // Pages live under src/pages; a page's path here is its URL.
+  root: resolve(dir, "src/pages"),
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
@@ -14,10 +16,14 @@ export default defineConfig({
     },
   },
   build: {
+    // outDir is outside root, so emptyOutDir is required to clean it.
+    outDir: resolve(dir, "dist"),
+    emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(dir, "index.html"),
-        "design-system": resolve(dir, "design-system.html"),
+        main: resolve(dir, "src/pages/index.html"),
+        design: resolve(dir, "src/pages/design/index.html"),
+        pfeffer: resolve(dir, "src/pages/pfeffer/index.html"),
       },
     },
   },
