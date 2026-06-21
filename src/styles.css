@@ -1,8 +1,9 @@
-@import url("./style/reset.css");
-@import url("./style/colors.css");
-@import url("./style/typography.css");
-@import url("./style/base.css");
-@import url("./style/components/profile.css");
-@import url("./style/components/avatar.css");
-@import url("./style/components/icon-button.css");
-@import url("./style/components/toolbar.css");
+@import "./style/reset.css";
+@import "./style/colors.css";
+@import "./style/typography.css";
+@import "./style/base.css";
+@import "./style/components/profile.css";
+@import "./style/components/avatar.css";
+@import "./style/components/icon-button.css";
+@import "./style/components/toolbar.css";
+@import "tailwindcss";

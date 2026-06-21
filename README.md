@@ -1,6 +1,6 @@
 # Personal Website
 
-Just a tongue-in-cheek placeholder for now.
+A site about myself.
 
 
 Plans
@@ -15,4 +15,3 @@ Plans
 - if hovering/clicking in a work item (left), the details show on the right (covering up life)
 - vice versa
 - next to light/dark mode toggle add a big/small font toggle
--
