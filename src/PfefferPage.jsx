@@ -336,7 +336,8 @@ export default function Pfeffer() {
           </div>
 
           <p className="pf-hint">
-            First to {WINNING_SCORE.toLocaleString()} wins. You must bank at least {ROUND_MINIMUM} every turn.
+            First to {WINNING_SCORE.toLocaleString()} wins. Must score at least {ROUND_MINIMUM}, or bust, to end the
+            round.
           </p>
         </section>
 
@@ -349,7 +350,8 @@ export default function Pfeffer() {
           <p className="pf-rules__intro">
             Pfeffer is a dice game for two or more players using six dice. On your turn you roll all six, set aside at
             least one scoring die, and choose whether to bank your points or roll the remaining dice to push your luck.
-            You must bank at least {ROUND_MINIMUM} each turn.
+            If your throw did not produce any scoring dice, you bust and get nothing for the round. You must score at
+            least {ROUND_MINIMUM} points or bust to end your turn.
           </p>
           <p className="pf-rules__intro">
             <strong>Pfeffer:</strong> At the start of your turn, you can call "pfeffer!", if you wish to bet that you
@@ -359,6 +361,10 @@ export default function Pfeffer() {
           <p className="pf-rules__intro">
             <strong>Auto-Pfeffer:</strong> If your predecessor didn't score anything, pfeffer is automatic for your
             turn. If you also score nothing, subtract 1000 points from your score.
+          </p>
+          <p className="pf-rules__intro">
+            <strong>Brandenburg:</strong> If any die lands or leans on another die, or rolls off the table, the throw is
+            invalid and must be repeated.
           </p>
 
           <h3 className="pf-rules__h3">Turn sequence</h3>
