@@ -1,0 +1,55 @@
+---
+title: Pfeffer
+description: A Farkle variant played by my family.
+template: splash
+---
+import DiceRow from '../../components/DiceRow.jsx';
+import PfefferScoreSheet from '../../components/PfefferScoreSheet.jsx';
+
+Pfeffer is a dice game for two or more players using six dice. On your turn you
+roll all six, set aside at least one scoring die, and choose whether to bank your
+points or roll the remaining dice to push your luck. If your throw did not produce
+any scoring dice, you bust and get nothing for the round. You must score at least
+350 points or bust to end your turn.
+
+**Pfeffer:** At the start of your turn, you can call "pfeffer!", if you wish to bet
+that you can score at least 50 points higher than your predecessor's round
+(e.g. 400 to a previous 350). If you bust, your bet is doubled and subtracted from
+your score (e.g. -800).
+
+**Auto-Pfeffer:** If your predecessor didn't score anything, pfeffer is automatic
+for your turn. If you also score nothing, subtract 1000 points from your score.
+
+**Brandenburg:** If any die lands or leans on another die, or rolls off the table,
+the throw is invalid and must be repeated.
+
+## Turn sequence
+
+1. Roll all six dice.
+2. Set aside at least one scoring die (a single 1 or 5, or a combo below).
+3. Either **bank** the points rolled so far, or **roll again** with the dice that remain.
+4. If a roll produces **no scoring dice**, you **bust** — your turn ends and you score nothing that turn.
+5. **Prove it:** if all six dice have scored, you must roll all six again, adding to the same turn total.
+
+## Scoring
+
+| Combination | Points | Note | Combination | Points | Note |
+| ----------- | ------ | ---- | ----------- | ------ | ---- |
+| <DiceRow faces={[1]} /> | 100 |  | <DiceRow faces={[5]} /> | 50 |  |
+| <DiceRow faces={[1, 1, 1]} /> | 1,000 | Lucky! | <DiceRow faces={[1, 1, 1, 1]} /> | 2000 | Each additional die doubles the score. |
+| <DiceRow faces={[2, 2, 2]} /> | 200 | Three of a kind | <DiceRow faces={[1, 1, 1, 1, 1]} /> | 4000 |  |
+| <DiceRow faces={[3, 3, 3]} /> | 300 | Face value × 100 | <DiceRow faces={[1, 1, 1, 1, 1, 1]} /> | 8000 |  |
+| <DiceRow faces={[4, 4, 4]} /> | 400 |  | <DiceRow faces={[1, 2, 3, 4, 5, 6]} /> | 1,500 | Straight |
+| <DiceRow faces={[5, 5, 5]} /> | 500 |  | <DiceRow faces={[2, 2, 4, 4, 6, 6]} groups={[2, 2, 2]} /> | 1,500 | Any three pairs |
+| <DiceRow faces={[6, 6, 6]} /> | 600 |  | | | |
+
+## Winning
+
+- **Round Minimum:** For every turn, you must at least score 350 points.
+- **Reach 10,000:** the first player to hit the target triggers the final round.
+- **Final round:** every other player gets one last turn to beat the leader. Highest total then wins.
+
+House rules vary — four-of-a-kind values, three pairs, and the opening threshold are
+common things to agree on before you start.
+
+<PfefferScoreSheet client:load />

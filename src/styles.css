@@ -1,9 +1,0 @@
-@import "./style/reset.css";
-@import "./style/colors.css";
-@import "./style/typography.css";
-@import "./style/base.css";
-@import "./style/components/profile.css";
-@import "./style/components/avatar.css";
-@import "./style/components/icon-button.css";
-@import "./style/components/toolbar.css";
-@import "tailwindcss";

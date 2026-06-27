@@ -1,17 +1,10 @@
-# Personal Website
-
-A site about myself.
+# LegacyCoder.NET - A Personal Website
 
 
-Plans
+Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+Images can be added to `src/assets/` and embedded in Markdown with a relative link.
 
-- timeline scrolls vertically
-- newest on top
-- Work  ----   Life
-- work stuff on the left
-- personal (life) stuff on the right
-- minimal text per timeline entry
-- details fly in from left and right sides?
-- if hovering/clicking in a work item (left), the details show on the right (covering up life)
-- vice versa
-- next to light/dark mode toggle add a big/small font toggle
+- `npm run dev` - local dev server at `localhost:4321`
+- `npm run build` - Build your production site to `./dist/`          |
+- `npm run preview` - Preview your build locally, before deploying     |
+- `npm run astro -- --help` - Get help using the Astro CLI                     |
