@@ -1,0 +1,72 @@
+---
+import { Image } from 'astro:assets';
+import { getEntry } from 'astro:content';
+
+interface Props {
+  /** Image filename relative to src/assets, e.g. "Blausen_0657_MultipolarNeuron.png". */
+  src: string;
+  /** Accessible description of the image. */
+  alt: string;
+  /** Optional display width; omit to use the image's intrinsic size. */
+  width?: number;
+}
+
+const { src, alt, width } = Astro.props;
+
+// Resolve the optimized image by filename so the page only names the asset once.
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/**/*.{png,jpg,jpeg,webp,avif,gif,svg}'
+);
+const loader = images[`/src/assets/${src}`];
+if (!loader) {
+  throw new Error(`<Figure>: no image found at src/assets/${src}`);
+}
+const image = (await loader()).default;
+
+// Pull the validated TASL credit (sidecar `<image>.json`); id matches the filename.
+const credit = await getEntry('credits', src);
+if (!credit) {
+  throw new Error(
+    `<Figure>: no credit metadata for ${src} (expected src/assets/${src}.json)`
+  );
+}
+const { title, author, source, sourceName, license, licenseUrl, modified } =
+  credit.data;
+
+// Human-readable labels for the common Creative Commons licenses.
+const LICENSE_LABELS: Record<string, string> = {
+  'CC-BY-3.0': 'CC BY 3.0',
+  'CC-BY-4.0': 'CC BY 4.0',
+  'CC-BY-SA-3.0': 'CC BY-SA 3.0',
+  'CC-BY-SA-4.0': 'CC BY-SA 4.0',
+  'CC-BY-NC-4.0': 'CC BY-NC 4.0',
+  'CC-BY-ND-4.0': 'CC BY-ND 4.0',
+  'CC0-1.0': 'CC0 1.0',
+};
+const licenseLabel = LICENSE_LABELS[license] ?? license;
+const sourceLabel = sourceName ?? new URL(source).hostname;
+---
+
+<figure>
+  <Image src={image} alt={alt} width={width} />
+  <figcaption>
+    &ldquo;{title}&rdquo; by {
+      author.url ? <a href={author.url}>{author.name}</a> : author.name
+    }, <a href={licenseUrl}>{licenseLabel}</a>, via <a href={source}
+      >{sourceLabel}</a
+    >{modified ? ' (modified)' : ''}.
+  </figcaption>
+</figure>
+
+<style>
+  figure {
+    margin: 1.5rem 0;
+  }
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-sm);
+    font-style: italic;
+    color: var(--sl-color-gray-3);
+    text-align: center;
+  }
+</style>
