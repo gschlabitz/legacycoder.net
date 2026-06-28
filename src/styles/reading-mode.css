@@ -1,0 +1,85 @@
+/* === Reading mode ==================================================
+   A single header toggle that collapses BOTH Starlight's left nav and
+   right "On this page" outline for a distraction-free reading view.
+   ReadingModeToggle.astro removes the data-has-sidebar / data-has-toc
+   attributes Starlight sets on <html>, so the main content reflows wider
+   for free; the rules below just hide the now-orphaned panels. */
+
+/* Left nav — only on screens wide enough that it's an inline panel
+   (below 50rem it's a hamburger overlay we must not break). */
+@media (min-width: 50rem) {
+  html:not([data-has-sidebar]) .sidebar {
+    display: none;
+  }
+}
+
+/* Right "On this page" outline — only shown at all from 72rem up. */
+@media (min-width: 72rem) {
+  html:not([data-has-toc]) .right-sidebar-container {
+    display: none;
+  }
+}
+
+/* --- The header toggle button ------------------------------------- */
+.reading-mode-toggle {
+  display: none; /* meaningless on narrow screens (nav is an overlay) */
+}
+
+@media (min-width: 50rem) {
+  .reading-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0.375rem;
+    background: transparent;
+    /* Match the galaxy header buttons (theme toggle) rather than body text. */
+    color: var(--fb-theme-btn-color-text);
+    cursor: pointer;
+    line-height: 0;
+  }
+
+  .reading-mode-toggle svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* Swap closed/open book by state: closed = off, open = reading mode on. */
+  .reading-mode-toggle .icon-open {
+    display: none;
+  }
+
+  .reading-mode-toggle[aria-pressed="true"] .icon-closed {
+    display: none;
+  }
+
+  .reading-mode-toggle[aria-pressed="true"] .icon-open {
+    display: block;
+  }
+}
+
+/* Scale the social icons (default 1em ≈ 16px) up to the 20px glyph size of the
+   galaxy header buttons (theme + reading-mode toggles) for a consistent row. */
+.header .social-icons a {
+  font-size: 1.25rem;
+}
+
+/* Splash pages render no sidebar element at all (PageFrame only emits it when
+   hasSidebar is true), so there's nothing to toggle — hide the button there.
+   Keying off the .sidebar element rather than the data-has-sidebar attribute
+   keeps the button visible during reading mode, where the sidebar still exists
+   in the DOM but is display:none. */
+.page:not(:has(.sidebar)) .reading-mode-toggle {
+  display: none;
+}
+
+/* In reading mode keep the body text at its normal width. Starlight bumps
+   --sl-content-width to 67.5rem whenever the sidebar attribute is absent
+   (Page.astro), which would widen the column; pin it back to the default.
+   :root[data-reading-mode] (0,2,0) outspecifies html:not([data-has-sidebar]). */
+:root[data-reading-mode] {
+  --sl-content-width: 45rem;
+}

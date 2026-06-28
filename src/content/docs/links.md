@@ -1,7 +1,6 @@
 ---
 title: Guido's Link List
 description: My cross-country, cross-device, cross-browser bookmarks.
-template: splash
 ---
 
 My cross-country, cross-device, cross-browser bookmarks. No syncing needed. I just make this my homepage.

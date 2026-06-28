@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
+    "stop": "astro dev stop",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -17,7 +18,8 @@
     "astro": "7.0.2",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "sharp": "0.34.5"
+    "sharp": "0.34.5",
+    "starlight-theme-galaxy": "^0.8.0"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
