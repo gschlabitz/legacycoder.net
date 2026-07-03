@@ -7,6 +7,7 @@ location:
   label: New Orleans, Louisiana
   lat: 29.9511
   lng: -90.0715
+post: 2008-08-17-jackson-square
 ---
 
 South with a barbecue stop in Memphis, then miles of freeway on massive

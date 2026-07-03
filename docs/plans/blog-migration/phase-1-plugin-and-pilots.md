@@ -12,8 +12,8 @@ on the format before anything is bulk-generated.
    breaking the existing pages (`/`, `/bio`, `/pfeffer`, `/links`,
    `/recipes`, `/llm-notebook/*`).
 3. Three pilot posts migrated by hand (listed below), pixel-faithful to the
-   originals: images rehosted, comments preserved, cross-link and dead-video
-   treatments demonstrated.
+   originals: images rehosted, cross-link and dead-video treatments
+   demonstrated. Comments are not migrated (README decision 3).
 4. Timeline events support an optional link to a blog post, demonstrated on
    one event.
 5. User has seen screenshots of all three posts and approved the format.
@@ -116,18 +116,8 @@ exactly and note anything that doesn't fit):
   the phase summary to the user.
 - **Dead videos**: replace the whole embed block with the italic note from
   the README, keeping any surrounding prose.
-- **Comments**: fetch the post's comment feed (README). If it has comments,
-  append:
-
-  ```markdown
-  ---
-
-  ## Kommentare - Comments
-
-  > **<author>** (<YYYY-MM-DD>): <comment text>
-  ```
-
-  One blockquote per comment, original language untouched.
+- **Comments**: not migrated (README decision 3) — ignore the comment feed
+  entirely.
 
 ## Step 4: Timeline → blog post links
 
@@ -152,8 +142,7 @@ exactly and note anything that doesn't fit):
 1. `npx astro check` and `npm run build` pass.
 2. `/blog` lists the three posts, newest first; each post page renders:
    images load locally (network tab shows no `blogspot.com`/
-   `googleusercontent.com` requests), umlauts/ß render correctly, comments
-   section present where the source has comments.
+   `googleusercontent.com` requests), umlauts/ß render correctly.
 3. The rest of the site renders correctly on the replacement theme;
    spot-check `/` and `/bio` and one docs page in both color schemes (the
    Step 1 regression pass covers this in depth — this is a re-check after

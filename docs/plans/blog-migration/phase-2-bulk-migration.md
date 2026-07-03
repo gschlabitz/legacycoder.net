@@ -23,9 +23,11 @@ adding others. Structure it as: fetch → transform → write → verify.
 ### Fetch
 - Posts feed with `max-results=500` (README). Assert fetched count ==
   `openSearch$totalResults` == 148; abort loudly if not.
-- Comments feed per post, but only for posts whose entry shows
-  `thr$total > 0`. Cache all feed responses to the scratchpad so re-runs
-  don't hammer Blogspot; add a `--offline` flag that uses only the cache.
+- Cache the feed response to the scratchpad so re-runs don't hammer
+  Blogspot; add a `--offline` flag that uses only the cache. If the public
+  feed proves insufficient (rate limits, missing content), fall back to a
+  Google Takeout Atom export instead (README) — flag that to the user
+  rather than working around it silently.
 
 ### Transform (per post, following the Phase 1 rules exactly)
 - Slug from the `link[rel=alternate]` URL; filename `YYYY-MM-DD-<slug>.md`.
@@ -53,9 +55,8 @@ adding others. Structure it as: fetch → transform → write → verify.
   Links to blogspot pages that are NOT one of the 148 posts (archive pages,
   label pages, the blog root) and all external links stay untouched; list
   the untouched blogspot ones in the report.
-- **Comments**: append in the Phase 1 format. Preserve comment author names
-  as-is (they're friends/family — the user has accepted this; do not
-  redact).
+- **Comments**: not migrated (README decision 3) — ignore the comment feed
+  entirely.
 - **Description frontmatter**: first sentence of the English half if
   detectable, else first sentence overall, HTML-stripped, ≤ 160 chars.
 
@@ -89,7 +90,7 @@ adding others. Structure it as: fetch → transform → write → verify.
 ## Report (final message to the user)
 
 - Counts: posts, images downloaded, image failures, videos replaced,
-  comments preserved, cross-links rewritten / left untouched.
+  cross-links rewritten / left untouched.
 - The 4 retitled posts and any pilot-diff discrepancies.
 - Anything that needs a human eye, as a checklist for Phase 3.
 

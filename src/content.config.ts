@@ -2,6 +2,7 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
+import { blogSchema } from 'starlight-blog/schema';
 
 // TASL attribution metadata (Creative Commons' recommended model:
 // Title, Author, Source, License) for reusable assets in src/assets.
@@ -46,11 +47,14 @@ const timeline = defineCollection({
         lng: z.number(),
       })
       .optional(),
+    // Slug under src/content/docs/blog/ for the migrated post that tells the
+    // full story of this event, if one exists.
+    post: z.string().optional(),
   }),
 });
 
 export const collections = {
-  docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
+  docs: defineCollection({ loader: docsLoader(), schema: docsSchema({ extend: (context) => blogSchema(context) }) }),
   timeline,
   credits: defineCollection({
     loader: glob({

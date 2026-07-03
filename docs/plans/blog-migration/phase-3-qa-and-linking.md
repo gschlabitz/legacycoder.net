@@ -36,8 +36,8 @@ throwaway Node script in the scratchpad is fine for each; don't over-build.
    checking them — dead 2006 external links are historically authentic; the
    user decides if any get an archive.org treatment. Present the list.
 5. **Visual spot-check**: preview 8–10 posts sampled across years and
-   categories (image-heavy, comments, video placeholder, untitled-now-
-   retitled, tables if any). Screenshot each for the final summary.
+   categories (image-heavy, video placeholder, untitled-now-retitled,
+   tables if any). Screenshot each for the final summary.
    Remember the preview-frames gotcha (README): force frames with
    `preview_screenshot` before judging anything scroll-dependent.
 6. **RSS/metadata**: starlight-blog generates an RSS feed if configured —

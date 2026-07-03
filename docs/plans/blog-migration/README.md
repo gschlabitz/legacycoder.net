@@ -24,8 +24,11 @@ but read this README first in every session.
 2. **Images are rehosted in this repo** at the resolution Blogspot serves in
    the post body (don't hunt for higher-resolution originals). The point of
    the migration is surviving Google's eventual URL retirement.
-3. **Comments are preserved** as a quoted section at the bottom of each post
-   (they're friends-and-family history, part of the artifact).
+3. **Comments are not migrated.** Only post bodies, metadata, and images
+   come across. If the public feed's post/image data ever proves
+   insufficient (rate limits, missing content), fall back to a full
+   Blogger export via Google Takeout (Atom XML, requires the blog owner to
+   run it) rather than scraping harder.
 4. **Dead video embeds** (Google Video era, already defunct) are replaced
    with a visible italic note, e.g. *\[Video lost to time — it was hosted on
    Google Video, which shut down in 2012.\]*
@@ -42,9 +45,6 @@ Everything comes from Blogspot's feeds (public, no auth):
 
 - All posts: `https://schlabitz.blogspot.com/feeds/posts/default?alt=json&max-results=500`
   (verify `openSearch$totalResults` is 148 and matches the fetched count)
-- Comments for one post: `https://schlabitz.blogspot.com/feeds/<postId>/comments/default?alt=json`
-  where `<postId>` is the numeric tail of the post entry's `id.$t`
-  (`tag:blogger.com,1999:blog-<blogId>.post-<postId>`)
 
 Fetch with `curl` into the session scratchpad. Do NOT scrape the website
 pages themselves — the feed has cleaner HTML and lazy-loading has already

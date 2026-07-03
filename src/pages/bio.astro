@@ -124,6 +124,11 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                   <div class="tl-body">
                     <Body />
                   </div>
+                  {event.data.post && (
+                    <a class="tl-post-link" href={`/blog/${event.data.post}/`}>
+                      Read the full story →
+                    </a>
+                  )}
                 </article>
               );
             })}
