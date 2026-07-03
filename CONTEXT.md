@@ -27,6 +27,21 @@ _Avoid_: widget, dynamic component
 The docs section holding working notes from learning how LLMs work.
 _Avoid_: blog, AI notes
 
+### Localization
+
+**Locale**:
+One of the site's two languages: `root` (English, unprefixed URLs like `/`,
+`/blog/...`, `/pfeffer`) or `de` (German, under `/de/...`). English is the
+default locale; adding German never moves or renames English content.
+_Avoid_: language, translation
+
+**Fallback page**:
+A German-URL page (`/de/...`) that has no German translation yet, so
+Starlight renders the English content with its "untranslated" notice and
+German UI chrome. Resolves itself once the corresponding German file is
+added.
+_Avoid_: untranslated page, missing translation
+
 ### Blog
 
 **Blog post**:

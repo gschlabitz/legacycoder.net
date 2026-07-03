@@ -16,8 +16,14 @@ export default defineConfig({
         { icon: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/guido-schlabitz/" },
         { icon: "email", label: "Email", href: "mailto:hello@legacycoder.net" },
       ],
+      defaultLocale: "root",
+      locales: {
+        root: { label: "English", lang: "en" },
+        de: { label: "Deutsch", lang: "de" },
+      },
       plugins: [
         starlightBlog({
+          title: { en: "Blog", de: "Blog" },
           authors: {
             guido: {
               name: "Guido Schlabitz",
