@@ -1,0 +1,20 @@
+---
+title: Legacy Coder
+description: Personal website of Guido Schlabitz.
+template: splash
+# The landing page curates its own entry points — hide the sidebar-order
+# "Next" pagination footer.
+next: false
+hero:
+  tagline: Coding my legacy to make the world a better place!
+  image:
+    file: ../../assets/profile-portrait.jpg
+---
+
+import { LinkCard } from '@astrojs/starlight/components';
+
+<LinkCard
+  title="Timeline"
+  description="Previously, in this life..."
+  href="/bio/"
+/>

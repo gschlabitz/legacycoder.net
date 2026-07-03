@@ -9,10 +9,13 @@ const events = (await getCollection("timeline")).sort(
   (a, b) => a.data.date.getTime() - b.data.date.getTime()
 );
 
-// Group into year buckets, preserving that chronological order.
+// Group into year buckets, preserving that chronological order. Frontmatter
+// dates parse as UTC midnight, so read them back in UTC too — local-time
+// getters would shift a day-1 date into the previous month/year on any
+// machine west of Greenwich.
 const byYear = new Map<number, typeof events>();
 for (const event of events) {
-  const year = event.data.date.getFullYear();
+  const year = event.data.date.getUTCFullYear();
   if (!byYear.has(year)) byYear.set(year, []);
   byYear.get(year)!.push(event);
 }
@@ -29,7 +32,10 @@ for (const event of events) {
   bodies.set(event.id, Content);
 }
 
-const monthFmt = new Intl.DateTimeFormat("en-US", { month: "long" });
+const monthFmt = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  timeZone: "UTC",
+});
 
 // Group located events by coordinate for the map banner: one pin per place
 // (repeat locations would otherwise stack identical markers), revealed when
