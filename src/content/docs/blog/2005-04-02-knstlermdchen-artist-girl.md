@@ -1,0 +1,15 @@
+---
+title: "Künstlermädchen - Artist girl"
+date: 2005-04-02
+description: "Kirin is becoming quite the artist."
+---
+
+![](../../../assets/blog/2005-04-02-knstlermdchen-artist-girl/01.jpg)
+
+Kirin entwickelt sich zu einer richtigen Kuenstlerin und über diese Zeichnung sagt sie folgendes: "Das ist eine Palominomammi und ihre Kinder haben den Felsen getreten und sie schubst sie rüber zu ihrem Zimmer."
+
+Ihre Schreibschrift hat sich auch sehr verbessert. Wir hatten sie für eine junge Kindergartenklasse (das ist die Klassenstufe 0 in den USA und nicht eine Tageskrippe) eingeschrieben als sie fast 5 Jahre alt war. Diese war nur halb-tägig und nun ist sie ganztags in einer "normalen" Kindergartenklasse. Sie hatte viel aufzuholen, aber es sieht so aus, als ob sie als Nächstes in die Erste Klasse gehen wird!
+
+Kirin is becoming quite the artist. Here is what she says about this drawing: "This is a mommy Palomino and her babies were kicking the rock and she is kicking them over to their room."
+
+Her writing improved a lot, too. We had signed her up for early Kindergarten when she was about to turn 5 in Mesa. It was a half-day class and she is now attending "normal" Kindergarten full-time. She had a lot of catching up to do, but it looks like she might go to First Grade next!

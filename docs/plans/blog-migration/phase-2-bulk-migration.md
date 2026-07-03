@@ -83,8 +83,8 @@ adding others. Structure it as: fetch → transform → write → verify.
    hundred images will be slow the first time; that's expected, don't kill
    it early (set a generous Bash timeout).
 3. Spot-check in the preview: the earliest post (2005-04-01), the latest
-   (2009-05-08), one German-heavy post, one comment-heavy post, one of the
-   four untitled ones. Compare each against its feed HTML for omissions.
+   (2009-05-08), one German-heavy post, one of the four untitled ones.
+   Compare each against its feed HTML for omissions.
 4. `/blog` pagination works through all pages.
 
 ## Report (final message to the user)

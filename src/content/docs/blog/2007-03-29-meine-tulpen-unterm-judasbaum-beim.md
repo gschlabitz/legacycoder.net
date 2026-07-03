@@ -1,0 +1,11 @@
+---
+title: "Meine Tulpen Unterm Judasbaum Beim"
+date: 2007-03-29
+description: "Meine Tulpen unterm Judasbaum beim Hauseingang und der andere Judasbaum am Garten."
+---
+
+![](../../../assets/blog/2007-03-29-meine-tulpen-unterm-judasbaum-beim/01.jpg)
+
+![](../../../assets/blog/2007-03-29-meine-tulpen-unterm-judasbaum-beim/02.jpg)
+
+Meine Tulpen unterm Judasbaum beim Hauseingang und der andere Judasbaum am Garten. Im Vordergrund des rechten Bildes ist ein mir unbekannter junger Baum mit einer einzelnen riesigen Blüte (min. 10 cm). Im Hintergrund ist der Garten. Neben den Osterglocken habe ich mein [neues Beet](/blog/2007-03-24-sommer-im-mrz-summer-in-march/) angelegt.
