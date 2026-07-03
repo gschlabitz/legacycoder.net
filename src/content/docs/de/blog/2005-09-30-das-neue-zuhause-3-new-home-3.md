@@ -1,0 +1,21 @@
+---
+title: "Das Neue Zuhause 3"
+date: 2005-09-30
+description: "Nun da die Gartenserie ein abruptes Ende gefunden hat, und weil Du, liebe Mutti, in den Kommentaren ein paar mal nachgefragt hast, ist es an der Zeit diese alt…"
+---
+
+![](../../../../assets/blog/2005-09-30-das-neue-zuhause-3-new-home-3/01.jpg)
+
+Now that the garden series found its sudden end, and because my dear mom has asked a few times in the comments, the time has come to finally continue this old series. The last two episodes can be found [here](/de/blog/2005-05-24-das-neue-zuhause-new-home/) and [here](/de/blog/2005-05-24-das-neue-zuhause-2-new-home-2/).
+
+Nun da die Gartenserie ein abruptes Ende gefunden hat, und weil Du, liebe Mutti, in den Kommentaren ein paar mal nachgefragt hast, ist es an der Zeit diese alte Serie endlich fortzusetzen. Die letzten beiden Folgen sind [hier](/de/blog/2005-05-24-das-neue-zuhause-new-home/) und [hier](/de/blog/2005-05-24-das-neue-zuhause-2-new-home-2/).
+
+![](../../../../assets/blog/2005-09-30-das-neue-zuhause-3-new-home-3/02.jpg)
+
+Das ist meine kleine Küche, in der ich so gerne koche. Links sind die Fenster zum Garten hin. Gerade zu geht es in den Waschraum, der links um die Ecke die Hintertür beherbegt. Ganz oben rechts könnt ihr meinen Wok sehen, mit dem ich das allseits beliebte Chinese herbeizaubere. Der Weinflaschenbehälter auf dem Brotkasten wurde zum Spaghettigefäß umfunktioniert und die komische Stoffwurst hinten beim Kühlschrank ist ein Plastiktütenhalter. (Einfach oben reinstopfen und unten bei Bedarf rauszupfen, violett! schon hat man eine gefüllte Plastiktütenzupfstoffwurst!)
+Brotkästen sind in den USA übrigens eine Seltenheit, da hier das Brot fast immer vorgeschnitten und kastenförmig ist. Es wird stattdessen im Gefrierfach oder der Mikrowelle aufbewahrt, oder liegt einfach irgendwo rum. (Designierter Brotplatz? Dafür sind wir zu modern!)
+Diese Gefrierfachidee ist übrigens gar nicht so dumm. Macht sich bestimmt auch für deutsches Toastbrot gut: Morgens einfach ein paar Scheiben vom gefrorenen Laib abtrennen (geht ganz einfach per Hand) und in den Toaster werfen um ladenfrischen Toast zu erhalten. Violett!!
+Andere seltene Artikel in amerikanischen Küchen sind der Fleischklopfer (wenn überhaupt, werden chemikalische Fleischweichmacher benutzt), der Schneebesen und der Quirl (viele Amerikaner benutzen eine normale Gabel(!) zum Teig anrühren).
+
+Die andere Seite der Küche geht in die Essecke und links in die Wohnstube über. Geradezu ist die Tür zum Schlafzimmer und rechts hinter der Wand, das Elternbadezimmer.
+Kai schlürft gerade seinen Morgenkakao. Auf dem Schrank stehen meine Öle und Gewürze. Diese blaue Gefäße hat mir Janet beim ihrem Umzug überlaßen. Nochmal danke, Janet!

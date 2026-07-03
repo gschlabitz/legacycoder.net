@@ -1,7 +1,7 @@
 ---
 title: "Vorher & Nachher - Before & After"
 date: 2007-05-05
-description: "The radishes (in the back) are growing like crazy of course."
+description: "(and the lawnmower)"
 ---
 
 <table align="center"><tbody><tr><td>Vor den Eisheiligen...<br><span style="color: rgb(153, 102, 51);">Before the spring freeze...</span></td><td style="width: 100px;"><br></td><td>...nach den Eisheiligen.<br><span style="color: rgb(153, 102, 51);">...after the spring freeze.</span></td></tr></tbody></table>
@@ -20,7 +20,6 @@ Before the shears...
 
 ![](../../../assets/blog/2007-05-05-vorher-before/04.jpg)
 
-(und dem Rasenmäher)
 (and the lawnmower)
 
 <table align="center"><tbody><tr><td>Vor dem Frühlingsregen...<br><span style="color: rgb(153, 102, 51);">Before the spring rain...</span></td><td style="width: 100px;"><br></td><td>...nach dem Frühlingsregen.<br><span style="color: rgb(153, 102, 51);">...after the spring rain.</span></td></tr></tbody></table>
@@ -28,7 +27,5 @@ Before the shears...
 ![](../../../assets/blog/2007-05-05-vorher-before/05.jpg)
 
 ![](../../../assets/blog/2007-05-05-vorher-before/06.jpg)
-
-Die Radieschen, ganz hinten, sprießen natürlich wie die Wilden. In der Mitte kommen Warzen- und Honigmelonen hoch. Die Honigmelonensamen habe ich aus einer Ladenmelone hochwissenschaftlich extrahiert (mal sehen was am Ende rauskommt). Im Vordergrund sind zwei Tomaten, die mir die Coens freundlicherweise geschenkt haben. Ich habe auch Tomaten ausgesät, aber die brauchen natürlich etwas länger. Um das ganze Beet habe ich Studentenblumen gesät, da diese Schädlinge abweisen. Aus diesem Grund habe ich auch haufenweise Basilikum inmitten der Tomaten gesät, welches außerdem den Geschmack der Tomatenfrucht verbessert. Chemikalien versuche ich zu vermeiden wo es geht (sind mir auch zu teuer). Der Salat ist auch von den Coens und muss irgendwo anders untergebracht werden. Das Beet ist voll.
 
 The radishes (in the back) are growing like crazy of course. Cantaloupe and Honeydew melons are coming up in the middle. I extracted the Honeydew seeds highly scientifically from a commercial melon (We'll see what comes of it in the end). In the foreground are two tomatoes graciously given to me by the Coens. I sowed French Marigolds around the whole bed to ward of some pests and, for the same reason, basil amongst the tomatoes, which also improve the flavour of tomatoes. I try to avoid chemicals where I can (to expensive for my tastes). The salad is also from the Coens and I'll have to stick it in somewhere else. The bed is full.

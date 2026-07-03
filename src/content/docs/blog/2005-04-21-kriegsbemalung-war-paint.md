@@ -1,7 +1,7 @@
 ---
 title: "Kriegsbemalung - War Paint"
 date: 2005-04-21
-description: "Ich muss mir mal diese manuellen Einstellungen durchlesen... Kai was at a Hopi festival for kids."
+description: "Ich muss mir mal diese manuellen Einstellungen durchlesen..."
 ---
 
 ![](../../../assets/blog/2005-04-21-kriegsbemalung-war-paint/01.jpg)

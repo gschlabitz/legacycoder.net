@@ -1,10 +1,8 @@
 ---
 title: "Ich Hab Heute Meine Zweite"
 date: 2005-04-02
-description: "I got my second digital camera today ( Canon Powershot S30 for $153 on ebay) and had to test this new toy of course."
+description: "I got my second digital camera today ([Canon Powershot S30](http://consumer.usa.canon.com/ir/controller?act=ModelDetailAct&fcategoryid=144&modelid=7489) for $1…"
 ---
-
-Ich hab heute meine zweite Digitalkamera bekommen ([Canon Powershot S30](http://consumer.usa.canon.com/ir/controller?act=ModelDetailAct&fcategoryid=144&modelid=7489) für $153 bei ebay) und muß dieses neue Spielzeug doch gleich mal ausprobieren.
 
 I got my second digital camera today ([Canon Powershot S30](http://consumer.usa.canon.com/ir/controller?act=ModelDetailAct&fcategoryid=144&modelid=7489) for $153 on ebay) and had to test this new toy of course.
 

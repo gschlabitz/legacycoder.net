@@ -1,12 +1,10 @@
 ---
 title: "Wüstenimpressionen - Desert Impressions"
 date: 2005-11-10
-description: "Hier eine kleine Serie mit weiteren Landschaftsbildern vom Reservat: The photos from the cliff by our house were well received."
+description: "The photos from the cliff by our house were well received."
 ---
 
 ![](../../../assets/blog/2005-11-10-wstenimpressionen-desert-impressions/01.jpg)
-
-Die Photos vom Hang bei unserem Haus kamen gut an. Hier eine kleine Serie mit weiteren Landschaftsbildern vom Reservat:
 
 The photos from the cliff by our house were well received. Here a short series with more landscape images from the reservation:
 

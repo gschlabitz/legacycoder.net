@@ -1,7 +1,7 @@
 ---
 title: "Letzte Gartenmeldung - Last Garden News"
 date: 2007-09-28
-description: "Hier nun die lang erwartete Herbsternte... Babygemüse!"
+description: "Hier nun die lang erwartete Herbsternte..."
 ---
 
 Hier nun die lang erwartete Herbsternte...

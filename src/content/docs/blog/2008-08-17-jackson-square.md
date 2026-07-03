@@ -1,7 +1,7 @@
 ---
 title: "Jackson Square"
 date: 2008-08-17
-description: Jackson Square is the heart of the French Quarter, which in turn forms the historic and cultural center of the city of New Orleans.
+description: "Jackson Square is the heart of the French Quarter, which in turn forms the historic and cultural center of the city of New Orleans."
 ---
 
 ![](../../../assets/blog/2008-08-17-jackson-square/01.jpg)

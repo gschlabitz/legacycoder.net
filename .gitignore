@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # coding agent temp folders
 .claude/worktrees
+
+# cached originals for scripts/split-blog-posts.mjs
+.split-cache/

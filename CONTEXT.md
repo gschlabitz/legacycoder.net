@@ -46,10 +46,11 @@ _Avoid_: untranslated page, missing translation
 
 **Blog post**:
 A migrated Schlabitz News entry (2005–2009), rendered via the `starlight-blog`
-plugin under `/blog`. Preserved 1:1 from the original Blogspot post: wording
-and bilingual (German/English) structure kept exactly as written, images
-rehosted locally, dead video embeds replaced with a note. Comments were not
-migrated.
+plugin under `/blog` (English) and `/de/blog` (German). Originally migrated
+from Blogspot as one bilingual page per post; later split per language, one
+file per locale under the same filename, wording preserved exactly as
+written (a re-arrangement, never a retranslation). Images rehosted locally,
+dead video embeds replaced with a note. Comments were not migrated.
 _Avoid_: article, entry
 
 ### Bio timeline

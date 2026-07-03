@@ -1,12 +1,8 @@
 ---
-title: "Das ist das Ende - This is the End"
+title: "This is the End"
 date: 2009-05-08
-description: "The Schlabitz News is dead."
+description: "How fitting, after posting about a grave yard,\nthis blog promptly died!"
 ---
-
-Na das passt ja, nachdem ich über einen Friedhof schreibe,
-stirbt glatt das ganze Blog.
-Die Schlabitz News sind tot.
 
 [Lang leben die Schlabitz News!](http://schlabi.com/)
 

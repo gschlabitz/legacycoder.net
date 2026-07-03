@@ -1,14 +1,10 @@
 ---
 title: "Transparency Germany"
 date: 2006-03-28
-description: "Here is a small service for Moni on this usually unpolitical family page."
+description: "Here is a small service for [Moni](http://wasweissich.twoday.net/) on this usually unpolitical family page."
 ---
 
-Hier mal ein kleiner Dienst für [Moni](http://wasweissich.twoday.net/) auf dieser normalerweise unpolitischen Familienseite. Meine bescheidenen [Übersetztungstalente](http://guidoschlabitz.language123.com/) müssen doch auch mal für was gut sein. Falls ihr diese ganze Geschichte nicht kennt, könnt ihr [hier](http://focus.msn.de/digital/netguide/transparency-international_nid_26808.html), [hier](http://www.netzeitung.de/internet/389465.html) und [hier](http://www.tagesschau.de/aktuell/meldungen/0,1185,OID5374766_TYP6_THE_NAV_REF1_BAB,00.html)(Tagesschau mal parteiisch und [schlecht recherchiert](http://www.24stunden.de/index.php/2006-03/keiner-hat-die-fakten-uberpruft/), wow) und [hier](http://www.basicthinking.de/blog/2006/03/25/transparency-deutschland-als-arbeitgeber-in-verruf/) auch und dann noch [hier](http://nikki.kenmai.de/KuroiBlog.php/2006/03/28/der_nachste_bitte_transparency_internati) und [hier](http://www.jensscholz.com/2006_03_01_archive.htm#114356746345522132) und [hier](http://www.netzpolitik.org/2006/transparency-international-war-alles-nicht-so-gemeint/) nachlesen.
-
 Here is a small service for [Moni](http://wasweissich.twoday.net/) on this usually unpolitical family page. My humble [translation talents](http://guidoschlabitz.language123.com/) have to be good for something. If you don't know this story, you can read about it [here](http://www.dw-world.de/dw/article/0,2144,1948301,00.html), [here](http://scottageb.blogspot.com/2006/03/transparency-international-company-in.html), [here](http://scottageb.blogspot.com/2006/03/moni-becomes-new-norma-rae.html) and [here](http://www.opiniojuris.org/posts/1143569117.shtml), also [here](http://yakalskovich.livejournal.com/123336.html).
-
-Translation of "Transparency Deutschland" blog post on [gedankenträger](http://wasweissich.twoday.net/): Links to copy of [original post](http://www.basicthinking.de/blog/2006/03/25/transparency-deutschland-als-arbeitgeber-in-verruf/) ([cached version](http://72.14.203.104/search?q=cache:IvdixE1ojFgJ:wasweissich.twoday.net/stories/1407348/+&hl=de&amp;amp;amp;gl=de&ct=clnk&cd=1) of original)
 
 > A friend of mine, who has to take care of a three and a half year old son, has just been fired under totally unacceptable circumstances after her probationary period. She used to work at Transparency Germany, the German chapter of the non-governmental organization Transparency International, who pledged themselves against corruption in businesses. She worked there 20 hours a week for 1000 Euros gross, with a finished degree, several years of job experience etc. She only survived, because she also worked as a freelance journalist on top of that.
 

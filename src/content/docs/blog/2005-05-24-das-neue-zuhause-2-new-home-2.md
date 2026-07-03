@@ -1,7 +1,7 @@
 ---
 title: "The New Home 2"
 date: 2005-05-24
-description: On this picture you can see a local cowboy with revolver in our driveway.
+description: "On this picture you can see a local cowboy with revolver in our driveway."
 ---
 
 ![](../../../assets/blog/2005-05-24-das-neue-zuhause-2-new-home-2/01.jpg)

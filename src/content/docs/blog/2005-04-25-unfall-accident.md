@@ -1,14 +1,12 @@
 ---
 title: "Unfall - Accident"
 date: 2005-04-25
-description: "Bandage has to stay on until tomorrow... See you then."
+description: "Blood on the axe..."
 ---
 
 Blut an der Axt...
 
 ![](../../../assets/blog/2005-04-25-unfall-accident/01.jpg)
-
-Blood on the axe...
 
 Schlimmer Finger...
 
@@ -18,5 +16,6 @@ Bad finger...
 
 ![](../../../assets/blog/2005-04-25-unfall-accident/03.jpg)
 
-Bandage muß bis morgen draufbleiben... Bis dann.
+Blood on the axe...
+
 Bandage has to stay on until tomorrow... See you then.
