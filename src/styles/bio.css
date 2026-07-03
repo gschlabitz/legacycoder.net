@@ -1,0 +1,338 @@
+/* === Auto-biography timeline (src/pages/bio.astro) ==================
+   A vertical timeline split around a center rail — WORK events on the left,
+   LIFE events on the right (the page's work/life-balance metaphor), grouped
+   by year with sticky year headers. Styles live here (global, keyed off
+   bio-specific `.tl-*` classes) rather than scoped in bio.astro because the
+   tag-filter is a React island — Astro's scoped-style attributes never reach
+   island-rendered DOM, so the filter chips would miss them.
+   Below 60rem the split collapses to a single left-railed column. */
+
+.timeline {
+  /* Horizontal breathing room between a card and the center rail. */
+  --tl-gutter: 2rem;
+  /* Shared height of the pinned header band: the WORK/LIFE row and the year
+     headings use the same box so a pinned year lands vertically centered in
+     the gap between the two sphere headings. */
+  --tl-header-h: 3.5rem;
+  position: relative;
+  margin-top: var(--sl-spacing-lg, 1.5rem);
+}
+
+/* Continuous rail running the full height of the timeline. */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: var(--sl-color-hairline, var(--sl-color-gray-5));
+}
+
+/* Galaxy decorates every content h2 with a gradient underline (h2::before);
+   on the timeline's centered headings it reads as a stray left-anchored bar. */
+.tl-sphere::before,
+.tl-year-heading::before {
+  content: none;
+}
+
+/* --- WORK / LIFE hemisphere headings ------------------------------- */
+.tl-spheres {
+  position: sticky;
+  top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height, 0rem));
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  height: var(--tl-header-h);
+  margin-bottom: var(--sl-spacing-md, 1rem);
+  background: var(--sl-color-bg);
+}
+
+.tl-sphere {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--sl-color-gray-3);
+}
+
+/* --- Sticky year headers ------------------------------------------- */
+/* Pins at the SAME offset and height as the WORK/LIFE row, but as a
+   fit-content pill on the center rail — so a pinned year docks into the gap
+   between the two sphere headings. z-index above .tl-spheres lets it ride
+   over the (empty) middle of that bar while approaching its pin position. */
+.tl-year-heading {
+  position: sticky;
+  /* Clear Starlight's fixed top nav; the mobile TOC bar collapses to 0 on
+     desktop, so including it keeps the offset correct at every breakpoint. */
+  top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height, 0rem));
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: var(--tl-header-h);
+  margin: 0 auto;
+  padding: 0 1rem;
+  /* Opaque so the rail and events pass behind the text, not through it. */
+  background: var(--sl-color-bg);
+  font-size: var(--sl-text-h2);
+  color: var(--sl-color-white);
+}
+
+/* --- Events --------------------------------------------------------- */
+.tl-events {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sl-spacing-lg, 1.5rem);
+  padding-block: var(--sl-spacing-md, 1rem);
+}
+
+/* Each event occupies one half, hugging the center rail. Events stay in a
+   single chronological stack, so opposite-side neighbors stagger vertically
+   rather than sharing a row. */
+.tl-event {
+  position: relative;
+  width: 50%;
+}
+
+.tl-event--work {
+  margin-right: auto; /* left half */
+  padding-right: var(--tl-gutter);
+  text-align: right;
+}
+
+.tl-event--life {
+  margin-left: auto; /* right half */
+  padding-left: var(--tl-gutter);
+}
+
+/* Dot sitting on the rail, aligned to the event's top line. */
+.tl-dot {
+  position: absolute;
+  top: 0.4em;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--sl-color-accent);
+  box-shadow: 0 0 0 4px var(--sl-color-bg);
+}
+
+.tl-event--work .tl-dot {
+  right: -6px;
+}
+
+.tl-event--life .tl-dot {
+  left: -6px;
+}
+
+/* Mirror the tag chips toward the rail on the work side. */
+.tl-event--work .tl-tags {
+  justify-content: flex-end;
+}
+
+.tl-month {
+  margin: 0;
+  font-size: var(--sl-text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sl-color-gray-3);
+}
+
+.tl-title {
+  margin: 0.1rem 0 0.5rem;
+  font-size: var(--sl-text-h4);
+  color: var(--sl-color-white);
+}
+
+.tl-body {
+  color: var(--sl-color-gray-2);
+}
+
+.tl-body :last-child {
+  margin-bottom: 0;
+}
+
+.tl-location {
+  margin: 0.5rem 0 0;
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-3);
+}
+
+/* --- Tag chips (on events and in the filter) ------------------------ */
+.tl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.tl-tags li {
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--sl-color-gray-6);
+  font-size: var(--sl-text-xs);
+  color: var(--sl-color-gray-2);
+}
+
+/* --- Filter island (funnel button + popup in the sticky header) ------ */
+/* .tl-spheres is position: sticky, so it's the containing block here. */
+.tl-filter {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  /* Starlight's markdown sibling rule (`* + *`) adds margin-top: 1rem, which
+     shifts even absolutely-positioned boxes — pin the margin to zero. */
+  margin: 0;
+}
+
+.tl-filter-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  background: var(--sl-color-bg);
+  color: var(--sl-color-gray-2);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.tl-filter-toggle svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.tl-filter-toggle:hover,
+.tl-filter-toggle[aria-expanded="true"] {
+  border-color: var(--sl-color-accent);
+  color: var(--sl-color-white);
+}
+
+/* Active-filter count badge on the button's corner. */
+.tl-filter-count {
+  position: absolute;
+  top: -0.45rem;
+  right: -0.45rem;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--sl-color-accent);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.1rem;
+  text-align: center;
+  color: var(--sl-color-white);
+}
+
+.tl-filter-pop {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 11rem;
+  padding: 0.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.5rem;
+  background: var(--sl-color-bg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.tl-filter-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-2);
+  cursor: pointer;
+}
+
+.tl-filter-item:hover {
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+}
+
+.tl-filter-item input {
+  accent-color: var(--sl-color-accent);
+  cursor: pointer;
+}
+
+/* Filtered-out events/years. Explicit so a future `display: flex/grid` on
+   these containers can't override the `hidden` attribute's default. */
+.tl-event[hidden],
+.tl-year[hidden] {
+  display: none;
+}
+
+/* --- Narrow screens: collapse to a single left-railed column -------- */
+@media (max-width: 59.99rem) {
+  .timeline {
+    --tl-rail-x: 0.5rem;
+  }
+
+  .timeline::before {
+    left: var(--tl-rail-x);
+  }
+
+  /* The halves no longer exist, but the sticky strip stays as the home of
+     the filter button. */
+  .tl-spheres {
+    height: 2.75rem;
+  }
+
+  .tl-sphere {
+    display: none;
+  }
+
+  /* No sphere gap to dock into — back to a full-width opaque sticky bar,
+     pinned just below the filter strip. */
+  .tl-year-heading {
+    top: calc(
+      var(--sl-nav-height) + var(--sl-mobile-toc-height, 0rem) + 2.75rem
+    );
+    z-index: 2;
+    justify-content: flex-start;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0.35em 0;
+  }
+
+  .tl-event,
+  .tl-event--work,
+  .tl-event--life {
+    width: 100%;
+    margin: 0;
+    padding: 0 0 0 2rem;
+    text-align: left;
+  }
+
+  .tl-event--work .tl-dot,
+  .tl-event--life .tl-dot {
+    left: calc(var(--tl-rail-x) - 5px);
+    right: auto;
+  }
+
+  .tl-event--work .tl-tags {
+    justify-content: flex-start;
+  }
+}

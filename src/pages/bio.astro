@@ -1,0 +1,83 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { getCollection, render } from "astro:content";
+import TimelineFilter from "../components/TimelineFilter.jsx";
+
+// Build-time: load every life event and order it chronologically.
+const events = (await getCollection("timeline")).sort(
+  (a, b) => a.data.date.getTime() - b.data.date.getTime()
+);
+
+// Group into year buckets, preserving that chronological order.
+const byYear = new Map<number, typeof events>();
+for (const event of events) {
+  const year = event.data.date.getFullYear();
+  if (!byYear.has(year)) byYear.set(year, []);
+  byYear.get(year)!.push(event);
+}
+const years = [...byYear.entries()];
+
+// Distinct tags, for the filter island's chips.
+const allTags = [...new Set(events.flatMap((e) => e.data.tags))].sort();
+
+// Pre-render each Markdown body to a component (render() is async, so it can't
+// run inside the template loop below).
+const bodies = new Map<string, Awaited<ReturnType<typeof render>>["Content"]>();
+for (const event of events) {
+  const { Content } = await render(event);
+  bodies.set(event.id, Content);
+}
+
+const monthFmt = new Intl.DateTimeFormat("en-US", { month: "long" });
+---
+
+<StarlightPage
+  frontmatter={{
+    title: "Auto-Biography",
+    description: "A timeline of where I have been and what I built.",
+    tableOfContents: false,
+  }}
+  hasSidebar={false}
+>
+  <style>
+    :global(h1:first-of-type) {
+      display: none;
+    }
+  </style>
+  <div class="timeline">
+    <div class="tl-spheres">
+      <h2 class="tl-sphere">Work</h2>
+      <h2 class="tl-sphere">Life</h2>
+      <TimelineFilter client:load tags={allTags} />
+    </div>
+    {
+      years.map(([year, yearEvents]) => (
+        <section class="tl-year" data-timeline-year>
+          <h2 class="tl-year-heading">{year}</h2>
+          <div class="tl-events">
+            {yearEvents.map((event) => {
+              const Body = bodies.get(event.id)!;
+              return (
+                <article
+                  class:list={["tl-event", `tl-event--${event.data.sphere}`]}
+                  data-timeline-event
+                  data-tags={event.data.tags.join(",")}
+                >
+                  <span class="tl-dot" aria-hidden="true" />
+                  <p class="tl-month">{monthFmt.format(event.data.date)}</p>
+                  <h3 class="tl-title">{event.data.title}</h3>
+                  {event.data.location && (
+                    <p class="tl-location">📍 {event.data.location.label}</p>
+                  )}
+                  <div class="tl-body">
+                    <Body />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</StarlightPage>

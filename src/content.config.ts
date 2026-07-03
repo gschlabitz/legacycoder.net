@@ -24,8 +24,34 @@ const tasl = z.object({
   modified: z.boolean().default(false),
 });
 
+// Auto-biography timeline. One Markdown file per life event under
+// src/content/timeline/; the Markdown body is the event description. Powers
+// the custom /bio page (src/pages/bio.astro), not a Starlight docs route.
+const timeline = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/timeline' }),
+  schema: z.object({
+    // Frontmatter date as YYYY-MM-DD; coerced to a Date for sorting/grouping.
+    date: z.coerce.date(),
+    title: z.string(),
+    // Which half of the split timeline the event renders on — the page is
+    // organized around the work/life-balance metaphor. Explicit rather than
+    // derived from tags, since an event can carry tags from both spheres.
+    sphere: z.enum(['work', 'life']),
+    tags: z.array(z.string()).default([]),
+    // Optional place, kept structured so a future map can drop a marker.
+    location: z
+      .object({
+        label: z.string(),
+        lat: z.number(),
+        lng: z.number(),
+      })
+      .optional(),
+  }),
+});
+
 export const collections = {
   docs: defineCollection({ loader: docsLoader(), schema: docsSchema() }),
+  timeline,
   credits: defineCollection({
     loader: glob({
       pattern: '**/*.{png,jpg,jpeg,webp,avif,gif,svg}.json',
