@@ -14,7 +14,7 @@ export default defineConfig({
       components: {
         ThemeSelect: "./src/components/ThemeSelect.astro",
       },
-      customCss: ["./src/styles/reading-mode.css"],
+      customCss: ["./src/styles/reading-mode.css", "./src/styles/pfeffer.css"],
       // No-flash restore: re-apply the user's reading-mode choice before paint by
       // removing the attributes Starlight set server-side.
       head: [

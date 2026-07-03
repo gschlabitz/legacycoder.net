@@ -2,7 +2,7 @@
 title: Pfeffer
 description: A Farkle variant played by my family.
 ---
-import DiceRow from '../../components/DiceRow.jsx';
+import DiceRow from '../../components/DiceRow.astro';
 import PfefferScoreSheet from '../../components/PfefferScoreSheet.jsx';
 
 Pfeffer is a dice game for two or more players using six dice. On your turn you
@@ -32,15 +32,25 @@ the throw is invalid and must be repeated.
 
 ## Scoring
 
-| Combination | Points | Note | Combination | Points | Note |
-| ----------- | ------ | ---- | ----------- | ------ | ---- |
-| <DiceRow faces={[1]} /> | 100 |  | <DiceRow faces={[5]} /> | 50 |  |
-| <DiceRow faces={[1, 1, 1]} /> | 1,000 | Lucky! | <DiceRow faces={[1, 1, 1, 1]} /> | 2000 | Each additional die doubles the score. |
-| <DiceRow faces={[2, 2, 2]} /> | 200 | Three of a kind | <DiceRow faces={[1, 1, 1, 1, 1]} /> | 4000 |  |
-| <DiceRow faces={[3, 3, 3]} /> | 300 | Face value × 100 | <DiceRow faces={[1, 1, 1, 1, 1, 1]} /> | 8000 |  |
-| <DiceRow faces={[4, 4, 4]} /> | 400 |  | <DiceRow faces={[1, 2, 3, 4, 5, 6]} /> | 1,500 | Straight |
-| <DiceRow faces={[5, 5, 5]} /> | 500 |  | <DiceRow faces={[2, 2, 4, 4, 6, 6]} groups={[2, 2, 2]} /> | 1,500 | Any three pairs |
-| <DiceRow faces={[6, 6, 6]} /> | 600 |  | | | |
+<div class="scoring-table">
+
+| Combination                                    | Points | Note                    |
+| ---------------------------------------------- | ------ | ----------------------- |
+| <DiceRow faces={[1]} />                        | 100    |                         |
+| <DiceRow faces={[5]} />                        | 50     |                         |
+| <DiceRow faces={[1, 1, 1]} />                  | 1,000  | Lucky!                  |
+| <DiceRow faces={[2, 2, 2]} />                  | 200    | Three of a kind         |
+| <DiceRow faces={[3, 3, 3]} />                  | 300    |                         |
+| <DiceRow faces={[4, 4, 4]} />                  | 400    |                         |
+| <DiceRow faces={[5, 5, 5]} />                  | 500    |                         |
+| <DiceRow faces={[6, 6, 6]} />                  | 600    |                         |
+| <DiceRow faces={[6, 6, 6, 6]} />               | 1,200  | Each extra die...       |
+| <DiceRow faces={[6, 6, 6, 6, 6]} />            | 2,400  | doubles the score.      |
+| <DiceRow faces={[6, 6, 6, 6, 6, 6]} />         | 4,800  | Wow!                    |
+| <DiceRow faces={[1, 2, 3, 4, 5, 6]} />         | 1,500  | Straight                |
+| <DiceRow faces={[2, 2, 4, 4, 6, 6]} groups={[2, 2, 2]} /> | 1,500  | Any three pairs |
+
+</div>
 
 ## Winning
 
