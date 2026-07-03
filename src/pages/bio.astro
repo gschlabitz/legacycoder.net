@@ -2,6 +2,7 @@
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import { getCollection, render } from "astro:content";
 import TimelineFilter from "../components/TimelineFilter.jsx";
+import TimelineMap from "../components/TimelineMap.jsx";
 
 // Build-time: load every life event and order it chronologically.
 const events = (await getCollection("timeline")).sort(
@@ -29,6 +30,45 @@ for (const event of events) {
 }
 
 const monthFmt = new Intl.DateTimeFormat("en-US", { month: "long" });
+
+// Group located events by coordinate for the map banner: one pin per place
+// (repeat locations would otherwise stack identical markers), revealed when
+// the first of its events scrolls into view. Insertion order is
+// chronological because `events` already is.
+type Place = {
+  lat: number;
+  lng: number;
+  label: string;
+  titles: string[];
+  eventIds: string[];
+};
+const placesByCoord = new Map<string, Place>();
+for (const event of events) {
+  const loc = event.data.location;
+  if (!loc) continue;
+  const key = `${loc.lat},${loc.lng}`;
+  if (!placesByCoord.has(key)) {
+    placesByCoord.set(key, {
+      lat: loc.lat,
+      lng: loc.lng,
+      label: loc.label,
+      titles: [],
+      eventIds: [],
+    });
+  }
+  const place = placesByCoord.get(key)!;
+  place.titles.push(event.data.title);
+  place.eventIds.push(event.id);
+}
+const places = [...placesByCoord.values()];
+
+// Client-side Maps JS keys are public by design (locked down by referrer
+// restrictions), so passing it into island props is fine. Without a key the
+// island renders a placeholder banner in dev and nothing in production.
+const mapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY as
+  | string
+  | undefined;
+const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
 ---
 
 <StarlightPage
@@ -61,6 +101,7 @@ const monthFmt = new Intl.DateTimeFormat("en-US", { month: "long" });
                 <article
                   class:list={["tl-event", `tl-event--${event.data.sphere}`]}
                   data-timeline-event
+                  data-event-id={event.id}
                   data-tags={event.data.tags.join(",")}
                 >
                   <span class="tl-dot" aria-hidden="true" />
@@ -80,4 +121,9 @@ const monthFmt = new Intl.DateTimeFormat("en-US", { month: "long" });
       ))
     }
   </div>
+  {
+    showMap && (
+      <TimelineMap client:load apiKey={mapsApiKey} places={places} />
+    )
+  }
 </StarlightPage>

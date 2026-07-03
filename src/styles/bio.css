@@ -272,6 +272,68 @@
   display: none;
 }
 
+/* --- Journey map banner (TimelineMap island) ------------------------- */
+/* Fixed, full-viewport-width strip across the bottom — deliberately much
+   wider than tall so the whole east→west arc of the timeline's places fits
+   in one view. Pins drop in as their events scroll into view. */
+:root {
+  --tl-map-h: clamp(8rem, 22vh, 14rem);
+}
+
+.tl-map {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 6;
+  height: var(--tl-map-h);
+  border-top: 1px solid var(--sl-color-hairline, var(--sl-color-gray-5));
+  background: var(--sl-color-bg-nav, var(--sl-color-bg));
+}
+
+.tl-map-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* The banner covers the bottom of the viewport for good — give the page
+   enough tail room that the last events and the footer scroll clear of it. */
+body:has(.tl-map) main {
+  padding-bottom: calc(var(--tl-map-h) + var(--sl-spacing-lg, 1.5rem));
+}
+
+/* Keyless/dev fallback: same strip, but a note plus reveal-as-you-scroll
+   place chips instead of map tiles. */
+.tl-map--placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.tl-map-note {
+  margin: 0;
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-3);
+}
+
+.tl-map-pins {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tl-map-pins li {
+  padding: 0.15rem 0.65rem;
+  border-radius: 999px;
+  background: var(--sl-color-gray-6);
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-2);
+}
+
 /* --- Narrow screens: collapse to a single left-railed column -------- */
 @media (max-width: 59.99rem) {
   .timeline {

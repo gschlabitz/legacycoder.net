@@ -25,5 +25,9 @@
     "esbuild@0.28.1": true,
     "sharp@0.34.5": true,
     "fsevents@2.3.3": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "typescript": "^6.0.3"
   }
 }
