@@ -7,6 +7,7 @@ location:
   label: Rock Point, Arizona
   lat: 36.72
   lng: -109.63
+post: 2005-06-20-rock-point-tag-1-rock-point-day-1
 ---
 
 A week at the Navajo Evangelical Lutheran Mission in Rock Point with old

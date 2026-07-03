@@ -6,6 +6,7 @@ import react from "@astrojs/react";
 
 // https://astro.build/config
 export default defineConfig({
+  site: "https://legacycoder.net",
   integrations: [
     starlight({
       title: "Guido Schlabitz",
@@ -20,7 +21,6 @@ export default defineConfig({
           authors: {
             guido: {
               name: "Guido Schlabitz",
-              url: "https://www.linkedin.com/in/guido-schlabitz/",
             },
           },
         }),

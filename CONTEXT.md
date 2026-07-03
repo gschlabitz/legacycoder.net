@@ -27,6 +27,16 @@ _Avoid_: widget, dynamic component
 The docs section holding working notes from learning how LLMs work.
 _Avoid_: blog, AI notes
 
+### Blog
+
+**Blog post**:
+A migrated Schlabitz News entry (2005–2009), rendered via the `starlight-blog`
+plugin under `/blog`. Preserved 1:1 from the original Blogspot post: wording
+and bilingual (German/English) structure kept exactly as written, images
+rehosted locally, dead video embeds replaced with a note. Comments were not
+migrated.
+_Avoid_: article, entry
+
 ### Bio timeline
 
 **Timeline event**:
@@ -57,6 +67,12 @@ from two places share the screen — and holds its last framing while the focus
 is empty (before the first located event, it frames the journey's first
 place). Focus moves the camera only; it never adds or removes pins.
 _Avoid_: visible events, active pins
+
+**Full story link**:
+The "Read the full story →" link shown under a timeline event that has a
+migrated Blog post behind it, set via the event's optional `post` frontmatter
+field. Most events don't have one.
+_Avoid_: post link, read more link
 
 ### Image attribution
 

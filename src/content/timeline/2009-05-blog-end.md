@@ -3,6 +3,7 @@ date: 2009-05-08
 title: Long live the Schlabitz News
 sphere: life
 tags: [family]
+post: 2009-05-08-das-ist-das-ende-this-is-end
 ---
 
 Four years and 148 posts later, the blog signed off: "The Schlabitz News

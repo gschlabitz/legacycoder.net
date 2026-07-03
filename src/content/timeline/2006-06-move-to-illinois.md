@@ -7,6 +7,7 @@ location:
   label: Harrisburg, Illinois
   lat: 37.7384
   lng: -88.5406
+post: 2006-06-16-neue-heimat-illinois-new-home-illinois
 ---
 
 Packed a rental truck on June 4th, drove three days down what used to be

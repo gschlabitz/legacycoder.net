@@ -7,6 +7,7 @@ location:
   label: Harrisburg, Illinois
   lat: 37.7384
   lng: -88.5406
+post: 2006-07-12-unser-harrisburg-haus-our-harrisburg
 ---
 
 Found the house in Harrisburg we set out to buy — mailbox right at the

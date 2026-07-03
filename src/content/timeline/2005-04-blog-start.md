@@ -7,6 +7,7 @@ location:
   label: Jeddito, Arizona
   lat: 35.56
   lng: -110.13
+post: 2005-04-01-tag-auch-howdy
 ---
 
 The new ISP came without webspace, so the sporadic mass emails to family

@@ -23,8 +23,5 @@ pnpm-debug.log*
 # Cloudflare worker
 .wrangler/
 
-# scripts/migrate-blog.mjs feed/image cache (--offline flag)
-.migration-cache/
-
 # coding agent temp folders
 .claude/worktrees
