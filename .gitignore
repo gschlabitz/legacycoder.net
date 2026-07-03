@@ -23,8 +23,5 @@ pnpm-debug.log*
 # Cloudflare worker
 .wrangler/
 
-# coding agents
-.claude
-
-# Insideous Obsidian files
-.obsidian
+# coding agent temp folders
+.claude/worktrees
