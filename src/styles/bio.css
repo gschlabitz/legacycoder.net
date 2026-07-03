@@ -294,6 +294,23 @@
   height: 100%;
 }
 
+/* Advanced markers have no built-in DROP animation — the island adds this
+   class to each pin as it's created and removes it on animationend. */
+.tl-map-pin-drop {
+  animation: tl-pin-drop 0.5s cubic-bezier(0.3, 1.4, 0.6, 1);
+}
+
+@keyframes tl-pin-drop {
+  from {
+    transform: translateY(-3rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 /* The banner covers the bottom of the viewport for good — give the page
    enough tail room that the last events and the footer scroll clear of it. */
 body:has(.tl-map) main {

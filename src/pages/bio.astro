@@ -68,6 +68,11 @@ const places = [...placesByCoord.values()];
 const mapsApiKey = import.meta.env.PUBLIC_GOOGLE_MAPS_API_KEY as
   | string
   | undefined;
+// Optional cloud-styled map ID; the island falls back to Google's sandbox
+// DEMO_MAP_ID (advanced markers require some map ID).
+const mapsMapId = import.meta.env.PUBLIC_GOOGLE_MAPS_MAP_ID as
+  | string
+  | undefined;
 const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
 ---
 
@@ -123,7 +128,12 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
   </div>
   {
     showMap && (
-      <TimelineMap client:load apiKey={mapsApiKey} places={places} />
+      <TimelineMap
+        client:load
+        apiKey={mapsApiKey}
+        mapId={mapsMapId}
+        places={places}
+      />
     )
   }
 </StarlightPage>
