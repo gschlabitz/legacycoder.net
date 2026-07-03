@@ -222,21 +222,10 @@
   color: var(--sl-color-white);
 }
 
-/* Active-filter count badge on the button's corner. */
-.tl-filter-count {
-  position: absolute;
-  top: -0.45rem;
-  right: -0.45rem;
-  min-width: 1.1rem;
-  height: 1.1rem;
-  padding: 0 0.25rem;
-  border-radius: 999px;
-  background: var(--sl-color-accent);
-  font-size: 0.7rem;
-  font-weight: 600;
-  line-height: 1.1rem;
-  text-align: center;
-  color: var(--sl-color-white);
+/* Some tag is unchecked — recolor the funnel as the "filter active" signal. */
+.tl-filter-toggle--filtering {
+  border-color: var(--sl-color-accent);
+  color: var(--sl-color-accent);
 }
 
 .tl-filter-pop {

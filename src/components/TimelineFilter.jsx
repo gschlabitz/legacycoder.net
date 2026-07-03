@@ -2,18 +2,22 @@ import { useState, useEffect, useRef } from "react";
 
 // Tag filter for the /bio timeline, living inside the sticky WORK/LIFE
 // header: a funnel button that opens a popup of alphabetized tag toggles.
+// Inclusive semantics: every tag starts checked and an event stays visible
+// as long as ANY of its tags is still checked; unchecking tags prunes events.
 // The timeline itself is server-rendered static HTML (see src/pages/bio.astro);
 // this island only owns the filter state and reflects it onto the DOM by
 // toggling a `hidden` attribute on each event and on any year section left
 // with no visible events.
 export default function TimelineFilter({ tags }) {
   const sorted = [...tags].sort((a, b) => a.localeCompare(b));
-  const [active, setActive] = useState(() => new Set());
+  const [checked, setChecked] = useState(() => new Set(tags));
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
 
+  const filtering = checked.size < tags.length;
+
   function toggle(tag) {
-    setActive((prev) => {
+    setChecked((prev) => {
       const next = new Set(prev);
       next.has(tag) ? next.delete(tag) : next.add(tag);
       return next;
@@ -41,9 +45,10 @@ export default function TimelineFilter({ tags }) {
     const events = document.querySelectorAll("[data-timeline-event]");
     for (const el of events) {
       const eventTags = (el.dataset.tags || "").split(",").filter(Boolean);
-      // No active filter shows everything; otherwise match ANY selected tag.
+      // Untagged events are never filtered; tagged ones stay while any of
+      // their tags is still checked.
       const visible =
-        active.size === 0 || eventTags.some((t) => active.has(t));
+        eventTags.length === 0 || eventTags.some((t) => checked.has(t));
       el.toggleAttribute("hidden", !visible);
     }
 
@@ -55,13 +60,15 @@ export default function TimelineFilter({ tags }) {
       );
       section.toggleAttribute("hidden", !anyVisible);
     }
-  }, [active]);
+  }, [checked]);
 
   return (
     <div className="tl-filter" ref={rootRef}>
       <button
         type="button"
-        className="tl-filter-toggle"
+        className={
+          "tl-filter-toggle" + (filtering ? " tl-filter-toggle--filtering" : "")
+        }
         aria-expanded={open}
         aria-label="Filter events by tag"
         onClick={() => setOpen((o) => !o)}
@@ -77,9 +84,6 @@ export default function TimelineFilter({ tags }) {
         >
           <path d="M3 5h18l-7 8v5l-4 2v-7L3 5z" />
         </svg>
-        {active.size > 0 && (
-          <span className="tl-filter-count">{active.size}</span>
-        )}
       </button>
       {open && (
         <div className="tl-filter-pop" role="group" aria-label="Toggle tags">
@@ -87,7 +91,7 @@ export default function TimelineFilter({ tags }) {
             <label key={tag} className="tl-filter-item">
               <input
                 type="checkbox"
-                checked={active.has(tag)}
+                checked={checked.has(tag)}
                 onChange={() => toggle(tag)}
               />
               <span>{tag}</span>
