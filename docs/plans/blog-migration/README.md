@@ -29,6 +29,12 @@ but read this README first in every session.
 4. **Dead video embeds** (Google Video era, already defunct) are replaced
    with a visible italic note, e.g. *\[Video lost to time — it was hosted on
    Google Video, which shut down in 2012.\]*
+5. **The Galaxy theme (`starlight-theme-galaxy`) is removed** in Phase 1,
+   before the blog plugin goes in. The user has already established it does
+   not work well with `starlight-blog`; the site runs on Starlight's default
+   theme plus the blog plugin's own styling unless the user picks a
+   replacement theme at the start of Phase 1. Do not spend time debugging
+   Galaxy/blog-plugin interactions.
 
 ## Source data
 
@@ -46,8 +52,9 @@ caused one missed-content incident on this project.
 
 ## Repo context you need
 
-- Astro 7 + Starlight 0.41 + `starlight-theme-galaxy`, React islands for
-  interactivity only. Read `CLAUDE.md` and `CONTEXT.md` (glossary) first.
+- Astro 7 + Starlight 0.41 + `starlight-theme-galaxy` (removed in Phase 1 —
+  see decision 5), React islands for interactivity only. Read `CLAUDE.md`
+  and `CONTEXT.md` (glossary) first.
 - Docs pages live in `src/content/docs/` (the `docs` collection in
   `src/content.config.ts`). **Editing `src/content.config.ts` requires a dev
   server restart**; renaming content files can require `rm -rf .astro` too.

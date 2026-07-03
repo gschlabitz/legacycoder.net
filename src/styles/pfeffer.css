@@ -1,6 +1,6 @@
 /* === Scoring table (pfeffer.mdx) ===================================
-   Galaxy's table styles set vertical-align: top on all cells; the dice
-   icons are taller than the text, so center everything on the row instead. */
+   Default table cells align to the text baseline; the dice icons are
+   taller than the text, so center everything on the row instead. */
 .scoring-table :is(th, td) {
   vertical-align: middle;
 }

@@ -1,33 +1,69 @@
-# Phase 1 — starlight-blog plugin + 3 pilot posts + timeline link field
+# Phase 1 — replace theme, starlight-blog plugin + 3 pilot posts + timeline link field
 
-Read `README.md` in this directory first. Goal: prove the whole stack on
-three hand-migrated posts and get user sign-off on the format before
-anything is bulk-generated.
+Read `README.md` in this directory first. Goal: swap the theme, then prove
+the whole migration stack on three hand-migrated posts and get user sign-off
+on the format before anything is bulk-generated.
 
 ## Deliverables
 
-1. `starlight-blog` installed, configured, rendering at `/blog` without
-   breaking the Galaxy theme or the existing pages (`/`, `/bio`, `/pfeffer`,
-   `/links`, `/recipes`, `/llm-notebook/*`).
-2. Three pilot posts migrated by hand (listed below), pixel-faithful to the
+1. `starlight-theme-galaxy` removed (README decision 5); the site renders on
+   the replacement theme with no leftover Galaxy imports or workarounds.
+2. `starlight-blog` installed, configured, rendering at `/blog` without
+   breaking the existing pages (`/`, `/bio`, `/pfeffer`, `/links`,
+   `/recipes`, `/llm-notebook/*`).
+3. Three pilot posts migrated by hand (listed below), pixel-faithful to the
    originals: images rehosted, comments preserved, cross-link and dead-video
    treatments demonstrated.
-3. Timeline events support an optional link to a blog post, demonstrated on
+4. Timeline events support an optional link to a blog post, demonstrated on
    one event.
-4. User has seen screenshots of all three posts and approved the format.
+5. User has seen screenshots of all three posts and approved the format.
 
-## Step 1: Install and configure the plugin
+## Step 1: Remove the Galaxy theme
+
+Ask the user ONE question before touching anything: default Starlight theme,
+or a specific replacement? (Default assumption per README decision 5:
+default Starlight + the blog plugin's own styling.) Then:
+
+1. Remove `starlightThemeGalaxy()` and its import from `astro.config.mjs`;
+   `npm uninstall starlight-theme-galaxy`.
+2. **`src/components/ThemeSelect.astro` hard-imports
+   `starlight-theme-galaxy/overrides/ThemeSelect.astro`** — the build breaks
+   on uninstall until it's rewritten. It exists to place the reading-mode
+   toggle next to the theme toggle; rewrite it to wrap Starlight's default
+   component (`@astrojs/starlight/components/ThemeSelect.astro`) with the
+   same slot structure, and verify the reading-mode toggle still appears and
+   works (it persists via `localStorage` key `lc:reading-mode`).
+3. Re-evaluate Galaxy-specific CSS workarounds — remove them if the reason
+   is gone, keep them if they're now harmless-but-load-bearing (check each
+   visually, don't guess):
+   - `src/styles/bio.css` — the `.tl-sphere::before, .tl-year-heading::before
+     { content: none; }` block exists only to kill Galaxy's h2 gradient
+     underline.
+   - `src/styles/pfeffer.css` — top-of-file comment: a vertical-align
+     workaround for Galaxy's table styles.
+   - `src/styles/reading-mode.css` — toggle styling written to match Galaxy
+     header buttons; restyle to match the new theme's header.
+4. Regression pass over every page (`/`, `/bio` including the map banner and
+   sticky year headers, `/pfeffer` score sheet, `/links`, `/recipes`,
+   `/llm-notebook/*`) in light AND dark mode. The bio page is the riskiest:
+   its sticky offsets use `--sl-nav-height`/`--sl-mobile-toc-height` and its
+   colors use `--sl-color-*` variables — all fine on any Starlight theme in
+   principle, but verify the WORK/LIFE header band and year pills still dock
+   correctly.
+5. Show the user before/after screenshots of `/` and `/bio` and get an
+   explicit OK on the new look BEFORE proceeding to Step 2.
+
+## Step 2: Install and configure the plugin
 
 ```sh
 npm install starlight-blog
 ```
 
 - Docs: https://github.com/HiDeoo/starlight-blog — check the README for the
-  version compatible with Starlight 0.41 and for plugin-ordering guidance
-  relative to theme plugins (`starlightThemeGalaxy` is already in
-  `astro.config.mjs`). If ordering is undocumented, put `starlightBlog()`
-  first and verify visually that both blog pages and the theme still look
-  right.
+  version compatible with Starlight 0.41. (Theme-ordering concerns are gone
+  now that Galaxy is removed in Step 1; if the user chose a replacement
+  theme there, check the blog plugin's docs for ordering relative to theme
+  plugins.)
 - Configure the author once globally: name "Guido Schlabitz", url
   `https://www.linkedin.com/in/guido-schlabitz/`.
 - The plugin requires extending the docs schema in `src/content.config.ts`
@@ -39,7 +75,7 @@ npm install starlight-blog
 - Check how the plugin injects itself into the top nav/sidebar; if it adds a
   "Blog" link, that's the desired behavior.
 
-## Step 2: Migrate the three pilot posts by hand
+## Step 3: Migrate the three pilot posts by hand
 
 Fetch the feed (see README) and locate these three entries by their
 `published` date. They were chosen to force every hard case:
@@ -93,7 +129,7 @@ exactly and note anything that doesn't fit):
 
   One blockquote per comment, original language untouched.
 
-## Step 3: Timeline → blog post links
+## Step 4: Timeline → blog post links
 
 - In `src/content.config.ts`, extend the `timeline` collection schema with
   an optional field: `post: z.string().optional()` — the slug of a blog
@@ -109,6 +145,8 @@ exactly and note anything that doesn't fit):
 - Set `post:` on `src/content/timeline/2008-08-new-orleans-road-trip.md`
   pointing at the Jackson Square pilot post.
 
+(This is Step 3's demo target — do this after the pilots exist.)
+
 ## Verification (all through the preview tools; see README gotchas)
 
 1. `npx astro check` and `npm run build` pass.
@@ -116,8 +154,10 @@ exactly and note anything that doesn't fit):
    images load locally (network tab shows no `blogspot.com`/
    `googleusercontent.com` requests), umlauts/ß render correctly, comments
    section present where the source has comments.
-3. The Galaxy theme still styles the rest of the site; spot-check `/` and
-   `/bio` and one docs page.
+3. The rest of the site renders correctly on the replacement theme;
+   spot-check `/` and `/bio` and one docs page in both color schemes (the
+   Step 1 regression pass covers this in depth — this is a re-check after
+   the plugin went in).
 4. On `/bio`, the New Orleans event shows the link; clicking it lands on the
    Jackson Square post.
 5. Screenshot each pilot post AND its live Blogspot counterpart is NOT
@@ -133,10 +173,13 @@ the user says so.**
 
 ## Known risks
 
-- Plugin/theme incompatibility (version mismatch with Starlight 0.41 or CSS
-  collisions with Galaxy). Surface immediately if the plugin's supported
-  Starlight range excludes 0.41 — that's a user decision point (pin an older
-  plugin, or hold).
+- Surface immediately if the blog plugin's supported Starlight range
+  excludes 0.41 — that's a user decision point (pin an older plugin version,
+  or hold).
+- The ThemeSelect rewrite (Step 1.2) is the most likely thing to break
+  subtly: the reading-mode toggle placement AND the no-flash restore script
+  in `astro.config.mjs` `head` both assume the current header structure.
+  Test reading-mode on/off across a reload.
 - The blog posts' `title` frontmatter must be non-empty for the docs schema;
   all three pilots have titles (some other posts don't — that's a Phase 2
   problem, noted there).

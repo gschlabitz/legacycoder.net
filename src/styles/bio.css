@@ -29,13 +29,6 @@
   background: var(--sl-color-hairline, var(--sl-color-gray-5));
 }
 
-/* Galaxy decorates every content h2 with a gradient underline (h2::before);
-   on the timeline's centered headings it reads as a stray left-anchored bar. */
-.tl-sphere::before,
-.tl-year-heading::before {
-  content: none;
-}
-
 /* --- WORK / LIFE hemisphere headings ------------------------------- */
 .tl-spheres {
   position: sticky;
