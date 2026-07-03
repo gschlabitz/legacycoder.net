@@ -45,9 +45,18 @@ The map banner on the bio page that shows where timeline events happened.
 _Avoid_: location map, minimap
 
 **Pin reveal**:
-A pin dropping onto the timeline map when the reader scrolls its event into
-view; the map's viewport fits only the pins revealed so far.
+A pin dropping onto the timeline map once the reader has reached or passed its
+event. Revealed pins persist for the rest of the visit, even when the camera
+has moved elsewhere.
 _Avoid_: marker animation
+
+**Focus**:
+The located timeline events currently on screen. The timeline map's camera
+frames the focused events' places — tight on one place, widening while events
+from two places share the screen — and holds its last framing while the focus
+is empty (before the first located event, it frames the journey's first
+place). Focus moves the camera only; it never adds or removes pins.
+_Avoid_: visible events, active pins
 
 ### Image attribution
 
