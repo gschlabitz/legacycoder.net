@@ -351,6 +351,13 @@ body:has(.tl-map) main {
   color: var(--sl-color-gray-2);
 }
 
+/* Chips whose place is in focus (an event of theirs is on screen) — mirrors
+   the camera framing so the keyless placeholder still shows the behavior. */
+.tl-map-pins li.tl-map-pin--focus {
+  background: var(--sl-color-accent-low, var(--sl-color-gray-5));
+  color: var(--sl-color-white);
+}
+
 /* --- Narrow screens: collapse to a single left-railed column -------- */
 @media (max-width: 59.99rem) {
   .timeline {

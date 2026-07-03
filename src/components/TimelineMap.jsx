@@ -2,15 +2,19 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 // Google Map banner for the /bio timeline, fixed across the bottom of the
-// viewport. The view is fitted to the pins revealed so far — tight on the
-// early Berlin/Potsdam years, widening across the Atlantic as later US
-// events scroll in (the extra-wide, short box suits that east→west arc) —
-// and pins drop in as the user scrolls their events into view. A place
-// counts as revealed once
-// any of its events has been reached OR passed (position check on the
-// server-rendered `[data-event-id]` articles, not an IntersectionObserver —
-// a jump to the bottom must not skip pins whose events flew past the
-// viewport between frames). Once revealed, a pin stays.
+// viewport. Two scroll-driven concepts share one rect pass (terms defined in
+// CONTEXT.md):
+//
+// - Pin reveal: a pin drops once any of its place's events has been reached
+//   OR passed, and stays for the rest of the visit (position checks on the
+//   server-rendered `[data-event-id]` articles, not IntersectionObserver —
+//   see docs/adr/0001).
+// - Focus: the camera frames the places of the located events currently on
+//   screen — tight while the story sits in one city, widening while events
+//   from two places share the screen, tightening again when it settles into
+//   the new place. While no located event is on screen the camera holds its
+//   last framing (the map never moves without a visible cause); before the
+//   first one, it opens on the journey's first place.
 //
 // `places` is prepared at build time in bio.astro: events sharing coordinates
 // are grouped into one place ({ lat, lng, label, titles, eventIds }) so
@@ -61,40 +65,56 @@ export default function TimelineMap({ apiKey, mapId, places }) {
   const [mapEpoch, setMapEpoch] = useState(0);
   // Indices into `places` whose pins have been revealed by scrolling.
   const [revealed, setRevealed] = useState(() => new Set());
+  // Indices into `places` that are in focus (an event of theirs on screen).
+  const [focus, setFocus] = useState(() => new Set());
+  // The last places the camera framed, held while the focus is empty.
+  const lastFramingRef = useRef(null);
   // The banner is portaled to <body>: Starlight's layout puts a transform on
   // an ancestor, which would turn it into the containing block for our
   // position: fixed strip. Portals need the DOM, so wait for mount.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // Scroll spy: reveal a place once any of its events has been scrolled to
-  // (or past). Runs in both real-map and placeholder modes.
+  // Scroll spy: one rect pass per tick computes both reveal (reached or
+  // passed → accumulates) and focus (on screen right now → moving window).
+  // Runs in both real-map and placeholder modes.
   useEffect(() => {
     const placeByEvent = new Map();
     places.forEach((place, i) =>
       place.eventIds.forEach((id) => placeByEvent.set(id, i))
     );
-    const pending = new Set(
-      [...document.querySelectorAll("[data-event-id]")].filter((el) =>
-        placeByEvent.has(el.dataset.eventId)
-      )
+    const located = [...document.querySelectorAll("[data-event-id]")].filter(
+      (el) => placeByEvent.has(el.dataset.eventId)
     );
+    const pending = new Set(located);
 
     const check = () => {
-      // The banner owns the bottom ~quarter of the viewport; an event counts
-      // as "seen" once its top clears above the map.
+      // The banner owns the bottom ~quarter of the viewport; "on screen"
+      // means overlapping the band between the viewport top and the map.
       const limit = window.innerHeight * 0.75;
       const hits = [];
-      for (const el of pending) {
+      const nextFocus = new Set();
+      for (const el of located) {
         const rect = el.getBoundingClientRect();
         // Skip events display:none'd by the tag filter (zero-size rect).
         if (rect.width === 0 && rect.height === 0) continue;
-        if (rect.top < limit) {
-          hits.push(placeByEvent.get(el.dataset.eventId));
+        if (rect.top >= limit) continue; // not reached yet
+        const place = placeByEvent.get(el.dataset.eventId);
+        if (pending.has(el)) {
+          hits.push(place);
           pending.delete(el);
         }
+        if (rect.bottom > 0) nextFocus.add(place); // not yet scrolled off top
       }
       if (hits.length) setRevealed((prev) => new Set([...prev, ...hits]));
+      // Publish focus only when the set really changed — scroll ticks are
+      // frequent, camera refits should not be. Returning `prev` keeps the
+      // state referentially stable, so no re-render happens.
+      setFocus((prev) =>
+        prev.size === nextFocus.size && [...nextFocus].every((i) => prev.has(i))
+          ? prev
+          : nextFocus
+      );
     };
 
     let throttle = null;
@@ -154,9 +174,8 @@ export default function TimelineMap({ apiKey, mapId, places }) {
     };
   }, [apiKey, places, mounted]);
 
-  // Drop a marker for each newly revealed place, then refit the view to the
-  // pins shown so far. Before anything is revealed, frame the first place's
-  // region — the story starts there, not on a world map. Also reattaches
+  // Drop a marker for each newly revealed place; pins accumulate for the
+  // rest of the visit even when the camera moves elsewhere. Also reattaches
   // every pin after a theme rebuild (mapEpoch).
   useEffect(() => {
     const ctx = mapRef.current;
@@ -185,15 +204,26 @@ export default function TimelineMap({ apiKey, mapId, places }) {
       }
       marker.map = ctx.map;
     }
-    const shown = revealed.size
-      ? [...revealed].map((i) => places[i])
-      : [places[0]];
+  }, [revealed, ready, places, mapEpoch]);
+
+  // Camera: frame the focused places. While the focus is empty (a gap or an
+  // unlocated stretch of the timeline), hold the last framing; before
+  // anything has ever been framed, open on the journey's first place. Native
+  // fitBounds transitions by design — smooth when near, a cut when far.
+  // Re-runs after a theme rebuild (mapEpoch) to re-frame the fresh map.
+  useEffect(() => {
+    const ctx = mapRef.current;
+    if (!ctx) return;
+    if (focus.size) {
+      lastFramingRef.current = [...focus].map((i) => places[i]);
+    }
+    const frame = lastFramingRef.current ?? [places[0]];
     const bounds = new ctx.maps.LatLngBounds();
-    for (const place of shown) {
+    for (const place of frame) {
       bounds.extend({ lat: place.lat, lng: place.lng });
     }
     ctx.map.fitBounds(bounds, { top: 32, bottom: 32, left: 64, right: 64 });
-  }, [revealed, ready, places, mapEpoch]);
+  }, [focus, ready, places, mapEpoch]);
 
   // Follow Starlight's dark/light toggle (data-theme on <html>). colorScheme
   // is fixed at construction, so a toggle means rebuilding the map on the
@@ -226,7 +256,11 @@ export default function TimelineMap({ apiKey, mapId, places }) {
         </p>
         <ul className="tl-map-pins">
           {places.map((place, i) => (
-            <li key={i} hidden={!revealed.has(i)}>
+            <li
+              key={i}
+              hidden={!revealed.has(i)}
+              className={focus.has(i) ? "tl-map-pin--focus" : undefined}
+            >
               📍 {place.label}
             </li>
           ))}
