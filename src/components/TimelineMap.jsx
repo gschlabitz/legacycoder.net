@@ -56,6 +56,7 @@ function currentScheme() {
 
 export default function TimelineMap({ apiKey, mapId, places }) {
   const canvasRef = useRef(null);
+  const asideRef = useRef(null); // the <aside class="tl-map">, for its height transition
   const mapRef = useRef(null); // { maps, map } once the API is up
   const markersRef = useRef(new Map()); // place index -> AdvancedMarkerElement
   const [ready, setReady] = useState(false);
@@ -69,11 +70,85 @@ export default function TimelineMap({ apiKey, mapId, places }) {
   const [focus, setFocus] = useState(() => new Set());
   // The last places the camera framed, held while the focus is empty.
   const lastFramingRef = useRef(null);
+  // Set once the reader manually pans, zooms, or opens Street View — scroll-
+  // driven auto-framing (below) backs off from then on, so exploring the map
+  // doesn't get yanked back to the "current" event's place on the next
+  // scroll tick. Reset when the map instance is rebuilt (theme toggle).
+  const userTookOverRef = useRef(false);
+  // True only for the duration of one of our own fitBounds/setZoom calls, so
+  // the zoom_changed/dragstart events they trigger aren't mistaken for the
+  // reader's own gestures.
+  const programmaticRef = useRef(false);
+  // Grows the banner to half the viewport via the Expand tab; drives
+  // --tl-map-h on <html> (see bio.css) so both the fixed banner and the
+  // page's clearance padding pick it up.
+  const [expanded, setExpanded] = useState(false);
   // The banner is portaled to <body>: Starlight's layout puts a transform on
   // an ancestor, which would turn it into the containing block for our
   // position: fixed strip. Portals need the DOM, so wait for mount.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("tl-map-expanded", expanded);
+  }, [expanded]);
+
+  // Shared by the scroll-driven camera effect and the post-resize re-fit
+  // below. Clamps the auto-fit to zoom 10 — a lone revealed city at street
+  // level would be useless in a banner this short — without capping how far
+  // the reader can zoom in manually afterward.
+  const applyFraming = (ctx, frame) => {
+    programmaticRef.current = true;
+    const bounds = new ctx.maps.LatLngBounds();
+    for (const place of frame) bounds.extend({ lat: place.lat, lng: place.lng });
+    ctx.map.fitBounds(bounds, { top: 32, bottom: 32, left: 64, right: 64 });
+    ctx.maps.event.addListenerOnce(ctx.map, "idle", () => {
+      if (ctx.map.getZoom() > 10) ctx.map.setZoom(10);
+      programmaticRef.current = false;
+    });
+  };
+
+  // Google Maps doesn't watch its container for size changes: once the
+  // expand/collapse transition finishes, nudge it to pick up the new
+  // dimensions and re-fit the camera to the last framing (the canvas didn't
+  // exist at that size when fitBounds last ran) — unless the reader has
+  // taken over the camera themselves.
+  useEffect(() => {
+    const el = asideRef.current;
+    const ctx = mapRef.current;
+    if (!el || !ctx) return;
+    const onTransitionEnd = (e) => {
+      if (e.propertyName !== "height") return;
+      ctx.maps.event.trigger(ctx.map, "resize");
+      if (userTookOverRef.current) return;
+      applyFraming(ctx, lastFramingRef.current ?? [places[0]]);
+    };
+    el.addEventListener("transitionend", onTransitionEnd);
+    return () => el.removeEventListener("transitionend", onTransitionEnd);
+  }, [places, ready]);
+
+  // Detect the reader taking manual control (drag, zoom, or Street View) so
+  // the scroll-driven camera effect below knows to stop auto-framing. Guarded
+  // by `programmaticRef` so our own fitBounds/setZoom calls don't trip it.
+  // Re-attaches after a theme rebuild (mapEpoch), which also hands control
+  // back to auto-framing since that's a fresh map instance.
+  useEffect(() => {
+    const ctx = mapRef.current;
+    if (!ctx) return;
+    userTookOverRef.current = false;
+    const takeOver = () => {
+      if (!programmaticRef.current) userTookOverRef.current = true;
+    };
+    const streetView = ctx.map.getStreetView();
+    const listeners = [
+      ctx.maps.event.addListener(ctx.map, "dragstart", takeOver),
+      ctx.maps.event.addListener(ctx.map, "zoom_changed", takeOver),
+      streetView.addListener("visible_changed", () => {
+        if (streetView.getVisible()) takeOver();
+      }),
+    ];
+    return () => listeners.forEach((l) => l.remove());
+  }, [ready, mapEpoch]);
 
   // Scroll spy: one rect pass per tick computes both reveal (reached or
   // passed → accumulates) and focus (on screen right now → moving window).
@@ -142,18 +217,20 @@ export default function TimelineMap({ apiKey, mapId, places }) {
   // colorScheme instead.
   const makeMap = (maps) =>
     new maps.Map(canvasRef.current, {
+      // Blanket-hide the default UI, but re-enable zoom and Street View —
+      // the reader can pan/zoom/drop the pegman in to explore a place.
+      // "cooperative" keeps an ordinary mouse-wheel scroll over the banner
+      // scrolling the page (Ctrl+scroll or pinch zooms the map instead), so
+      // the map doesn't hijack scrolling at the bottom of every page.
       disableDefaultUI: true,
-      gestureHandling: "none",
-      keyboardShortcuts: false,
-      // Keep fitBounds on a lone revealed city at a regional view — a
-      // 100%-wide-but-short banner is useless at street level.
-      maxZoom: 10,
+      zoomControl: true,
+      streetViewControl: true,
+      gestureHandling: "cooperative",
       mapId: mapId || "DEMO_MAP_ID",
       colorScheme: currentScheme(),
     });
 
-  // Boot the map. Non-interactive on purpose — it's a banner, not a widget;
-  // capturing scroll/drag at the bottom edge of every scroll would be hostile.
+  // Boot the map.
   useEffect(() => {
     // canvasRef only exists once the portal has rendered.
     if (!apiKey || !mounted) return;
@@ -210,19 +287,18 @@ export default function TimelineMap({ apiKey, mapId, places }) {
   // unlocated stretch of the timeline), hold the last framing; before
   // anything has ever been framed, open on the journey's first place. Native
   // fitBounds transitions by design — smooth when near, a cut when far.
-  // Re-runs after a theme rebuild (mapEpoch) to re-frame the fresh map.
+  // Re-runs after a theme rebuild (mapEpoch) to re-frame the fresh map. Backs
+  // off once the reader has taken over the camera (see the effect above) —
+  // still tracks the current framing underneath so a later theme rebuild
+  // (which hands control back) opens on the right place.
   useEffect(() => {
     const ctx = mapRef.current;
     if (!ctx) return;
     if (focus.size) {
       lastFramingRef.current = [...focus].map((i) => places[i]);
     }
-    const frame = lastFramingRef.current ?? [places[0]];
-    const bounds = new ctx.maps.LatLngBounds();
-    for (const place of frame) {
-      bounds.extend({ lat: place.lat, lng: place.lng });
-    }
-    ctx.map.fitBounds(bounds, { top: 32, bottom: 32, left: 64, right: 64 });
+    if (userTookOverRef.current) return;
+    applyFraming(ctx, lastFramingRef.current ?? [places[0]]);
   }, [focus, ready, places, mapEpoch]);
 
   // Follow Starlight's dark/light toggle (data-theme on <html>). colorScheme
@@ -246,9 +322,33 @@ export default function TimelineMap({ apiKey, mapId, places }) {
 
   if (!mounted) return null;
 
+  const toggleButton = (
+    <button
+      type="button"
+      className="tl-map-toggle"
+      aria-expanded={expanded}
+      aria-label={expanded ? "Collapse the map" : "Expand the map"}
+      onClick={() => setExpanded((e) => !e)}
+    >
+      {expanded ? "Collapse" : "Expand"}
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </button>
+  );
+
   const banner =
     !apiKey || failed ? (
       <aside className="tl-map tl-map--placeholder" aria-label="Journey map">
+        {toggleButton}
         <p className="tl-map-note">
           {failed
             ? "The Google Map failed to load."
@@ -267,7 +367,12 @@ export default function TimelineMap({ apiKey, mapId, places }) {
         </ul>
       </aside>
     ) : (
-      <aside className="tl-map" aria-label="Map of places on this timeline">
+      <aside
+        ref={asideRef}
+        className="tl-map"
+        aria-label="Map of places on this timeline"
+      >
+        {toggleButton}
         <div ref={canvasRef} className="tl-map-canvas" />
       </aside>
     );
