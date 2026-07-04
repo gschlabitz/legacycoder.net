@@ -1,0 +1,65 @@
+---
+title: Pfeffer
+description: Eine Farkle-Variante, die meine Familie spielt.
+---
+import DiceRow from '../../../components/DiceRow.astro';
+import PfefferScoreSheet from '../../../components/PfefferScoreSheet.jsx';
+
+Pfeffer ist ein Würfelspiel für zwei oder mehr Spieler mit sechs Würfeln. Du würfelst
+alle sechs, legst mindestens einen wertenden Würfel beiseite und entscheidest, ob du
+deine Punkte einsackst oder mit den übrigen Würfeln weiterwürfelst und dein Glück
+herausforderst. Bringt dein Wurf keine wertenden Würfel, bist du raus und bekommst
+nichts für die Runde. Du musst mindestens 350 Punkte erzielen oder aussetzen, um
+deinen Zug zu beenden.
+
+**Pfeffer:** Zu Beginn deines Zugs kannst du „Pfeffer!" rufen, wenn du wetten willst,
+dass du mindestens 50 Punkte mehr schaffst als die Runde deines Vorgängers
+(z. B. 400 gegen vorherige 350). Fliegst du dabei raus, wird dein Einsatz verdoppelt
+und von deinem Punktestand abgezogen (z. B. -800).
+
+**Auto-Pfeffer:** Hat dein Vorgänger nichts erzielt, gilt Pfeffer automatisch für
+deinen Zug. Erzielst du dann auch nichts, werden dir 1000 Punkte abgezogen.
+
+**Brandenburg:** Landet oder lehnt ein Würfel auf einem anderen, oder rollt er vom
+Tisch, ist der Wurf ungültig und muss wiederholt werden.
+
+## Ablauf eines Zugs
+
+1. Würfle alle sechs Würfel.
+2. Lege mindestens einen wertenden Würfel beiseite (eine einzelne 1 oder 5, oder eine Kombination von unten).
+3. Entweder du **sackst ein**, was du bisher erzielt hast, oder du **würfelst weiter** mit den übrigen Würfeln.
+4. Ergibt ein Wurf **keine wertenden Würfel**, **bist du raus** — dein Zug endet und du bekommst in dieser Runde nichts.
+5. **Beweis erbringen:** Haben alle sechs Würfel gewertet, musst du erneut alle sechs würfeln und zum selben Rundentotal addieren.
+
+## Punkte
+
+<div class="scoring-table">
+
+| Kombination                                    | Punkte | Anmerkung               |
+| ---------------------------------------------- | ------ | ------------------------ |
+| <DiceRow faces={[1]} />                        | 100    |                         |
+| <DiceRow faces={[5]} />                        | 50     |                         |
+| <DiceRow faces={[1, 1, 1]} />                  | 1.000  | Glück gehabt!           |
+| <DiceRow faces={[2, 2, 2]} />                  | 200    | Dreier-Pasch            |
+| <DiceRow faces={[3, 3, 3]} />                  | 300    |                         |
+| <DiceRow faces={[4, 4, 4]} />                  | 400    |                         |
+| <DiceRow faces={[5, 5, 5]} />                  | 500    |                         |
+| <DiceRow faces={[6, 6, 6]} />                  | 600    |                         |
+| <DiceRow faces={[6, 6, 6, 6]} />               | 1.200  | Jeder weitere Würfel…   |
+| <DiceRow faces={[6, 6, 6, 6, 6]} />            | 2.400  | verdoppelt die Punktzahl. |
+| <DiceRow faces={[6, 6, 6, 6, 6, 6]} />         | 4.800  | Wow!                    |
+| <DiceRow faces={[1, 2, 3, 4, 5, 6]} />         | 1.500  | Straße                  |
+| <DiceRow faces={[2, 2, 4, 4, 6, 6]} groups={[2, 2, 2]} /> | 1.500  | Irgendwelche drei Paare |
+
+</div>
+
+## Gewinnen
+
+- **Mindestpunktzahl:** Bei jedem Zug musst du mindestens 350 Punkte erzielen.
+- **10.000 erreichen:** Der erste Spieler, der das Ziel erreicht, löst die Schlussrunde aus.
+- **Schlussrunde:** Jeder andere Spieler bekommt einen letzten Zug, um den Anführer zu schlagen. Der höchste Gesamtwert gewinnt dann.
+
+Hausregeln variieren — die Werte für einen Vierling, für drei Paare und die
+Mindestpunktzahl zum Einstieg sind Dinge, die man üblicherweise vor Spielbeginn klärt.
+
+<PfefferScoreSheet client:load />
