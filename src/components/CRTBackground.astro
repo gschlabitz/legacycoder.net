@@ -6,6 +6,10 @@
 // Hero override (src/components/Hero.astro), so it appears exactly on pages
 // with hero frontmatter. The nav header and hero layer above it; a theme-
 // tinted overlay keeps them legible in both color schemes.
+//
+// VT323 (OFL, self-hosted via Fontsource) supplies the bitmap-style glyphs;
+// the phosphor-mask pattern below turns their strokes into a dot grid.
+import '@fontsource/vt323';
 ---
 
 <div class="crt-bg" data-crt aria-hidden="true">
@@ -67,9 +71,10 @@
     inset: -4% -30% -20% -2%;
     margin: 0;
     padding: clamp(2rem, 6vh, 4rem) clamp(2rem, 5vw, 5rem);
-    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-    font-size: clamp(1.2rem, 3vw, 2.6rem);
-    line-height: 1.55;
+    font-family: 'VT323', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    /* VT323 runs narrow and small on the body — size up to compensate. */
+    font-size: clamp(1.6rem, 3.8vw, 3.4rem);
+    line-height: 1.3;
     white-space: pre-wrap;
     transform: perspective(1200px) rotateX(7deg) rotateY(14deg) rotateZ(-1deg);
     transform-origin: 12% 20%;
@@ -81,13 +86,55 @@
     animation: crt-flicker 4s infinite;
   }
 
+  /* Phosphor mask: vertical RGB-fringed triads sliced into rows, clipped
+     into the glyphs themselves — up close, strokes resolve into the dot
+     grid of a shadow-mask tube. The cursor stays solid (an empty span has
+     no text for background-clip to fill). */
+  .crt-text {
+    --crt-ink: var(--crt-color, #4eff7e);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.5) 0 1px,
+        transparent 1px 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--crt-ink) 70%, #ff2a2a) 0 2px,
+        var(--crt-ink) 2px 4px,
+        color-mix(in srgb, var(--crt-ink) 70%, #2a55ff) 4px 6px
+      );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Explicit glow: the inherited text-shadow would resolve currentColor
+       to the transparent fill above. */
+    text-shadow: 0 0 10px
+      color-mix(in srgb, var(--crt-ink) 45%, transparent);
+  }
+  .crt-cursor {
+    background: var(--crt-color, #4eff7e);
+  }
+
   /* On the light theme a glowing phosphor has nothing to glow against —
-     darken each era's color into an ink and drop the bloom, so the backdrop
-     reads like faint print instead of washed-out neon. */
+     darken each era's color into an ink, drop the bloom, and keep only the
+     row slicing so the backdrop reads like faint dot-matrix print. */
   :global([data-theme='light']) .crt-screen {
-    color: color-mix(in srgb, var(--crt-color, #4eff7e) 35%, #2e3440);
-    text-shadow: none;
     opacity: 0.5;
+  }
+  :global([data-theme='light']) .crt-text {
+    --crt-ink: color-mix(in srgb, var(--crt-color, #4eff7e) 35%, #2e3440);
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(255, 255, 255, 0.6) 0 1px,
+        transparent 1px 4px
+      ),
+      linear-gradient(var(--crt-ink), var(--crt-ink));
+    text-shadow: none;
+  }
+  :global([data-theme='light']) .crt-cursor {
+    background: color-mix(in srgb, var(--crt-color, #4eff7e) 35%, #2e3440);
   }
   .crt-cursor {
     display: inline-block;
