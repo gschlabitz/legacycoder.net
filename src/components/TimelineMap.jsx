@@ -472,7 +472,12 @@ export default function TimelineMap({ apiKey, mapId, places }) {
     return () => observer.disconnect();
   }, [ready]);
 
-  if (!mounted) return null;
+  // An empty fragment, not null: Astro identifies which framework owns an
+  // island by test-rendering it, and a null return defeats the React
+  // renderer's detection — Astro then probes the MDX renderer, which calls
+  // this function bare (no React dispatcher) and the first hook logs
+  // "Invalid hook call" on every SSR of the page.
+  if (!mounted) return <></>;
 
   const toggleButton = (
     <button
