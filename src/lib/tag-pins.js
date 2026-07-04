@@ -37,54 +37,28 @@ export function tagColor(tag, allTags) {
 // group, so icons stay on-palette automatically. Tags without an entry (and
 // any future tag until it's added here) keep the plain punched-hole pin.
 export const TAG_ICONS = {
-  // git-merge: two companies becoming one.
-  acquisition:
-    '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>' +
-    '<path d="M6 21V9a9 9 0 0 0 9 9"/>',
   // briefcase
   career:
     '<rect x="2" y="7" width="20" height="14" rx="2"/>' +
     '<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-  // file-text
-  contract:
-    '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
-    '<polyline points="14 2 14 8 20 8"/>' +
-    '<line x1="16" y1="13" x2="8" y2="13"/>' +
-    '<line x1="16" y1="17" x2="8" y2="17"/>',
+  // graduation cap
+  skills:
+    '<path d="M22 10L12 5 2 10l10 5 10-5z"/>' +
+    '<path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>' +
+    '<path d="M22 10v6"/>',
   // users
   family:
     '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>' +
     '<circle cx="9" cy="7" r="4"/>' +
     '<path d="M23 21v-2a4 4 0 0 0-3-3.87"/>' +
     '<path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
-  // monitor
-  freelance:
-    '<rect x="2" y="3" width="20" height="14" rx="2"/>' +
-    '<line x1="8" y1="21" x2="16" y2="21"/>' +
-    '<line x1="12" y1="17" x2="12" y2="21"/>',
-  // home
-  home:
-    '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>' +
-    '<polyline points="9 22 9 12 15 12 15 22"/>',
-  // book-open: still learning.
-  internship:
-    '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>' +
-    '<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
-  // truck
-  move:
-    '<rect x="1" y="3" width="15" height="13"/>' +
-    '<polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>' +
-    '<circle cx="5.5" cy="18.5" r="2.5"/>' +
-    '<circle cx="18.5" cy="18.5" r="2.5"/>',
-  // graduation cap
-  teaching:
-    '<path d="M22 10L12 5 2 10l10 5 10-5z"/>' +
-    '<path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>' +
-    '<path d="M22 10v6"/>',
   // paper plane
   travel:
     '<line x1="22" y1="2" x2="11" y2="13"/>' +
     '<polygon points="22 2 15 22 11 13 2 9 22 2"/>',
+  // heart
+  hobby:
+    '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
 };
 
 export function tagIcon(tag) {

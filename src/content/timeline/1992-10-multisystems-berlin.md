@@ -2,7 +2,7 @@
 date: 1992-10-01
 title: Software Developer intern at multiSYStems Berlin
 sphere: work
-tags: [internship]
+tags: [skills, career]
 location:
   city: Berlin
   country: Germany

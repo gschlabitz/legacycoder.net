@@ -2,7 +2,7 @@
 date: 2011-12-01
 title: Technical Lead at Touchpoint Dashboard
 sphere: work
-tags: [freelance, career]
+tags: [career]
 location:
   city: Harrisburg
   state: Illinois

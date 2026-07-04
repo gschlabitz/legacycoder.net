@@ -2,7 +2,7 @@
 date: 2008-03-01
 title: Software Developer at Screen Pilot
 sphere: work
-tags: [freelance]
+tags: [career]
 location:
   city: Harrisburg
   state: Illinois

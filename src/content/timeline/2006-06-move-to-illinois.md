@@ -2,7 +2,7 @@
 date: 2006-06-16
 title: Out of the Southwest, into the Midwest
 sphere: life
-tags: [move]
+tags: [travel]
 location:
   city: Harrisburg
   state: Illinois

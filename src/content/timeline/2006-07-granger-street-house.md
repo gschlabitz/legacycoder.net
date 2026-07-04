@@ -2,7 +2,7 @@
 date: 2006-07-12
 title: A house on Granger Street
 sphere: life
-tags: [home]
+tags: [family]
 location:
   city: Harrisburg
   state: Illinois

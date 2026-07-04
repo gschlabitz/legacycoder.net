@@ -2,7 +2,7 @@
 date: 2020-07-01
 title: Senior Software Developer at Material
 sphere: work
-tags: [career, acquisition]
+tags: [career]
 location:
   city: Harrisburg
   state: Illinois

@@ -2,7 +2,7 @@
 date: 2007-01-01
 title: Went freelance as a web developer
 sphere: work
-tags: [freelance]
+tags: [career]
 location:
   city: Harrisburg
   state: Illinois

@@ -2,7 +2,7 @@
 date: 1995-09-01
 title: Software Developer at TeraCom
 sphere: work
-tags: [freelance]
+tags: [career]
 location:
   city: Potsdam
   country: Germany

@@ -2,7 +2,7 @@
 date: 1993-03-01
 title: Computer Instructor at Förderkreis Berlin
 sphere: work
-tags: [teaching]
+tags: [skills, career]
 location:
   city: Berlin
   country: Germany

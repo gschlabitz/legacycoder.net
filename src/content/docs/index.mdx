@@ -6,15 +6,20 @@ template: splash
 # "Next" pagination footer.
 next: false
 hero:
-  tagline: Coding my legacy to make the world a better place!
+  tagline: Legacy code is what survives.
   image:
     file: ../../assets/profile-portrait.jpg
+  actions:
+    - text: Timeline
+      link: /bio/
+      icon: right-arrow
+    - text: Career
+      link: /bio/?tags=career
+      variant: minimal
+    - text: Skills
+      link: /bio/?tags=skills
+      variant: minimal
+    - text: Places
+      link: /bio/?tags=travel
+      variant: minimal
 ---
-
-import { LinkCard } from '@astrojs/starlight/components';
-
-<LinkCard
-  title="Timeline"
-  description="Previously, in this life..."
-  href="/bio/"
-/>

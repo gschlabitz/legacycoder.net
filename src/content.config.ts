@@ -38,7 +38,11 @@ const timeline = defineCollection({
     // organized around the work/life-balance metaphor. Explicit rather than
     // derived from tags, since an event can carry tags from both spheres.
     sphere: z.enum(['work', 'life']),
-    tags: z.array(z.string()).default([]),
+    // Fixed tag vocabulary — these are the filter dimensions the landing
+    // page links into (/bio/?tags=…). A tag may have no events yet.
+    tags: z
+      .array(z.enum(['career', 'skills', 'family', 'travel', 'hobby']))
+      .default([]),
     // Where the event happened. Required: the timeline map's camera track
     // runs through every event's pin, so an event without coordinates would
     // be a hole in the track — the build/dev server errors on the file until

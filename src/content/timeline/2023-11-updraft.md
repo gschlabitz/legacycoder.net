@@ -2,7 +2,7 @@
 date: 2023-11-01
 title: Senior Software Developer at Updraft
 sphere: work
-tags: [contract]
+tags: [career]
 location:
   city: Champaign
   state: Illinois

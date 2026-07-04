@@ -2,7 +2,7 @@
 date: 2015-10-01
 title: Software Consultant at Strativity Group
 sphere: work
-tags: [career, acquisition]
+tags: [career]
 location:
   city: Harrisburg
   state: Illinois

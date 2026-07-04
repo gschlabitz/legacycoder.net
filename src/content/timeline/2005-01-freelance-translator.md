@@ -2,7 +2,7 @@
 date: 2005-01-01
 title: Freelance Translator
 sphere: work
-tags: [freelance]
+tags: [career]
 location:
   city: Keams Canyon
   state: Arizona

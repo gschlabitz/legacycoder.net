@@ -1,0 +1,36 @@
+---
+import Default from "@astrojs/starlight/components/SiteTitle.astro";
+import BlogSiteTitle from "starlight-blog/components/SiteTitle.astro";
+
+const { locale } = Astro.locals.starlightRoute;
+const linksUrl = locale ? `/${locale}/links/` : "/links/";
+---
+
+<Default><slot /></Default>
+<BlogSiteTitle />
+<div class="header-link">
+  <a href={linksUrl}>Links</a>
+</div>
+
+<style>
+  /* Match the divider/spacing/typography of starlight-blog's header link. */
+  .header-link {
+    border-inline-start: 1px solid var(--sl-color-gray-5);
+    display: none;
+    margin-inline-start: 1rem;
+    padding-inline-start: 1rem;
+  }
+
+  @media (min-width: 50rem) {
+    .header-link {
+      align-items: center;
+      display: flex;
+    }
+  }
+
+  a {
+    color: var(--sl-color-text-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>

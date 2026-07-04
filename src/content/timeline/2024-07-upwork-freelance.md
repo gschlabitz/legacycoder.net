@@ -2,7 +2,7 @@
 date: 2024-07-01
 title: Senior Full Stack Engineer on Upwork
 sphere: work
-tags: [freelance]
+tags: [career]
 location:
   city: Champaign
   state: Illinois

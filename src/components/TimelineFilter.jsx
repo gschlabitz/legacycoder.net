@@ -16,6 +16,19 @@ export default function TimelineFilter({ tags }) {
 
   const filtering = checked.size < tags.length;
 
+  // Links elsewhere can open the timeline pre-filtered via ?tags=a,b or
+  // repeated ?tags=a&tags=b params. Applied after mount (not in the state
+  // initializer) so server HTML and first client render agree. Unknown tags
+  // are dropped; if nothing valid remains, the filter stays fully open.
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search)
+      .getAll("tags")
+      .flatMap((v) => v.split(","))
+      .map((v) => v.trim().toLowerCase())
+      .filter((v) => tags.includes(v));
+    if (wanted.length) setChecked(new Set(wanted));
+  }, []);
+
   function toggle(tag) {
     setChecked((prev) => {
       const next = new Set(prev);

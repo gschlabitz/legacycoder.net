@@ -2,7 +2,7 @@
 date: 2025-10-01
 title: Senior Full Stack Engineer at GovRecover
 sphere: work
-tags: [contract]
+tags: [career]
 location:
   city: Champaign
   state: Illinois
