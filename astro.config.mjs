@@ -39,7 +39,9 @@ export default defineConfig({
           },
         }),
         // After starlightBlog so Chameleon sees the final component map (ADR 0003).
-        starlightThemeChameleon(),
+        starlightThemeChameleon({
+          skins: ["nordic", "crt"],
+        }),
       ],
     }),
     react(),

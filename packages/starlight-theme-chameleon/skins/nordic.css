@@ -1,0 +1,116 @@
+/**
+ * Nordic — calm, frosty, quietly precise.
+ *
+ * Colors are built on the Nord palette by Sven Greb (Arctic Ice Studio),
+ * https://www.nordtheme.com — MIT licensed. Vendored here as a skin
+ * ingredient per ADR 0001; typography and surface feel are Chameleon's own.
+ *
+ * Code pairing: `nord` (dark) / `slack-ochin` (light), see lib/skins.ts.
+ *
+ * Every rule scopes under [data-skin='nordic'] — change the skin, not the
+ * skeleton. Dark mode is the base block; light mode overrides both the
+ * palette and every mode-dependent value the base block touches (custom CSS
+ * is unlayered, so Starlight's own light-mode remaps cannot win against it).
+ */
+
+[data-skin='nordic'] {
+  /* Palette — dark mode. Polar Night surfaces, Snow Storm text, Frost accents. */
+  --sl-color-white: #eceff4; /* nord6 */
+  --sl-color-gray-1: #e5e9f0; /* nord5 */
+  --sl-color-gray-2: #d8dee9; /* nord4 */
+  --sl-color-gray-3: #929aaa; /* between nord3 and nord4 */
+  --sl-color-gray-4: #4c566a; /* nord3 */
+  --sl-color-gray-5: #434c5e; /* nord2 */
+  --sl-color-gray-6: #3b4252; /* nord1 */
+  --sl-color-black: #2e3440; /* nord0 */
+
+  --sl-color-accent-low: color-mix(in srgb, #88c0d0 22%, #2e3440); /* nord8 into nord0 */
+  --sl-color-accent: #88c0d0; /* nord8 */
+  --sl-color-accent-high: color-mix(in srgb, #88c0d0 55%, #eceff4);
+
+  --sl-color-orange-low: color-mix(in srgb, #d08770 25%, #2e3440); /* nord12 */
+  --sl-color-orange: #d08770;
+  --sl-color-orange-high: color-mix(in srgb, #d08770 50%, #eceff4);
+  --sl-color-green-low: color-mix(in srgb, #a3be8c 25%, #2e3440); /* nord14 */
+  --sl-color-green: #a3be8c;
+  --sl-color-green-high: color-mix(in srgb, #a3be8c 50%, #eceff4);
+  --sl-color-blue-low: color-mix(in srgb, #81a1c1 25%, #2e3440); /* nord9 */
+  --sl-color-blue: #81a1c1;
+  --sl-color-blue-high: color-mix(in srgb, #81a1c1 50%, #eceff4);
+  --sl-color-purple-low: color-mix(in srgb, #b48ead 25%, #2e3440); /* nord15 */
+  --sl-color-purple: #b48ead;
+  --sl-color-purple-high: color-mix(in srgb, #b48ead 50%, #eceff4);
+  --sl-color-red-low: color-mix(in srgb, #bf616a 25%, #2e3440); /* nord11 */
+  --sl-color-red: #bf616a;
+  --sl-color-red-high: color-mix(in srgb, #bf616a 50%, #eceff4);
+
+  --sl-color-backdrop-overlay: rgba(46, 52, 64, 0.7);
+
+  /* Softer, colder shadows than stock Starlight. */
+  --sl-shadow-sm: 0px 1px 2px rgba(19, 22, 28, 0.25);
+  --sl-shadow-md: 0px 4px 10px rgba(19, 22, 28, 0.22), 0px 1px 2px rgba(19, 22, 28, 0.28);
+  --sl-shadow-lg: 0px 16px 36px rgba(19, 22, 28, 0.3), 0px 4px 10px rgba(19, 22, 28, 0.25);
+
+  /* Typography — humanist sans, roomy leading. */
+  --sl-font: 'Avenir Next', 'Avenir', 'Seravek', 'Segoe UI Variable Display', 'Segoe UI', 'Ubuntu',
+    'Cantarell', 'Noto Sans', sans-serif;
+  --sl-font-mono: 'Cascadia Code', 'SF Mono', 'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono',
+    monospace;
+  --sl-line-height: 1.8;
+}
+
+[data-skin='nordic'][data-theme='light'] {
+  /* Palette — light mode. Snow Storm surfaces, Polar Night text. */
+  --sl-color-white: #2e3440; /* nord0 */
+  --sl-color-gray-1: #3b4252; /* nord1 */
+  --sl-color-gray-2: #434c5e; /* nord2 */
+  --sl-color-gray-3: #4c566a; /* nord3 */
+  --sl-color-gray-4: #848d9d; /* between nord3 and nord4 */
+  --sl-color-gray-5: #d8dee9; /* nord4 */
+  --sl-color-gray-6: #e5e9f0; /* nord5 */
+  --sl-color-gray-7: #eceff4; /* nord6 */
+  --sl-color-black: #f7f9fc;
+
+  --sl-color-accent-low: color-mix(in srgb, #5e81ac 18%, #eceff4); /* nord10 into nord6 */
+  --sl-color-accent: #5e81ac; /* nord10 */
+  --sl-color-accent-high: color-mix(in srgb, #5e81ac 72%, #2e3440);
+
+  --sl-color-orange-low: color-mix(in srgb, #d08770 20%, #eceff4);
+  --sl-color-orange: color-mix(in srgb, #d08770 82%, #2e3440);
+  --sl-color-orange-high: color-mix(in srgb, #d08770 55%, #2e3440);
+  --sl-color-green-low: color-mix(in srgb, #a3be8c 25%, #eceff4);
+  --sl-color-green: color-mix(in srgb, #a3be8c 78%, #2e3440);
+  --sl-color-green-high: color-mix(in srgb, #a3be8c 45%, #2e3440);
+  --sl-color-blue-low: color-mix(in srgb, #81a1c1 22%, #eceff4);
+  --sl-color-blue: #5e81ac;
+  --sl-color-blue-high: color-mix(in srgb, #5e81ac 80%, #2e3440);
+  --sl-color-purple-low: color-mix(in srgb, #b48ead 22%, #eceff4);
+  --sl-color-purple: color-mix(in srgb, #b48ead 85%, #2e3440);
+  --sl-color-purple-high: color-mix(in srgb, #b48ead 55%, #2e3440);
+  --sl-color-red-low: color-mix(in srgb, #bf616a 18%, #eceff4);
+  --sl-color-red: #bf616a;
+  --sl-color-red-high: color-mix(in srgb, #bf616a 75%, #2e3440);
+
+  --sl-color-backdrop-overlay: rgba(76, 86, 106, 0.55);
+
+  --sl-shadow-sm: 0px 1px 2px rgba(46, 52, 64, 0.08);
+  --sl-shadow-md: 0px 4px 10px rgba(46, 52, 64, 0.08), 0px 1px 2px rgba(46, 52, 64, 0.1);
+  --sl-shadow-lg: 0px 16px 36px rgba(46, 52, 64, 0.12), 0px 4px 10px rgba(46, 52, 64, 0.08);
+}
+
+/* Surface feel: slightly rounded, unhurried. */
+[data-skin='nordic'] .sl-markdown-content :is(h1, h2, h3, h4, h5) {
+  letter-spacing: -0.015em;
+}
+
+[data-skin='nordic'] .sl-markdown-content :is(.card, .sl-link-card) {
+  border-radius: 0.75rem;
+}
+
+[data-skin='nordic'] .sl-markdown-content .starlight-aside {
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+[data-skin='nordic'] ::selection {
+  background-color: var(--sl-color-accent-low);
+}

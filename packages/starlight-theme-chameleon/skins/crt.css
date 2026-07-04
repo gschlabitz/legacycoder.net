@@ -1,0 +1,161 @@
+/**
+ * CRT — high-contrast retro terminal.
+ *
+ * Dark mode is a green-phosphor monitor: monochrome green on near-black,
+ * a soft glow, and faint scanlines. Light mode is the hardcopy that came
+ * out of the same machine: dark green ink on fanfold paper.
+ *
+ * Code pairing: custom `chameleon-crt-dark` / `chameleon-crt-light` themes,
+ * see lib/skins.ts.
+ *
+ * Every rule scopes under [data-skin='crt'] — change the skin, not the
+ * skeleton. Dark mode is the base block; light mode overrides both the
+ * palette and every mode-dependent value the base block touches.
+ */
+
+[data-skin='crt'] {
+  /* Palette — dark mode. P1 phosphor greens on near-black. */
+  --sl-color-white: #d9ffd9;
+  --sl-color-gray-1: #a8f7a8;
+  --sl-color-gray-2: #5ce65c;
+  --sl-color-gray-3: #4f9e4f;
+  --sl-color-gray-4: #2f4f2f;
+  --sl-color-gray-5: #172917;
+  --sl-color-gray-6: #101c10;
+  --sl-color-black: #0a120a;
+
+  --sl-color-accent-low: #0d3a0d;
+  --sl-color-accent: #33ff33;
+  --sl-color-accent-high: #b9ffb9;
+  --sl-color-text-accent: var(--sl-color-accent);
+
+  --sl-color-orange-low: #3a2a00;
+  --sl-color-orange: #ffb000;
+  --sl-color-orange-high: #ffd98c;
+  --sl-color-green-low: #0d3a0d;
+  --sl-color-green: #33ff33;
+  --sl-color-green-high: #b9ffb9;
+  --sl-color-blue-low: #062c3d;
+  --sl-color-blue: #40d6ff;
+  --sl-color-blue-high: #b0ecff;
+  --sl-color-purple-low: #26103d;
+  --sl-color-purple: #c07dff;
+  --sl-color-purple-high: #e2c8ff;
+  --sl-color-red-low: #3d1006;
+  --sl-color-red: #ff5533;
+  --sl-color-red-high: #ffb3a1;
+
+  --sl-color-backdrop-overlay: rgba(4, 10, 4, 0.8);
+
+  /* Phosphor doesn't cast drop shadows; it glows. */
+  --sl-shadow-sm: 0 0 0 1px var(--sl-color-gray-5);
+  --sl-shadow-md: 0 0 0 1px var(--sl-color-gray-5), 0 0 12px rgba(51, 255, 51, 0.08);
+  --sl-shadow-lg: 0 0 0 1px var(--sl-color-gray-4), 0 0 24px rgba(51, 255, 51, 0.12);
+
+  /* Typography — everything is terminal type. */
+  --sl-font: ui-monospace, 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  --sl-font-mono: ui-monospace, 'Menlo', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+  --sl-line-height: 1.65;
+}
+
+[data-skin='crt'][data-theme='light'] {
+  /* Palette — light mode. Hardcopy: green-black ink on fanfold paper. */
+  --sl-color-white: #16200a;
+  --sl-color-gray-1: #24300f;
+  --sl-color-gray-2: #333d1e;
+  --sl-color-gray-3: #5c5c3d;
+  --sl-color-gray-4: #85825f;
+  --sl-color-gray-5: #d8d1b0;
+  --sl-color-gray-6: #e8e2c8;
+  --sl-color-gray-7: #f1ecd6;
+  --sl-color-black: #f8f5e6;
+
+  --sl-color-accent-low: #dcead0;
+  --sl-color-accent: #0f5c0f;
+  --sl-color-accent-high: #0a3d0a;
+  --sl-color-text-accent: var(--sl-color-accent);
+
+  --sl-color-orange-low: #f3dfc0;
+  --sl-color-orange: #8a4b00;
+  --sl-color-orange-high: #5c3200;
+  --sl-color-green-low: #dcead0;
+  --sl-color-green: #0f5c0f;
+  --sl-color-green-high: #0a3d0a;
+  --sl-color-blue-low: #cfe2ee;
+  --sl-color-blue: #145c8a;
+  --sl-color-blue-high: #0d3d5c;
+  --sl-color-purple-low: #e3d3f0;
+  --sl-color-purple: #6a2ea0;
+  --sl-color-purple-high: #46206b;
+  --sl-color-red-low: #f2cfc4;
+  --sl-color-red: #a52815;
+  --sl-color-red-high: #6e1a0e;
+
+  --sl-color-backdrop-overlay: rgba(36, 48, 15, 0.5);
+
+  /* Paper: flat, just a rule line. */
+  --sl-shadow-sm: 0 0 0 1px var(--sl-color-gray-5);
+  --sl-shadow-md: 0 1px 0 0 var(--sl-color-gray-5), 0 0 0 1px var(--sl-color-gray-5);
+  --sl-shadow-lg: 0 2px 0 0 var(--sl-color-gray-5), 0 0 0 1px var(--sl-color-gray-5);
+}
+
+/* Terminal voice: headings in caps, tracked out. */
+[data-skin='crt'] .sl-markdown-content :is(h1, h2, h3, h4, h5),
+[data-skin='crt'] .content-panel h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Sharp corners everywhere a component rounds them. */
+[data-skin='crt'] .sl-markdown-content :is(.card, .sl-link-card, .starlight-aside) {
+  border-radius: 0;
+}
+
+/* Phosphor glow — dark mode only; the hardcopy doesn't glow. */
+[data-skin='crt']:not([data-theme='light']) body {
+  text-shadow: 0 0 3px color-mix(in srgb, currentColor 30%, transparent);
+}
+
+/* Faint scanlines over the whole tube. Purely decorative, so it sits above
+   everything but lets every event through. */
+[data-skin='crt']:not([data-theme='light']) body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.09) 0,
+    rgba(0, 0, 0, 0.09) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-skin='crt']:not([data-theme='light']) body::after {
+    animation: chameleon-crt-flicker 8s infinite;
+  }
+
+  @keyframes chameleon-crt-flicker {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    97% {
+      opacity: 1;
+    }
+    98% {
+      opacity: 0.55;
+    }
+    99% {
+      opacity: 0.85;
+    }
+  }
+}
+
+[data-skin='crt'] ::selection {
+  background-color: var(--sl-color-accent);
+  color: var(--sl-color-black);
+}

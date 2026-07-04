@@ -1,49 +1,155 @@
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
+
 import type { StarlightPlugin } from '@astrojs/starlight/types'
 
-export interface ChameleonSkin {
-  /** Identifier used to activate the skin, e.g. `"nordic"`. Lowercase letters and dashes only. */
-  name: string
-  /** Label shown to readers in the skin picker. May be a plain string or a record keyed by locale. */
-  label: string | Record<string, string>
-  /** Module specifier of the skin's CSS file, e.g. `"./src/styles/skins/my-skin.css"`. */
-  css: string
-}
+import { composeExpressiveCodeConfig } from './lib/expressive-code'
+import { resolveConfig, type ChameleonSkin, type StarlightThemeChameleonUserConfig } from './lib/skins'
 
-export interface StarlightThemeChameleonUserConfig {
-  /**
-   * Built-in skins to offer, in picker order.
-   * Defaults to all built-in skins.
-   */
-  skins?: string[]
-  /**
-   * Additional skins supplied by the site author, appended after the built-in ones.
-   */
-  customSkins?: ChameleonSkin[]
-  /**
-   * Whether readers can switch skins via the picker.
-   * When `false`, the first configured skin is pinned site-wide.
-   * @default true
-   */
-  picker?: boolean
-}
+export type {
+  ChameleonCodeTheme,
+  ChameleonSkin,
+  ChameleonSkinCode,
+  StarlightThemeChameleonUserConfig,
+} from './lib/skins'
+
+/** `localStorage` key holding the reader's skin choice. Separate from Starlight's `starlight-theme` mode key so skin and mode stay orthogonal. */
+const STORAGE_KEY = 'starlight-skin'
+
+const VIRTUAL_MODULE_ID = 'virtual:starlight-theme-chameleon/config'
+const RESOLVED_VIRTUAL_MODULE_ID = `\0${VIRTUAL_MODULE_ID}`
 
 export default function starlightThemeChameleon(
-  userConfig: StarlightThemeChameleonUserConfig = {},
+  userConfig: StarlightThemeChameleonUserConfig = {}
 ): StarlightPlugin {
   return {
     name: 'starlight-theme-chameleon',
     hooks: {
-      'config:setup'({ config, logger, updateConfig }) {
-        // Skeleton: skin registration, the ThemeSelect override, and
-        // Expressive Code pairing land in later phases (see docs/plans/).
-        void userConfig
+      'i18n:setup'({ injectTranslations }) {
+        injectTranslations({
+          en: {
+            'starlightThemeChameleon.skinSelect.accessibleLabel': 'Select skin',
+            'starlightThemeChameleon.skinSelect.default': 'Default',
+          },
+          de: {
+            'starlightThemeChameleon.skinSelect.accessibleLabel': 'Skin auswählen',
+            'starlightThemeChameleon.skinSelect.default': 'Standard',
+          },
+        })
+      },
+      'config:setup'({ config, logger, updateConfig, addIntegration, astroConfig }) {
+        const { skins, picker } = resolveConfig(userConfig)
+        const skinNames = skins.map((skin) => skin.name)
+
+        warnOnUnscopedSkinCss(skins, astroConfig.root, logger)
+
+        // Every skin is compiled into the site, scoped under its
+        // `[data-skin]` attribute (ADR 0001). Skins come after the site's own
+        // custom CSS so an active skin wins ties against site-wide tweaks;
+        // while no skin is active none of their rules match at all.
+        const customCss = [
+          'starlight-theme-chameleon/styles/base.css',
+          ...(config.customCss ?? []),
+          ...skins.map((skin) => skin.css),
+        ]
+
+        // The skin picker claims Chameleon's one component slot, `ThemeSelect`
+        // (ADR 0002). A pinned skin leaves the stock mode select alone.
+        const components = { ...config.components }
+        let pickerActive = picker
+        if (picker) {
+          if (components.ThemeSelect) {
+            logger.warn(
+              'A `ThemeSelect` component override is already configured — the skin picker cannot be added, so readers will not be able to switch skins. ' +
+                'If the override comes from starlight-blog, set its `navigation` option to `"header-start"` to free the slot.'
+            )
+            pickerActive = false
+          } else {
+            components.ThemeSelect = 'starlight-theme-chameleon/components/ThemeSelect.astro'
+          }
+        }
+
+        // Applied before first paint to avoid a flash of the wrong skin,
+        // mirroring Starlight's own light/dark provider.
+        const headScript = picker
+          ? `(()=>{var s=null;try{s=localStorage.getItem(${JSON.stringify(STORAGE_KEY)})}catch(e){}` +
+            `if(s&&${JSON.stringify(skinNames)}.indexOf(s)>-1)document.documentElement.dataset.skin=s})();`
+          : `document.documentElement.dataset.skin=${JSON.stringify(skinNames[0])};`
+        const head = [...(config.head ?? []), { tag: 'script' as const, content: headScript }]
+
+        const expressiveCode = composeExpressiveCodeConfig(skins, config.expressiveCode)
 
         updateConfig({
-          customCss: ['starlight-theme-chameleon/styles/base.css', ...(config.customCss ?? [])],
+          customCss,
+          components,
+          head,
+          ...(expressiveCode ? { expressiveCode: expressiveCode as never } : {}),
         })
 
-        logger.info('Chameleon skeleton active — no skins registered yet.')
+        // The picker component reads the skin list at render time through a
+        // virtual module.
+        addIntegration({
+          name: 'starlight-theme-chameleon',
+          hooks: {
+            'astro:config:setup'({ updateConfig: updateAstroConfig }) {
+              updateAstroConfig({
+                vite: {
+                  plugins: [
+                    {
+                      name: 'vite-plugin-starlight-theme-chameleon',
+                      resolveId(id) {
+                        if (id === VIRTUAL_MODULE_ID) return RESOLVED_VIRTUAL_MODULE_ID
+                        return undefined
+                      },
+                      load(id) {
+                        if (id !== RESOLVED_VIRTUAL_MODULE_ID) return undefined
+                        const publicConfig = {
+                          picker: pickerActive,
+                          skins: skins.map(({ name, label }) => ({ name, label })),
+                        }
+                        return `export default ${JSON.stringify(publicConfig)}`
+                      },
+                    },
+                  ],
+                },
+              })
+            },
+          },
+        })
+
+        logger.info(
+          `Registered ${skins.length} skin${skins.length === 1 ? '' : 's'}: ${skinNames.join(', ')}` +
+            (picker ? '' : ` (\`${skinNames[0]}\` pinned site-wide)`)
+        )
       },
     },
+  }
+}
+
+/**
+ * Dev-time guard for the scoping invariant: a custom skin's CSS must scope
+ * its rules under `[data-skin='<name>']` or it will leak into every skin.
+ * Only file-path specifiers can be checked; package specifiers are skipped.
+ */
+function warnOnUnscopedSkinCss(
+  skins: ChameleonSkin[],
+  root: URL,
+  logger: { warn(message: string): void }
+) {
+  for (const skin of skins) {
+    if (!skin.css.startsWith('.') && !skin.css.startsWith('/')) continue
+    let css: string
+    try {
+      css = fs.readFileSync(fileURLToPath(new URL(skin.css.replace(/^\//, './'), root)), 'utf-8')
+    } catch {
+      continue
+    }
+    const scoped = new RegExp(`\\[data-skin=(['"]?)${skin.name}\\1\\]`).test(css)
+    if (!scoped) {
+      logger.warn(
+        `The CSS for skin \`${skin.name}\` (${skin.css}) contains no \`[data-skin='${skin.name}']\` selector. ` +
+          'Unscoped rules apply to every skin — scope each rule under the skin attribute.'
+      )
+    }
   }
 }

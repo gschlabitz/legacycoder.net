@@ -37,6 +37,12 @@ author exposes it. Chameleon's replacement for the slot Starlight's theme
 select occupies; mode switching stays available within it.
 _Avoid_: theme selector, dropdown
 
+**Default look**:
+The host site's own unskinned presentation — stock Starlight plus the site's
+custom CSS. Always the picker's first entry and every reader's initial state;
+also what no-JavaScript readers get.
+_Avoid_: base theme, fallback skin, no-skin mode
+
 **Pinned skin**:
 A skin the site author applies site-wide without offering the picker — every
 reader sees it, none can change it.
@@ -58,6 +64,8 @@ exposed; the choice persists across visits.
 _Avoid_: end user, visitor
 
 **Code pairing**:
-The planned mapping from each skin to a matching syntax-highlighting theme, so
-code blocks change alongside the rest of the site.
+A skin's mapping to a matching pair of syntax-highlighting themes (one per
+mode), compiled into the build and switched with the skin, so code blocks
+change alongside the rest of the site. Optional per skin; without one, code
+blocks keep the site's base syntax themes.
 _Avoid_: EC integration, syntax theme switching

@@ -53,41 +53,50 @@ no-op `config:setup` that proves package-name specifier resolution
 (`starlight-theme-chameleon/styles/base.css`), wired into the site after
 `starlightBlog()`. Renamed from palettes to skins before any behavior landed.
 
-### Phase 1 — Expressive Code spike
+### Phase 1 — Expressive Code spike (done)
 
 De-risk the hard part first: get two skins' syntax themes compiled into one
 build and switched by a `[data-skin]` selector via `themeCssSelector`, while
-plain light/dark keeps working. Outcome decides whether code pairing is
-per-skin, or a documented "code blocks keep the base syntax theme" limitation.
+plain light/dark keeps working. **Outcome: code pairing is per-skin.**
+Starlight's EC preprocessor spreads user-level `expressiveCode` options last,
+so Chameleon's `themeCssSelector` wins; skin themes ride as extra entries
+after the base pair, mapped to `[data-skin='<name>'][data-theme='<mode>']`
+(`lib/expressive-code.ts`). Verified in dev and in the production bundle.
 
-### Phase 2 — Skin registry and scoped CSS
+### Phase 2 — Skin registry and scoped CSS (done)
 
-Config validation (names, labels, CSS specifiers), a first built-in skin plus
-`customSkins` support, skin CSS injected through `customCss`, and a dev-time
-warning for skin CSS that fails to scope under `[data-skin]`. Start the skin
-authoring kit: a documented catalog of the skinnable `--sl-` surface and a
-starter skin template.
+Config validation (names, labels, CSS specifiers), built-in skins plus
+`customSkins` support (`lib/skins.ts`), skin CSS injected through `customCss`
+after the site's own files so an active skin wins ties, and a startup warning
+for skin CSS that contains no `[data-skin='<name>']` selector. Authoring kit
+in `docs/skin-authoring.md`: skinnable-surface catalog, starter template, the
+define-colors-twice rule (skin CSS is unlayered, so it beats Starlight's
+layered light-mode remaps).
 
-### Phase 3 — Skin picker and exposure control
+### Phase 3 — Skin picker and exposure control (done)
 
-`ThemeSelect` override rendering the picker (skin list + the mode switch),
-the `picker` option so site authors choose between reader-selectable skins
-and a pinned skin (picker hidden, first skin applied site-wide),
-`localStorage` persistence, inline head script against skin flash, i18n
-labels (EN/DE first), and the starlight-blog composition: site sets
-`navigation: 'header-start'`, picker verified alongside the Blog link.
+`ThemeSelect` override (`components/ThemeSelect.astro`) rendering the skin
+picker next to the stock mode select, fed by a virtual module; the picker
+always leads with "Default" — the host's unskinned look (ADR 0003). `picker:
+false` pins the first skin site-wide with no picker. `localStorage` key
+`starlight-skin`, inline head script (via Starlight's `head` config) applies
+the attribute before first paint, EN/DE labels via `injectTranslations`,
+per-language skin labels resolved against `starlightRoute.lang`. Composes
+with starlight-blog (`navigation: 'header-start'` frees the slot; collision
+warns and yields).
 
-### Phase 4 — Built-in skins
+### Phase 4 — Built-in skins (done, 2 of 2–4)
 
-Design 2–4 coherent skins, each a full statement: colors (vendored
-palette-only community themes as ingredients, with license attribution),
-typography pairing, surface feel, and the code pairing from the Phase 1
-spike. Nordic (Nord-based) and a high-contrast retro skin first — the pair
-that best demonstrates the range.
+`nordic`: Nord palette (MIT, attributed in the CSS header) on humanist sans,
+soft cold shadows; paired with `nord` / `slack-ochin`. `crt`: green-phosphor
+terminal (glow, scanlines, flicker, mono type, caps headings) whose light
+mode is a fanfold-paper hardcopy; paired with custom monochrome VS Code theme
+objects. Both cover the full palette in both modes. Room left for 1–2 more.
 
-### Phase 5 — Polish and extraction
+### Phase 5 — Polish and extraction (demo done; extraction pending)
 
-README rewritten against the real API, demo on legacycoder.net, then extract
+README rewritten against the real API; demo live on legacycoder.net
+(`skins: ['nordic', 'crt']`). Remaining: extract
 `packages/starlight-theme-chameleon` to its own repo with history
 (`git filter-repo`), publish to npm, and swap the workspace dependency for a
 version range.

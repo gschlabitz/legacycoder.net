@@ -1,0 +1,106 @@
+---
+import Default from '@astrojs/starlight/components/ThemeSelect.astro'
+import Select from '@astrojs/starlight/components/Select.astro'
+
+import config from 'virtual:starlight-theme-chameleon/config'
+
+const lang: string = Astro.locals.starlightRoute?.lang ?? 'en'
+const t = Astro.locals.t
+
+function resolveLabel(label: string | Record<string, string>): string {
+  if (typeof label === 'string') return label
+  return (
+    label[lang] ??
+    label[lang.split('-')[0] ?? ''] ??
+    label['en'] ??
+    Object.values(label)[0] ??
+    ''
+  )
+}
+
+const options = [
+  { label: t('starlightThemeChameleon.skinSelect.default'), value: '', selected: true },
+  ...config.skins.map((skin) => ({ label: resolveLabel(skin.label), value: skin.name, selected: false })),
+]
+---
+
+{
+  config.picker && (
+    <chameleon-skin-select>
+      <Select
+        icon="puzzle"
+        label={t('starlightThemeChameleon.skinSelect.accessibleLabel')}
+        options={options}
+        width="7.5em"
+      />
+    </chameleon-skin-select>
+  )
+}
+<Default><slot /></Default>
+
+{/* Inlined to avoid a flash of the wrong picker value on load. */}
+<script is:inline>
+	(() => {
+		var stored = '';
+		try {
+			stored = localStorage.getItem('starlight-skin') || '';
+		} catch (e) {}
+		document.querySelectorAll('chameleon-skin-select select').forEach((select) => {
+			if (stored && select.querySelector('option[value="' + stored + '"]')) select.value = stored;
+		});
+	})();
+</script>
+
+<script>
+	/** Key in `localStorage` to store the skin preference at. */
+	const storageKey = 'starlight-skin'
+
+	const loadSkin = (): string => {
+		try {
+			return localStorage.getItem(storageKey) || ''
+		} catch {
+			return ''
+		}
+	}
+
+	const storeSkin = (skin: string): void => {
+		try {
+			if (skin) localStorage.setItem(storageKey, skin)
+			else localStorage.removeItem(storageKey)
+		} catch {
+			/* Persistence is best-effort. */
+		}
+	}
+
+	/** Flip the `data-skin` attribute and keep every picker instance in sync. */
+	const applySkin = (skin: string): void => {
+		if (skin) document.documentElement.dataset.skin = skin
+		else delete document.documentElement.dataset.skin
+		document
+			.querySelectorAll<HTMLSelectElement>('chameleon-skin-select select')
+			.forEach((select) => {
+				select.value = skin
+			})
+	}
+
+	class ChameleonSkinSelect extends HTMLElement {
+		constructor() {
+			super()
+			const select = this.querySelector('select')
+			if (!select) return
+			const stored = loadSkin()
+			if (stored && select.querySelector(`option[value="${CSS.escape(stored)}"]`)) {
+				select.value = stored
+			}
+			select.addEventListener('change', (event) => {
+				if (event.currentTarget instanceof HTMLSelectElement) {
+					const skin = event.currentTarget.value
+					storeSkin(skin)
+					applySkin(skin)
+				}
+			})
+		}
+	}
+
+	customElements.define('chameleon-skin-select', ChameleonSkinSelect)
+</script>

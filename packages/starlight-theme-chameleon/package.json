@@ -16,10 +16,13 @@
   ],
   "exports": {
     ".": "./index.ts",
+    "./components/*": "./components/*",
+    "./skins/*": "./skins/*",
     "./styles/*": "./styles/*",
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "@astrojs/starlight": ">=0.41"
+    "@astrojs/starlight": ">=0.41",
+    "astro": ">=5"
   }
 }
