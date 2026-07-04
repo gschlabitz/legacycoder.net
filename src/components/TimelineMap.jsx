@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { pinSvg } from "../lib/tag-pins.js";
+import { iconSvg, pinSvg } from "../lib/tag-pins.js";
 
 // Google Map banner for the /bio timeline, fixed across the bottom of the
 // viewport. Two scroll-driven concepts share one rect pass (terms defined in
@@ -18,9 +18,9 @@ import { pinSvg } from "../lib/tag-pins.js";
 //   first one, it opens on the journey's first place.
 //
 // `places` is prepared at build time in bio.astro: events sharing coordinates
-// are grouped into one place ({ lat, lng, label, color, glyph, titles,
-// eventIds }) so repeat locations don't stack identical markers. `glyph` is
-// the tag emoji of the place's first event — markers render the same pin SVG
+// are grouped into one place ({ lat, lng, label, color, icon, titles,
+// eventIds }) so repeat locations don't stack identical markers. `icon` is
+// the tag icon of the place's first event — markers render the same pin SVG
 // as the timeline rail (src/lib/tag-pins.js), in the one rail-tinted pin
 // color, so rail and map pins match at a glance. `color` (the per-tag hue)
 // only tints the keyless placeholder's chip dots these days.
@@ -345,9 +345,9 @@ export default function TimelineMap({ apiKey, mapId, places }) {
         // doesn't replay it.
         const pin = document.createElement("div");
         pin.className = "tl-map-pin tl-map-pin-drop";
-        // Ringed glyphs at 72px total: a 44px head plus the stem down to the
+        // Ringed icons at 72px total: a 44px head plus the stem down to the
         // anchored coordinate.
-        pin.innerHTML = pinSvg(place.glyph ? 72 : 30, place.glyph);
+        pin.innerHTML = pinSvg(place.icon ? 72 : 30, place.icon);
         // Listen on the content div, not the marker's gmp-click. The click
         // must not reach Google's own handlers: they focus the marker, and
         // the browser's scroll-into-view for that focus cancels (or fights)
@@ -455,7 +455,12 @@ export default function TimelineMap({ apiKey, mapId, places }) {
             >
               {/* Chip click = marker click: scroll to the place's event. */}
               <button type="button" onClick={() => scrollToPlace(i)}>
-                {place.glyph ?? (
+                {place.icon ? (
+                  <span
+                    className="tl-map-chip-icon"
+                    dangerouslySetInnerHTML={{ __html: iconSvg(place.icon) }}
+                  />
+                ) : (
                   <span style={{ color: place.color }}>⬤</span>
                 )}{" "}
                 {place.label}

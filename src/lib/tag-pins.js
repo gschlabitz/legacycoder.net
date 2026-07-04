@@ -1,11 +1,13 @@
-// Tag pins: the one pin shape and tag→color mapping shared by the bio
+// Tag pins: the one pin shape and tag→icon mapping shared by the bio
 // timeline rail (server-rendered in bio.astro) and the timeline map's
 // markers (built client-side in TimelineMap.jsx). Both render the same SVG
-// so a reader can match a rail pin to its map pin by color at a glance.
+// so a reader can match a rail pin to its map pin at a glance.
 
 // Qualitative palette (Tableau-derived) — legible on both the light and dark
 // theme and on map tiles. Assigned to tags by their index in the site's
 // sorted tag list, so a tag keeps its color as long as the tag set is stable.
+// Pins themselves render in PIN_COLOR these days; this palette survives only
+// to tint the keyless map placeholder's chip dots.
 export const PIN_PALETTE = [
   "#e15759", // red
   "#4e79a7", // blue
@@ -29,23 +31,74 @@ export function tagColor(tag, allTags) {
   return i < 0 ? PIN_FALLBACK : PIN_PALETTE[i % PIN_PALETTE.length];
 }
 
-// Glyph emoji per tag, rendered in the pin head. Tags without an entry (and
+// Monochrome stroke icon per tag (Feather-style: 24x24 viewBox, 2px stroke,
+// round caps — the same line weight as the ring outline), rendered in the
+// pin head. Values are SVG inner markup; color comes from the enclosing
+// group, so icons stay on-palette automatically. Tags without an entry (and
 // any future tag until it's added here) keep the plain punched-hole pin.
-export const TAG_GLYPHS = {
-  acquisition: "🤝",
-  career: "💼",
-  contract: "📝",
-  family: "👪",
-  freelance: "🧑‍💻",
-  home: "🏠",
-  internship: "🌱",
-  move: "🚚",
-  teaching: "🧑‍🏫",
-  travel: "✈️",
+export const TAG_ICONS = {
+  // git-merge: two companies becoming one.
+  acquisition:
+    '<circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>' +
+    '<path d="M6 21V9a9 9 0 0 0 9 9"/>',
+  // briefcase
+  career:
+    '<rect x="2" y="7" width="20" height="14" rx="2"/>' +
+    '<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
+  // file-text
+  contract:
+    '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
+    '<polyline points="14 2 14 8 20 8"/>' +
+    '<line x1="16" y1="13" x2="8" y2="13"/>' +
+    '<line x1="16" y1="17" x2="8" y2="17"/>',
+  // users
+  family:
+    '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>' +
+    '<circle cx="9" cy="7" r="4"/>' +
+    '<path d="M23 21v-2a4 4 0 0 0-3-3.87"/>' +
+    '<path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  // monitor
+  freelance:
+    '<rect x="2" y="3" width="20" height="14" rx="2"/>' +
+    '<line x1="8" y1="21" x2="16" y2="21"/>' +
+    '<line x1="12" y1="17" x2="12" y2="21"/>',
+  // home
+  home:
+    '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>' +
+    '<polyline points="9 22 9 12 15 12 15 22"/>',
+  // book-open: still learning.
+  internship:
+    '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>' +
+    '<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  // truck
+  move:
+    '<rect x="1" y="3" width="15" height="13"/>' +
+    '<polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>' +
+    '<circle cx="5.5" cy="18.5" r="2.5"/>' +
+    '<circle cx="18.5" cy="18.5" r="2.5"/>',
+  // graduation cap
+  teaching:
+    '<path d="M22 10L12 5 2 10l10 5 10-5z"/>' +
+    '<path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>' +
+    '<path d="M22 10v6"/>',
+  // paper plane
+  travel:
+    '<line x1="22" y1="2" x2="11" y2="13"/>' +
+    '<polygon points="22 2 15 22 11 13 2 9 22 2"/>',
 };
 
-export function tagGlyph(tag) {
-  return TAG_GLYPHS[tag];
+export function tagIcon(tag) {
+  return TAG_ICONS[tag];
+}
+
+// A tag icon as a standalone SVG (used by the map placeholder's chips).
+export function iconSvg(icon, size = 14) {
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" ` +
+    `width="${size}" height="${size}" fill="none" stroke="${PIN_COLOR}" ` +
+    `stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ` +
+    `aria-hidden="true">${icon}</svg>`
+  );
 }
 
 // The one color every pin and bubble uses: the timeline rail's own color
@@ -58,14 +111,16 @@ export const PIN_COLOR = "var(--sl-color-gray-3)";
 
 // Pin SVG. Variants:
 //
-// - Glyph pins (tag has a TAG_GLYPHS entry): the emoji inside a large, thin
-//   circle, on a theme-background disc so the glyph reads over map tiles and
-//   masks the rail behind it. On the map (`stem: true`) a thin line runs
-//   from the ring's bottom to the viewBox's bottom center — the
+// - Icon pins (tag has a TAG_ICONS entry): the tag's monochrome icon inside
+//   a large, thin circle, on a theme-background disc so the icon reads over
+//   map tiles and masks the rail behind it. The icon is nested as its own
+//   24x24 <svg> centered in the 42px inner disc, so it renders at 24px —
+//   the size the emoji glyphs settled on. On the map (`stem: true`) a thin
+//   line runs from the ring's bottom to the viewBox's bottom center — the
 //   AdvancedMarkerElement anchor — so it points at the exact coordinate. On
 //   the timeline rail (`stem: false`) the ring stands alone, sitting on the
 //   rail like a node on the line.
-// - Plain pins (no glyph): the original small teardrop with a punched hole,
+// - Plain pins (no icon): the original small teardrop with a punched hole,
 //   tip at the bottom center.
 //
 // `size` is the rendered height; the stemmed ring is narrower than tall.
@@ -73,8 +128,9 @@ export function pinSvg(size = 20, glyph, stem = true) {
   const ring = (cx, cy) =>
     `<circle cx="${cx}" cy="${cy}" r="21" fill="var(--sl-color-bg, #fff)" ` +
     `stroke="${PIN_COLOR}" stroke-width="2"/>` +
-    `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" ` +
-    `font-size="24">${glyph}</text>`;
+    `<svg x="${cx - 12}" y="${cy - 12}" width="24" height="24" ` +
+    `viewBox="0 0 24 24" fill="none" stroke="${PIN_COLOR}" stroke-width="2" ` +
+    `stroke-linecap="round" stroke-linejoin="round">${glyph}</svg>`;
   if (glyph && stem) {
     const width = Math.round((size * 48) / 72);
     return (

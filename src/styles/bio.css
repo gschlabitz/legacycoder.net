@@ -564,6 +564,11 @@ body:has(.tl-map) main {
   cursor: pointer;
 }
 
+/* Tag icon leading a chip label: sit it on the text baseline. */
+.tl-map-chip-icon svg {
+  vertical-align: -0.15em;
+}
+
 /* Chips whose place is in focus (an event of theirs is on screen) — mirrors
    the camera framing so the keyless placeholder still shows the behavior. */
 .tl-map-pins li.tl-map-pin--focus {

@@ -4,7 +4,7 @@ import { getCollection, render } from "astro:content";
 import TimelineFilter from "../components/TimelineFilter.jsx";
 import TimelineMap from "../components/TimelineMap.jsx";
 import TimelineOrder from "../components/TimelineOrder.jsx";
-import { pinSvg, tagColor, tagGlyph } from "../lib/tag-pins.js";
+import { pinSvg, tagColor, tagIcon } from "../lib/tag-pins.js";
 
 // Build-time: load every life event and order it chronologically.
 const events = (await getCollection("timeline")).sort(
@@ -38,14 +38,14 @@ for (const [year, yearEvents] of years) {
 // Distinct tags, for the filter island's chips.
 const allTags = [...new Set(events.flatMap((e) => e.data.tags))].sort();
 
-// Tag glyph for an event: its first tag decides (events carrying several
+// Tag icon for an event: its first tag decides (events carrying several
 // tags lead with the defining one). Shared with the map via src/lib/tag-pins.
 // Pins render in one shared color (PIN_COLOR); the per-tag color only tints
 // the map placeholder's chips now.
 const eventColor = (event: (typeof events)[number]) =>
   tagColor(event.data.tags[0], allTags);
-const eventGlyph = (event: (typeof events)[number]) =>
-  tagGlyph(event.data.tags[0]);
+const eventIcon = (event: (typeof events)[number]) =>
+  tagIcon(event.data.tags[0]);
 
 // Pre-render each Markdown body to a component (render() is async, so it can't
 // run inside the template loop below).
@@ -69,7 +69,7 @@ type Place = {
   lng: number;
   label: string;
   color: string; // tag pin color, from the place's first (earliest) event
-  glyph: string | undefined; // tag glyph emoji, same source as color
+  icon: string | undefined; // tag icon markup, same source as color
   titles: string[];
   eventIds: string[];
 };
@@ -84,7 +84,7 @@ for (const event of events) {
       lng: loc.lng,
       label: loc.label,
       color: eventColor(event),
-      glyph: eventGlyph(event),
+      icon: eventIcon(event),
       titles: [],
       eventIds: [],
     });
@@ -155,23 +155,23 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                     <button
                       class:list={[
                         "tl-pin",
-                        eventGlyph(event) && "tl-pin--glyph",
+                        eventIcon(event) && "tl-pin--glyph",
                       ]}
                       type="button"
                       title={event.data.tags[0]}
                       aria-label={`Show ${event.data.location.label} on the map`}
-                      set:html={pinSvg(48, eventGlyph(event), false)}
+                      set:html={pinSvg(48, eventIcon(event), false)}
                     />
                   ) : (
                     <span
                       class:list={[
                         "tl-pin",
                         "tl-pin--static",
-                        eventGlyph(event) && "tl-pin--glyph",
+                        eventIcon(event) && "tl-pin--glyph",
                       ]}
                       title={event.data.tags[0]}
                       aria-hidden="true"
-                      set:html={pinSvg(48, eventGlyph(event), false)}
+                      set:html={pinSvg(48, eventIcon(event), false)}
                     />
                   )}
                   <p class="tl-month">{monthFmt.format(event.data.date)}</p>

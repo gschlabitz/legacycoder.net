@@ -82,12 +82,12 @@ _Avoid_: location map, minimap
 **Tag pin**:
 The pin marking an event by its first tag — the same shape and size on the
 timeline rail (where every event has one in place of a dot) and as the
-timeline map's markers. All pins share one color, the rail's accent tint
-(`PIN_COLOR`), so the tag identity is the emoji, not a hue. Tags with a
-glyph emoji (see `TAG_GLYPHS`) render as the emoji in a large thin ring: on
-the map with a stem down to the exact coordinate, on the rail as the bare
-ring sitting on the line like a node; tags without one keep the plain
-punched-hole teardrop. Pins are also the cross-navigation: clicking a
+timeline map's markers. Everything renders in one color, the rail's gray
+(`PIN_COLOR`), so the tag identity is the icon, not a hue. Tags with a
+monochrome stroke icon (see `TAG_ICONS`) render as the icon in a large thin
+ring: on the map with a stem down to the exact coordinate, on the rail as
+the bare ring sitting on the line like a node; tags without one keep the
+plain punched-hole teardrop. Pins are also the cross-navigation: clicking a
 rail pin centers the map on the event's place, clicking a map pin scrolls the
 timeline to its event, cycling through them when the place hosts several.
 _Avoid_: dot, marker icon, custom marker
