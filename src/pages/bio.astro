@@ -21,6 +21,18 @@ for (const event of events) {
 }
 const years = [...byYear.entries()];
 
+// Year headings read "Berlin, Germany - 1992": each year shows the city I
+// lived in at the time. Take the first located event of the year and carry
+// the label forward through years whose events have no location (I didn't
+// move just because nothing was pinned that year).
+const placeByYear = new Map<number, string | undefined>();
+let lastPlace: string | undefined;
+for (const [year, yearEvents] of years) {
+  const located = yearEvents.find((e) => e.data.location);
+  if (located) lastPlace = located.data.location!.label;
+  placeByYear.set(year, lastPlace);
+}
+
 // Distinct tags, for the filter island's chips.
 const allTags = [...new Set(events.flatMap((e) => e.data.tags))].sort();
 
@@ -104,7 +116,11 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
     {
       years.map(([year, yearEvents]) => (
         <section class="tl-year" data-timeline-year>
-          <h2 class="tl-year-heading">{year}</h2>
+          <h2 class="tl-year-heading">
+            {placeByYear.get(year)
+              ? `${placeByYear.get(year)} - ${year}`
+              : year}
+          </h2>
           <div class="tl-events">
             {yearEvents.map((event) => {
               const Body = bodies.get(event.id)!;
@@ -118,9 +134,6 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                   <span class="tl-dot" aria-hidden="true" />
                   <p class="tl-month">{monthFmt.format(event.data.date)}</p>
                   <h3 class="tl-title">{event.data.title}</h3>
-                  {event.data.location && (
-                    <p class="tl-location">📍 {event.data.location.label}</p>
-                  )}
                   <div class="tl-body">
                     <Body />
                   </div>

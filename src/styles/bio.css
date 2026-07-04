@@ -30,13 +30,18 @@
 }
 
 /* --- WORK / LIFE hemisphere headings ------------------------------- */
+/* WORK hugs the left edge, LIFE the right — the wide middle is where the
+   sticky year pill docks, which since it gained the place label ("Berlin,
+   Germany - 1992") needs most of the row. The right padding also keeps LIFE
+   clear of the absolutely-positioned filter button. */
 .tl-spheres {
   position: sticky;
   top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height, 0rem));
   z-index: 3;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  padding-inline: 0 3rem;
   height: var(--tl-header-h);
   margin-bottom: var(--sl-spacing-md, 1rem);
   background: var(--sl-color-bg);
@@ -45,7 +50,6 @@
 .tl-sphere {
   margin: 0;
   padding: 0;
-  text-align: center;
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 700;
   letter-spacing: 0.25em;
@@ -152,12 +156,6 @@
 
 .tl-post-link {
   display: inline-block;
-  margin: 0.5rem 0 0;
-  font-size: var(--sl-text-sm);
-  color: var(--sl-color-gray-3);
-}
-
-.tl-location {
   margin: 0.5rem 0 0;
   font-size: var(--sl-text-sm);
   color: var(--sl-color-gray-3);
