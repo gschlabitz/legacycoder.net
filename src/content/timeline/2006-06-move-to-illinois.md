@@ -4,7 +4,8 @@ title: Out of the Southwest, into the Midwest
 sphere: life
 tags: [move]
 location:
-  label: Harrisburg, Illinois
+  city: Harrisburg
+  state: Illinois
   lat: 37.7384
   lng: -88.5406
 post: 2006-06-16-neue-heimat-illinois-new-home-illinois

@@ -42,9 +42,20 @@ const timeline = defineCollection({
     // Where the event happened. Required: the timeline map's camera track
     // runs through every event's pin, so an event without coordinates would
     // be a hole in the track — the build/dev server errors on the file until
-    // the author fills it in.
+    // the author fills it in. The display label is derived, not stored:
+    // "city, (state ?? country)" — so US events set `state` and omit
+    // `country`, events abroad set `country` and skip the state ("Potsdam,
+    // Germany", not "Potsdam, Brandenburg"). `npm run geocode` prints a
+    // paste-ready block following these conventions.
     location: z.object({
-      label: z.string(),
+      // Street address, kept for precision/reference; never displayed.
+      address: z.string().optional(),
+      city: z.string(),
+      // First-level division: US state, Bundesland, province…
+      state: z.string().optional(),
+      country: z.string().optional(),
+      // A string — leading zeros matter, so quote it in YAML.
+      postalCode: z.string().optional(),
       lat: z.number(),
       lng: z.number(),
     }),

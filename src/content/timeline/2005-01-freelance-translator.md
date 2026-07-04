@@ -4,7 +4,8 @@ title: Freelance Translator
 sphere: work
 tags: [freelance]
 location:
-  label: Keams Canyon, Arizona
+  city: Keams Canyon
+  state: Arizona
   lat: 35.8114
   lng: -110.1957
 ---

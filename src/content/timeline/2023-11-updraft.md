@@ -4,7 +4,8 @@ title: Senior Software Developer at Updraft
 sphere: work
 tags: [contract]
 location:
-  label: Champaign, Illinois
+  city: Champaign
+  state: Illinois
   lat: 40.1164
   lng: -88.2434
 ---

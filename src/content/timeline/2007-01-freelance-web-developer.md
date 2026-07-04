@@ -4,7 +4,8 @@ title: Went freelance as a web developer
 sphere: work
 tags: [freelance]
 location:
-  label: Harrisburg, Illinois
+  city: Harrisburg
+  state: Illinois
   lat: 37.7384
   lng: -88.5406
 ---

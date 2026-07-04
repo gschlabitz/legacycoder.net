@@ -4,7 +4,8 @@ title: Software Consultant at Strativity Group
 sphere: work
 tags: [career, acquisition]
 location:
-  label: Harrisburg, Illinois
+  city: Harrisburg
+  state: Illinois
   lat: 37.7384
   lng: -88.5406
 ---

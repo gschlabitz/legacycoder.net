@@ -4,7 +4,8 @@ title: Computer Instructor at Förderkreis Berlin
 sphere: work
 tags: [teaching]
 location:
-  label: Berlin, Germany
+  city: Berlin
+  country: Germany
   lat: 52.52
   lng: 13.405
 ---

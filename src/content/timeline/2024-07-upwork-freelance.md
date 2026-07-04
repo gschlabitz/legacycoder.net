@@ -4,7 +4,8 @@ title: Senior Full Stack Engineer on Upwork
 sphere: work
 tags: [freelance]
 location:
-  label: Champaign, Illinois
+  city: Champaign
+  state: Illinois
   lat: 40.1164
   lng: -88.2434
 ---

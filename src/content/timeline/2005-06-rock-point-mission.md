@@ -4,7 +4,8 @@ title: Mission week in Rock Point
 sphere: life
 tags: [travel]
 location:
-  label: Rock Point, Arizona
+  city: Rock Point
+  state: Arizona
   lat: 36.72
   lng: -109.63
 post: 2005-06-20-rock-point-tag-1-rock-point-day-1

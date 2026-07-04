@@ -4,7 +4,8 @@ title: Software Developer at Evolution MC
 sphere: work
 tags: [career]
 location:
-  label: Herrin, Illinois
+  city: Herrin
+  state: Illinois
   lat: 37.8031
   lng: -89.0276
 ---

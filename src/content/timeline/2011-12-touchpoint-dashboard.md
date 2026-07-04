@@ -4,7 +4,8 @@ title: Technical Lead at Touchpoint Dashboard
 sphere: work
 tags: [freelance, career]
 location:
-  label: Harrisburg, Illinois
+  city: Harrisburg
+  state: Illinois
   lat: 37.7384
   lng: -88.5406
 ---

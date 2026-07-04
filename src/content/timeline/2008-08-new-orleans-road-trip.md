@@ -4,7 +4,8 @@ title: Road trip to New Orleans
 sphere: life
 tags: [travel]
 location:
-  label: New Orleans, Louisiana
+  city: New Orleans
+  state: Louisiana
   lat: 29.9511
   lng: -90.0715
 post: 2008-08-17-jackson-square

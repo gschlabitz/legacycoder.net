@@ -4,7 +4,8 @@ title: Software Developer at Screen Pilot
 sphere: work
 tags: [freelance]
 location:
-  label: Harrisburg, Illinois
+  city: Harrisburg
+  state: Illinois
   lat: 37.7384
   lng: -88.5406
 ---

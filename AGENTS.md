@@ -8,6 +8,15 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Authoring
+
+Timeline events require `location` coordinates in their frontmatter. Resolve a
+place name to a paste-ready block with:
+
+```
+npm run geocode -- "Harrisburg, Illinois"
+```
+
 ## Documentation
 
 Full documentation: https://docs.astro.build

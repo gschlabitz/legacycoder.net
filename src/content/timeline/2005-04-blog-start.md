@@ -4,7 +4,8 @@ title: Started the Schlabitz News blog
 sphere: life
 tags: [family]
 location:
-  label: Jeddito, Arizona
+  city: Jeddito
+  state: Arizona
   lat: 35.56
   lng: -110.13
 post: 2005-04-01-tag-auch-howdy

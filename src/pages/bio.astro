@@ -23,12 +23,19 @@ for (const event of events) {
 }
 const years = [...byYear.entries()];
 
+// Display label for a place: "city, state" at home, "city, country" abroad —
+// derived from the location parts so label and parts can't disagree (see the
+// location schema in src/content.config.ts).
+type Location = (typeof events)[number]["data"]["location"];
+const placeLabel = (loc: Location) =>
+  [loc.city, loc.state ?? loc.country].filter(Boolean).join(", ");
+
 // Year headings read "Berlin, Germany - 1992": each year shows the city I
 // lived in at the time, taken from the year's first event (every event has a
 // location — the schema requires it).
 const placeByYear = new Map<number, string>();
 for (const [year, yearEvents] of years) {
-  placeByYear.set(year, yearEvents[0].data.location.label);
+  placeByYear.set(year, placeLabel(yearEvents[0].data.location));
 }
 
 // Distinct tags, for the filter island's chips.
@@ -77,7 +84,7 @@ for (const event of events) {
     placesByCoord.set(key, {
       lat: loc.lat,
       lng: loc.lng,
-      label: loc.label,
+      label: placeLabel(loc),
       color: eventColor(event),
       icon: eventIcon(event),
       titles: [],
@@ -152,7 +159,7 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                     ]}
                     type="button"
                     title={event.data.tags[0]}
-                    aria-label={`Show ${event.data.location.label} on the map`}
+                    aria-label={`Show ${placeLabel(event.data.location)} on the map`}
                     set:html={pinSvg(48, eventIcon(event), false)}
                   />
                   <p class="tl-month">{monthFmt.format(event.data.date)}</p>

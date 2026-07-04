@@ -4,7 +4,8 @@ title: A house on Granger Street
 sphere: life
 tags: [home]
 location:
-  label: Harrisburg, Illinois
+  city: Harrisburg
+  state: Illinois
   lat: 37.7384
   lng: -88.5406
 post: 2006-07-12-unser-harrisburg-haus-our-harrisburg

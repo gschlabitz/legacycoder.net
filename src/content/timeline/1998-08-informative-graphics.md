@@ -4,7 +4,8 @@ title: Software Engineer at Informative Graphics
 sphere: work
 tags: [career]
 location:
-  label: Phoenix, Arizona
+  city: Phoenix
+  state: Arizona
   lat: 33.4484
   lng: -112.074
 ---

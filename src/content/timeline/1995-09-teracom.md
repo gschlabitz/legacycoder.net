@@ -4,7 +4,8 @@ title: Software Developer at TeraCom
 sphere: work
 tags: [freelance]
 location:
-  label: Potsdam, Germany
+  city: Potsdam
+  country: Germany
   lat: 52.3906
   lng: 13.0645
 ---

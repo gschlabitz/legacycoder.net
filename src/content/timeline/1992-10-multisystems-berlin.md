@@ -4,7 +4,8 @@ title: Software Developer intern at multiSYStems Berlin
 sphere: work
 tags: [internship]
 location:
-  label: Berlin, Germany
+  city: Berlin
+  country: Germany
   lat: 52.52
   lng: 13.405
 ---
