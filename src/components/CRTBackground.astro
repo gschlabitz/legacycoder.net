@@ -1,0 +1,342 @@
+---
+// Full-page CRT backdrop for the landing page: code being typed on a
+// phosphor screen, cycling through the eras of the timeline (C on green
+// phosphor, Turbo Pascal on amber, jQuery-era JS, modern TypeScript).
+// Pure CSS + a small inline script — no framework payload. Rendered by the
+// Hero override (src/components/Hero.astro), so it appears exactly on pages
+// with hero frontmatter. The nav header and hero layer above it; a theme-
+// tinted overlay keeps them legible in both color schemes.
+---
+
+<div class="crt-bg" data-crt aria-hidden="true">
+  <pre class="crt-screen"><span class="crt-text"></span><span
+      class="crt-cursor"></span></pre>
+  <div class="crt-vignette"></div>
+  <div class="crt-tint"></div>
+</div>
+<button class="crt-pause" type="button" data-crt-pause aria-pressed="false">
+  <svg
+    class="crt-icon-pause"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"
+    ><rect x="6" y="5" width="4" height="14" rx="1"></rect><rect
+      x="14"
+      y="5"
+      width="4"
+      height="14"
+      rx="1"></rect></svg
+  >
+  <svg
+    class="crt-icon-play"
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    aria-hidden="true"><path d="M8 5v14l11-7z"></path></svg
+  >
+</button>
+
+<style is:global>
+  /* Let the fixed backdrop show through the page surfaces — these rules only
+     ship on pages that render the hero (this component's host). The header
+     keeps a translucent wash so nav text stays readable while scrolling. */
+  [data-has-hero] .page {
+    background: transparent;
+  }
+  [data-has-hero] header.header {
+    background-color: color-mix(in srgb, var(--sl-color-bg) 72%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+</style>
+
+<style>
+  .crt-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background: var(--sl-color-bg);
+  }
+
+  /* The code plane: oversized past every edge and tilted in 3D, so the
+     typing reads as a surface receding behind the page rather than a flat
+     wallpaper. The overshoot (negative inset) keeps the rotated corners
+     from exposing the background. */
+  .crt-screen {
+    position: absolute;
+    inset: -4% -30% -20% -2%;
+    margin: 0;
+    padding: clamp(2rem, 6vh, 4rem) clamp(2rem, 5vw, 5rem);
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: clamp(1.2rem, 3vw, 2.6rem);
+    line-height: 1.55;
+    white-space: pre-wrap;
+    transform: perspective(1200px) rotateX(7deg) rotateY(14deg) rotateZ(-1deg);
+    transform-origin: 12% 20%;
+    color: var(--crt-color, #4eff7e);
+    text-shadow:
+      0 0 4px currentColor,
+      0 0 12px color-mix(in srgb, currentColor 60%, transparent);
+    opacity: 0.75;
+    animation: crt-flicker 4s infinite;
+  }
+
+  /* On the light theme a glowing phosphor has nothing to glow against —
+     darken each era's color into an ink and drop the bloom, so the backdrop
+     reads like faint print instead of washed-out neon. */
+  :global([data-theme='light']) .crt-screen {
+    color: color-mix(in srgb, var(--crt-color, #4eff7e) 35%, #2e3440);
+    text-shadow: none;
+    opacity: 0.5;
+  }
+  .crt-cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.1em;
+    margin-left: 0.1em;
+    vertical-align: text-bottom;
+    background: currentColor;
+    animation: crt-blink 1.1s steps(1) infinite;
+  }
+
+  .crt-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      transparent 55%,
+      rgba(0, 0, 0, 0.35) 100%
+    );
+  }
+
+  /* Theme wash: a soft radial scrim parked behind the hero (upper middle of
+     the viewport) so title, tagline, and actions keep their contrast, over a
+     light overall tint that lets the code stay vivid toward the edges. */
+  .crt-tint {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        ellipse 70% 55% at 45% 32%,
+        color-mix(in srgb, var(--sl-color-bg) 88%, transparent) 30%,
+        transparent 75%
+      ),
+      color-mix(in srgb, var(--sl-color-bg) 38%, transparent);
+  }
+
+  .crt-pause {
+    position: fixed;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--sl-color-bg) 75%, transparent);
+    color: var(--sl-color-gray-3);
+    cursor: pointer;
+  }
+  .crt-pause:hover {
+    color: var(--sl-color-white);
+    border-color: var(--sl-color-gray-3);
+  }
+  .crt-pause svg {
+    width: 1rem;
+    height: 1rem;
+  }
+  .crt-pause .crt-icon-play,
+  .crt-pause[aria-pressed='true'] .crt-icon-pause {
+    display: none;
+  }
+  .crt-pause[aria-pressed='true'] .crt-icon-play {
+    display: block;
+  }
+
+  @keyframes crt-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes crt-flicker {
+    0%,
+    100% {
+      opacity: 0.75;
+    }
+    92% {
+      opacity: 0.75;
+    }
+    93% {
+      opacity: 0.58;
+    }
+    94% {
+      opacity: 0.75;
+    }
+    97% {
+      opacity: 0.65;
+    }
+    98% {
+      opacity: 0.75;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .crt-screen,
+    .crt-cursor {
+      animation: none;
+    }
+    .crt-pause {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Era montage: one snippet per station of the timeline, each with its own
+  // phosphor color. Lines stay under ~55 columns so nothing wraps awkwardly
+  // behind the hero.
+  const SNIPPETS = [
+    {
+      color: '#4eff7e', // green phosphor
+      text: `/* L3 microkernel — Berlin, 1992 */
+
+void ipc_send(thread *dst, msg *m)
+{
+    if (dst->state == BLOCKED) {
+        copy_to(dst->buf, m);
+        unblock(dst);
+        return;
+    }
+    enqueue(&dst->queue, m);
+}
+
+void sched_yield(void)
+{
+    thread *next = pick_next(&runq);
+
+    if (next == current)
+        return;
+    switch_ctx(&current->ctx, &next->ctx);
+}`,
+    },
+    {
+      color: '#ffb552', // amber phosphor
+      text: `{ TeraCom — 1995 }
+
+procedure DrawStatus(Row: Byte);
+var
+  I: Integer;
+begin
+  GotoXY(1, Row);
+  TextColor(LightGreen);
+  for I := 1 to 78 do Write('=');
+  Write('| READY');
+end;
+
+procedure PollPort(Port: Word);
+begin
+  repeat
+    Status := ReadByte(Port);
+    if Status and RX_READY <> 0 then
+      HandleFrame(ReadByte(Port + 1));
+  until KeyPressed;
+end;`,
+    },
+    {
+      color: '#bfe3ff', // paper-white tube
+      text: `// freelance web dev — 2007
+
+$('#gallery a').click(function () {
+  var src = $(this).attr('href');
+  $('#stage img').fadeOut(200, function () {
+    $(this).attr('src', src).fadeIn(200);
+  });
+  return false;
+});
+
+$('#contact form').submit(function () {
+  var data = $(this).serialize();
+  $.post('/cgi-bin/mail.pl', data, function () {
+    $('#status').text('Thanks!').show();
+  });
+  return false;
+});`,
+    },
+    {
+      color: '#d8dee9', // modern LCD
+      text: `// GovRecover — 2025
+
+export async function reconcile(claim: Claim) {
+  const record = await db.claims.get(claim.id);
+  if (!record) throw new NotFound(claim.id);
+  return diff(record, claim).apply();
+}
+
+export async function notify(owner: Owner) {
+  const letter = await render('found-funds', {
+    name: owner.name,
+    amount: usd(owner.balance),
+  });
+  await outbox.queue(owner.address, letter);
+}`,
+    },
+  ];
+
+  const root = document.querySelector<HTMLElement>('[data-crt]');
+  const textEl = root?.querySelector<HTMLElement>('.crt-text');
+  const screenEl = root?.querySelector<HTMLElement>('.crt-screen');
+  const pauseBtn = document.querySelector<HTMLButtonElement>(
+    '[data-crt-pause]'
+  );
+
+  if (root && textEl && screenEl && pauseBtn) {
+    const setLabel = () => {
+      const paused = pauseBtn.getAttribute('aria-pressed') === 'true';
+      pauseBtn.setAttribute(
+        'aria-label',
+        paused ? 'Resume background animation' : 'Pause background animation'
+      );
+    };
+    setLabel();
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Static frame instead of motion: first snippet, fully typed.
+      screenEl.style.setProperty('--crt-color', SNIPPETS[0].color);
+      textEl.textContent = SNIPPETS[0].text;
+    } else {
+      let paused = false;
+      pauseBtn.addEventListener('click', () => {
+        paused = !paused;
+        pauseBtn.setAttribute('aria-pressed', String(paused));
+        setLabel();
+      });
+
+      const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+      const idle = async (ms: number) => {
+        await sleep(ms);
+        while (paused) await sleep(200);
+      };
+
+      (async () => {
+        for (let i = 0; ; i = (i + 1) % SNIPPETS.length) {
+          const { color, text } = SNIPPETS[i];
+          screenEl.style.setProperty('--crt-color', color);
+          textEl.textContent = '';
+          for (const ch of text) {
+            textEl.textContent += ch;
+            // Human-ish cadence: newlines pause like a breath, spaces are
+            // quick, everything else jitters around ~45ms.
+            await idle(ch === '\n' ? 260 : ch === ' ' ? 18 : 20 + Math.random() * 55);
+          }
+          await idle(3200);
+          // Power-blink between eras.
+          root.style.opacity = '0';
+          await sleep(140);
+          root.style.opacity = '';
+        }
+      })();
+    }
+  }
+</script>

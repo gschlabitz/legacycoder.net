@@ -20,6 +20,8 @@ export default defineConfig({
       components: {
         // Renders starlight-blog's header link plus our own Links link.
         SiteTitle: "./src/components/SiteTitle.astro",
+        // Stock hero plus the CRT typing backdrop behind the whole page.
+        Hero: "./src/components/Hero.astro",
       },
       defaultLocale: "root",
       locales: {

@@ -1,0 +1,11 @@
+---
+// Starlight Hero override: the stock hero, plus the CRT typing backdrop
+// behind the whole page (nav and hero layer on top of it). Only pages with
+// hero frontmatter render this component, so the backdrop is scoped to the
+// landing pages for free.
+import Default from '@astrojs/starlight/components/Hero.astro';
+import CRTBackground from './CRTBackground.astro';
+---
+
+<CRTBackground />
+<Default><slot /></Default>
