@@ -118,23 +118,49 @@
   padding-left: var(--tl-gutter);
 }
 
-/* Dot sitting on the rail, aligned to the event's top line. */
-.tl-dot {
+/* Tag pin planted on the rail, aligned to the event's top line: the SVG's
+   tip lands where the old dot's center used to sit (0.4em + half a dot), so
+   the pin body rises just above the title line. The color lives in the SVG
+   itself (per tag, see src/lib/tag-pins.js). */
+.tl-pin {
   position: absolute;
-  top: 0.4em;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--sl-color-accent);
-  box-shadow: 0 0 0 4px var(--sl-color-bg);
+  top: calc(0.4em - 13px);
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: none;
 }
 
-.tl-event--work .tl-dot {
-  right: -6px;
+.tl-pin svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.tl-event--life .tl-dot {
-  left: -6px;
+/* Located events render the pin as a button (click centers the map); grow it
+   from the tip on hover as the affordance. */
+button.tl-pin {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  transform-origin: bottom center;
+}
+
+button.tl-pin:hover {
+  transform: scale(1.3);
+}
+
+button.tl-pin:focus-visible {
+  outline: 2px solid var(--sl-color-accent);
+  outline-offset: 2px;
+}
+
+.tl-event--work .tl-pin {
+  right: -10px;
+}
+
+.tl-event--life .tl-pin {
+  left: -10px;
 }
 
 /* Mirror the tag chips toward the rail on the work side. */
@@ -432,6 +458,11 @@
   height: 100%;
 }
 
+/* Map marker content: the same tag pin SVG as the rail, sized up a notch. */
+.tl-map-pin svg {
+  display: block;
+}
+
 /* Advanced markers have no built-in DROP animation — the island adds this
    class to each pin as it's created and removes it on animationend. */
 .tl-map-pin-drop {
@@ -489,6 +520,17 @@ body:has(.tl-map) main {
   color: var(--sl-color-gray-2);
 }
 
+/* The chip's content is a button (chip click = marker click) — inherit the
+   chip's look rather than the UA button styling. */
+.tl-map-pins button {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
 /* Chips whose place is in focus (an event of theirs is on screen) — mirrors
    the camera framing so the keyless placeholder still shows the behavior. */
 .tl-map-pins li.tl-map-pin--focus {
@@ -539,9 +581,9 @@ body:has(.tl-map) main {
     text-align: left;
   }
 
-  .tl-event--work .tl-dot,
-  .tl-event--life .tl-dot {
-    left: calc(var(--tl-rail-x) - 5px);
+  .tl-event--work .tl-pin,
+  .tl-event--life .tl-pin {
+    left: calc(var(--tl-rail-x) - 8px);
     right: auto;
   }
 

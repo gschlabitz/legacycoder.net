@@ -4,6 +4,7 @@ import { getCollection, render } from "astro:content";
 import TimelineFilter from "../components/TimelineFilter.jsx";
 import TimelineMap from "../components/TimelineMap.jsx";
 import TimelineOrder from "../components/TimelineOrder.jsx";
+import { pinSvg, tagColor } from "../lib/tag-pins.js";
 
 // Build-time: load every life event and order it chronologically.
 const events = (await getCollection("timeline")).sort(
@@ -37,6 +38,11 @@ for (const [year, yearEvents] of years) {
 // Distinct tags, for the filter island's chips.
 const allTags = [...new Set(events.flatMap((e) => e.data.tags))].sort();
 
+// Tag pin color for an event: its first tag decides (events carrying several
+// tags lead with the defining one). Shared with the map via src/lib/tag-pins.
+const eventColor = (event: (typeof events)[number]) =>
+  tagColor(event.data.tags[0], allTags);
+
 // Pre-render each Markdown body to a component (render() is async, so it can't
 // run inside the template loop below).
 const bodies = new Map<string, Awaited<ReturnType<typeof render>>["Content"]>();
@@ -58,6 +64,7 @@ type Place = {
   lat: number;
   lng: number;
   label: string;
+  color: string; // tag pin color, from the place's first (earliest) event
   titles: string[];
   eventIds: string[];
 };
@@ -71,6 +78,7 @@ for (const event of events) {
       lat: loc.lat,
       lng: loc.lng,
       label: loc.label,
+      color: eventColor(event),
       titles: [],
       eventIds: [],
     });
@@ -134,7 +142,25 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                   data-event-id={event.id}
                   data-tags={event.data.tags.join(",")}
                 >
-                  <span class="tl-dot" aria-hidden="true" />
+                  {/* Tag pin on the rail: colored by the event's first tag.
+                      Located events get a button — clicking it centers the
+                      map on the event's place (wired in TimelineMap). */}
+                  {event.data.location ? (
+                    <button
+                      class="tl-pin"
+                      type="button"
+                      title={event.data.tags[0]}
+                      aria-label={`Show ${event.data.location.label} on the map`}
+                      set:html={pinSvg(eventColor(event))}
+                    />
+                  ) : (
+                    <span
+                      class="tl-pin tl-pin--static"
+                      title={event.data.tags[0]}
+                      aria-hidden="true"
+                      set:html={pinSvg(eventColor(event))}
+                    />
+                  )}
                   <p class="tl-month">{monthFmt.format(event.data.date)}</p>
                   <h3 class="tl-title">{event.data.title}</h3>
                   <div class="tl-body">

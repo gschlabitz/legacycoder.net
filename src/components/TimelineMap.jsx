@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { pinSvg } from "../lib/tag-pins.js";
 
 // Google Map banner for the /bio timeline, fixed across the bottom of the
 // viewport. Two scroll-driven concepts share one rect pass (terms defined in
@@ -17,8 +18,16 @@ import { createPortal } from "react-dom";
 //   first one, it opens on the journey's first place.
 //
 // `places` is prepared at build time in bio.astro: events sharing coordinates
-// are grouped into one place ({ lat, lng, label, titles, eventIds }) so
-// repeat locations don't stack identical markers.
+// are grouped into one place ({ lat, lng, label, color, titles, eventIds })
+// so repeat locations don't stack identical markers. `color` is the tag pin
+// color of the place's first event — markers render the same pin SVG as the
+// timeline rail (src/lib/tag-pins.js), so rail and map pins match by color.
+//
+// Pins are also the cross-navigation between the two views: clicking a rail
+// pin centers the map on that event's place (revealing its marker if the
+// story hasn't reached it yet), and clicking a map marker scrolls the
+// timeline to its event — repeat clicks cycle through the events of a place
+// that hosts several.
 //
 // Without an API key (PUBLIC_GOOGLE_MAPS_API_KEY) the island renders a
 // placeholder banner in its stead that lists revealed places as chips — the
@@ -108,6 +117,58 @@ export default function TimelineMap({ apiKey, mapId, places }) {
       programmaticRef.current = false;
     });
   };
+
+  // Clicking a map marker scrolls the timeline to its event. A place can
+  // host several events (repeat locations share one marker), so repeat
+  // clicks cycle through them chronologically; events hidden by the tag
+  // filter are skipped. The scroll target sits a third of the way down the
+  // band left visible above the banner, clear of the map at either height.
+  const cycleRef = useRef(new Map()); // place index -> last visited position
+  const scrollToPlace = (i) => {
+    const els = places[i].eventIds
+      .map((id) => document.querySelector(`[data-event-id="${id}"]`))
+      .filter((el) => el && (el.offsetWidth || el.offsetHeight));
+    if (!els.length) return;
+    const next = ((cycleRef.current.get(i) ?? -1) + 1) % els.length;
+    cycleRef.current.set(i, next);
+    const band = window.innerHeight - (asideRef.current?.offsetHeight ?? 0);
+    const target =
+      window.scrollY + els[next].getBoundingClientRect().top - band / 3;
+    // Deferred: Google Maps focuses the clicked marker right after this
+    // handler, and that focus change cancels an already-running smooth
+    // scroll. Waiting a tick lets the focus land first.
+    setTimeout(() => {
+      window.scrollTo({ top: target, behavior: "smooth" });
+    }, 0);
+  };
+
+  // Clicking a rail pin (the tag pins bio.astro renders on the timeline
+  // rail) centers the map on that event's place, revealing its marker if the
+  // story hasn't reached it yet. Framing counts as the reader taking over
+  // the camera: it holds until they scroll, which resumes auto-framing (see
+  // the takeover effect below). Delegated, since the pins are static DOM.
+  useEffect(() => {
+    const placeByEvent = new Map();
+    places.forEach((place, i) =>
+      place.eventIds.forEach((id) => placeByEvent.set(id, i))
+    );
+    const onClick = (e) => {
+      const pin = e.target.closest("button.tl-pin");
+      if (!pin) return;
+      const id = pin.closest("[data-event-id]")?.dataset.eventId;
+      const i = placeByEvent.get(id);
+      if (i === undefined) return;
+      setRevealed((prev) =>
+        prev.has(i) ? prev : new Set([...prev, i])
+      );
+      const ctx = mapRef.current;
+      if (!ctx) return;
+      userTookOverRef.current = true;
+      applyFraming(ctx, [places[i]]);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, [places]);
 
   // Google Maps doesn't watch its container for size changes: once the
   // expand/collapse transition finishes, nudge it to pick up the new
@@ -275,12 +336,24 @@ export default function TimelineMap({ apiKey, mapId, places }) {
       let marker = markersRef.current.get(i);
       if (!marker) {
         const place = places[i];
-        // AdvancedMarkerElement has no built-in DROP animation; run the
-        // equivalent as a CSS animation on the pin (see bio.css), removed on
-        // completion so a theme rebuild doesn't replay it. PinElement is
-        // itself a <gmp-pin> element — its `.element` accessor is deprecated.
-        const pin = new ctx.maps.marker.PinElement();
-        pin.classList.add("tl-map-pin-drop");
+        // The marker content is the same tag pin SVG the timeline rail uses
+        // (tag-pins.js), colored per place. AdvancedMarkerElement has no
+        // built-in DROP animation; run the equivalent as a CSS animation on
+        // the pin (see bio.css), removed on completion so a theme rebuild
+        // doesn't replay it.
+        const pin = document.createElement("div");
+        pin.className = "tl-map-pin tl-map-pin-drop";
+        pin.innerHTML = pinSvg(place.color, 30);
+        // Listen on the content div, not the marker's gmp-click. The click
+        // must not reach Google's own handlers: they focus the marker, and
+        // the browser's scroll-into-view for that focus cancels (or fights)
+        // our smooth scroll to the event. gmpClickable below still matters:
+        // it's what turns pointer events on for the content.
+        pin.addEventListener("mousedown", (e) => e.preventDefault());
+        pin.addEventListener("click", (e) => {
+          e.stopPropagation();
+          scrollToPlace(i);
+        });
         pin.addEventListener(
           "animationend",
           () => pin.classList.remove("tl-map-pin-drop"),
@@ -289,6 +362,7 @@ export default function TimelineMap({ apiKey, mapId, places }) {
         marker = new ctx.maps.marker.AdvancedMarkerElement({
           position: { lat: place.lat, lng: place.lng },
           content: pin,
+          gmpClickable: true,
           title: `${place.label}: ${place.titles.join(" · ")}`,
         });
         markersRef.current.set(i, marker);
@@ -375,7 +449,10 @@ export default function TimelineMap({ apiKey, mapId, places }) {
               hidden={!revealed.has(i)}
               className={focus.has(i) ? "tl-map-pin--focus" : undefined}
             >
-              📍 {place.label}
+              {/* Chip click = marker click: scroll to the place's event. */}
+              <button type="button" onClick={() => scrollToPlace(i)}>
+                <span style={{ color: place.color }}>⬤</span> {place.label}
+              </button>
             </li>
           ))}
         </ul>

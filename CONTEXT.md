@@ -79,10 +79,19 @@ _Avoid_: category, side, column
 The map banner on the bio page that shows where timeline events happened.
 _Avoid_: location map, minimap
 
+**Tag pin**:
+The teardrop pin colored by an event's first tag — the same shape and color on
+the timeline rail (where every event has one in place of a dot) and as the
+timeline map's markers (colored by the place's first event). Pins are also the
+cross-navigation: clicking a rail pin centers the map on the event's place,
+clicking a map pin scrolls the timeline to its event, cycling through them
+when the place hosts several.
+_Avoid_: dot, marker icon, custom marker
+
 **Pin reveal**:
 A pin dropping onto the timeline map once the reader has reached or passed its
-event. Revealed pins persist for the rest of the visit, even when the camera
-has moved elsewhere.
+event — or clicked the event's rail pin. Revealed pins persist for the rest of
+the visit, even when the camera has moved elsewhere.
 _Avoid_: marker animation
 
 **Focus**:
