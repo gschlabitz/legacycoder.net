@@ -70,10 +70,11 @@ export default function TimelineMap({ apiKey, mapId, places }) {
   const [focus, setFocus] = useState(() => new Set());
   // The last places the camera framed, held while the focus is empty.
   const lastFramingRef = useRef(null);
-  // Set once the reader manually pans, zooms, or opens Street View — scroll-
-  // driven auto-framing (below) backs off from then on, so exploring the map
-  // doesn't get yanked back to the "current" event's place on the next
-  // scroll tick. Reset when the map instance is rebuilt (theme toggle).
+  // Set while the reader is exploring the map (pan, zoom, or Street View) —
+  // auto-framing backs off so they aren't yanked back to the "current"
+  // event's place mid-exploration. Only borrowed, though: scrolling the
+  // timeline again means they're back to reading the story, which returns
+  // the camera to auto-framing (see the takeover effect below).
   const userTookOverRef = useRef(false);
   // True only for the duration of one of our own fitBounds/setZoom calls, so
   // the zoom_changed/dragstart events they trigger aren't mistaken for the
@@ -128,10 +129,14 @@ export default function TimelineMap({ apiKey, mapId, places }) {
   }, [places, ready]);
 
   // Detect the reader taking manual control (drag, zoom, or Street View) so
-  // the scroll-driven camera effect below knows to stop auto-framing. Guarded
-  // by `programmaticRef` so our own fitBounds/setZoom calls don't trip it.
-  // Re-attaches after a theme rebuild (mapEpoch), which also hands control
-  // back to auto-framing since that's a fresh map instance.
+  // the scroll-driven camera effect below knows to pause auto-framing.
+  // Guarded by `programmaticRef` so our own fitBounds/setZoom calls don't
+  // trip it. Scrolling the timeline takes the camera back: exploring is a
+  // detour, reading is the primary mode, and the page scrolling is the
+  // clearest signal the reader has returned to it. (Wheel-scrolling over the
+  // map counts — under "cooperative" gestures a plain wheel scrolls the
+  // page.) Re-attaches after a theme rebuild (mapEpoch), which also resumes
+  // auto-framing since that's a fresh map instance.
   useEffect(() => {
     const ctx = mapRef.current;
     if (!ctx) return;
@@ -147,8 +152,17 @@ export default function TimelineMap({ apiKey, mapId, places }) {
         if (streetView.getVisible()) takeOver();
       }),
     ];
-    return () => listeners.forEach((l) => l.remove());
-  }, [ready, mapEpoch]);
+    const onScroll = () => {
+      if (!userTookOverRef.current) return;
+      userTookOverRef.current = false;
+      applyFraming(ctx, lastFramingRef.current ?? [places[0]]);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      listeners.forEach((l) => l.remove());
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [ready, mapEpoch, places]);
 
   // Scroll spy: one rect pass per tick computes both reveal (reached or
   // passed → accumulates) and focus (on screen right now → moving window).
