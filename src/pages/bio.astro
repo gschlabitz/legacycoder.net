@@ -24,15 +24,11 @@ for (const event of events) {
 const years = [...byYear.entries()];
 
 // Year headings read "Berlin, Germany - 1992": each year shows the city I
-// lived in at the time. Take the first located event of the year and carry
-// the label forward through years whose events have no location (I didn't
-// move just because nothing was pinned that year).
-const placeByYear = new Map<number, string | undefined>();
-let lastPlace: string | undefined;
+// lived in at the time, taken from the year's first event (every event has a
+// location — the schema requires it).
+const placeByYear = new Map<number, string>();
 for (const [year, yearEvents] of years) {
-  const located = yearEvents.find((e) => e.data.location);
-  if (located) lastPlace = located.data.location!.label;
-  placeByYear.set(year, lastPlace);
+  placeByYear.set(year, yearEvents[0].data.location.label);
 }
 
 // Distinct tags, for the filter island's chips.
@@ -60,10 +56,10 @@ const monthFmt = new Intl.DateTimeFormat("en-US", {
   timeZone: "UTC",
 });
 
-// Group located events by coordinate for the map banner: one pin per place
-// (repeat locations would otherwise stack identical markers), revealed when
-// the first of its events scrolls into view. Insertion order is
-// chronological because `events` already is.
+// Group events by coordinate for the map banner: one pin per place (repeat
+// locations would otherwise stack identical markers), revealed when the
+// first of its events scrolls into view. Insertion order is chronological
+// because `events` already is.
 type Place = {
   lat: number;
   lng: number;
@@ -76,7 +72,6 @@ type Place = {
 const placesByCoord = new Map<string, Place>();
 for (const event of events) {
   const loc = event.data.location;
-  if (!loc) continue;
   const key = `${loc.lat},${loc.lng}`;
   if (!placesByCoord.has(key)) {
     placesByCoord.set(key, {
@@ -134,9 +129,7 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
         years.map(([year, yearEvents]) => (
         <section class="tl-year" data-timeline-year>
           <h2 class="tl-year-heading">
-            {placeByYear.get(year)
-              ? `${placeByYear.get(year)} - ${year}`
-              : year}
+            {`${placeByYear.get(year)} - ${year}`}
           </h2>
           <div class="tl-events">
             {yearEvents.map((event) => {
@@ -148,32 +141,20 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                   data-event-id={event.id}
                   data-tags={event.data.tags.join(",")}
                 >
-                  {/* Tag pin on the rail: colored by the event's first tag.
-                      Located events get a button — clicking it centers the
-                      map on the event's place (wired in TimelineMap). */}
-                  {event.data.location ? (
-                    <button
-                      class:list={[
-                        "tl-pin",
-                        eventIcon(event) && "tl-pin--glyph",
-                      ]}
-                      type="button"
-                      title={event.data.tags[0]}
-                      aria-label={`Show ${event.data.location.label} on the map`}
-                      set:html={pinSvg(48, eventIcon(event), false)}
-                    />
-                  ) : (
-                    <span
-                      class:list={[
-                        "tl-pin",
-                        "tl-pin--static",
-                        eventIcon(event) && "tl-pin--glyph",
-                      ]}
-                      title={event.data.tags[0]}
-                      aria-hidden="true"
-                      set:html={pinSvg(48, eventIcon(event), false)}
-                    />
-                  )}
+                  {/* Tag pin on the rail, iconed by the event's first tag.
+                      Every event has a location, so every pin is a button —
+                      clicking it centers the map on the event's place
+                      (wired in TimelineMap). */}
+                  <button
+                    class:list={[
+                      "tl-pin",
+                      eventIcon(event) && "tl-pin--glyph",
+                    ]}
+                    type="button"
+                    title={event.data.tags[0]}
+                    aria-label={`Show ${event.data.location.label} on the map`}
+                    set:html={pinSvg(48, eventIcon(event), false)}
+                  />
                   <p class="tl-month">{monthFmt.format(event.data.date)}</p>
                   <h3 class="tl-title">{event.data.title}</h3>
                   <div class="tl-body">

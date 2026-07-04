@@ -98,13 +98,19 @@ event — or clicked the event's rail pin. Revealed pins persist for the rest of
 the visit, even when the camera has moved elsewhere.
 _Avoid_: marker animation
 
-**Focus**:
-The located timeline events currently on screen. The timeline map's camera
-frames the focused events' places — tight on one place, widening while events
-from two places share the screen — and holds its last framing while the focus
-is empty (before the first located event, it frames the journey's first
-place). Focus moves the camera only; it never adds or removes pins.
-_Avoid_: visible events, active pins
+**Camera track**:
+The piecewise line through the event pins, in on-screen order, that the
+timeline map's center travels along — geared linearly to scroll, never
+changing zoom (the camera opens at city scale; zoom belongs to the reader).
+Track movement never adds or removes pins. Every timeline event must have
+coordinates so the track has no holes — the content schema enforces it.
+_Avoid_: focus, camera path, auto-framing
+
+**Centered event**:
+The timeline event whose article midpoint sits nearest the midpoint of the
+band left visible above the timeline map. The camera stands exactly on its
+pin, gliding toward a neighbor's pin as the scroll moves between midpoints.
+_Avoid_: focused event, current event, active event
 
 **Full story link**:
 The "Read the full story →" link shown under a timeline event that has a

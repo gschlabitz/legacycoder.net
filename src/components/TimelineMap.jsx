@@ -1,21 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { iconSvg, pinSvg } from "../lib/tag-pins.js";
 
 // Google Map banner for the /bio timeline, fixed across the bottom of the
-// viewport. Two scroll-driven concepts share one rect pass (terms defined in
+// viewport. Two scroll-driven concepts drive it (terms defined in
 // CONTEXT.md):
 //
 // - Pin reveal: a pin drops once any of its place's events has been reached
 //   OR passed, and stays for the rest of the visit (position checks on the
 //   server-rendered `[data-event-id]` articles, not IntersectionObserver —
 //   see docs/adr/0001).
-// - Focus: the camera frames the places of the located events currently on
-//   screen — tight while the story sits in one city, widening while events
-//   from two places share the screen, tightening again when it settles into
-//   the new place. While no located event is on screen the camera holds its
-//   last framing (the map never moves without a visible cause); before the
-//   first one, it opens on the journey's first place.
+// - Camera track: the map center travels the piecewise line through the
+//   event pins in on-screen order, geared linearly to scroll — the camera
+//   never changes zoom (it opens at city scale; the zoom control is the
+//   reader's alone). The centered event — the article whose midpoint sits
+//   nearest the midpoint of the band left visible above the banner — puts
+//   the center exactly on its pin; between two midpoints the center is the
+//   lat/lng lerp between their pins. Every event has coordinates (the
+//   content schema requires them), so the track has no holes.
 //
 // `places` is prepared at build time in bio.astro: events sharing coordinates
 // are grouped into one place ({ lat, lng, label, color, icon, titles,
@@ -65,6 +67,10 @@ function currentScheme() {
   return document.documentElement.dataset.theme === "light" ? "LIGHT" : "DARK";
 }
 
+// The one zoom level the camera ever sets: city scale at boot. Zoom belongs
+// to the reader from then on — the camera only pans.
+const OPEN_ZOOM = 10;
+
 export default function TimelineMap({ apiKey, mapId, places }) {
   const canvasRef = useRef(null);
   const asideRef = useRef(null); // the <aside class="tl-map">, for its height transition
@@ -77,20 +83,16 @@ export default function TimelineMap({ apiKey, mapId, places }) {
   const [mapEpoch, setMapEpoch] = useState(0);
   // Indices into `places` whose pins have been revealed by scrolling.
   const [revealed, setRevealed] = useState(() => new Set());
-  // Indices into `places` that are in focus (an event of theirs on screen).
-  const [focus, setFocus] = useState(() => new Set());
-  // The last places the camera framed, held while the focus is empty.
-  const lastFramingRef = useRef(null);
-  // Set while the reader is exploring the map (pan, zoom, or Street View) —
-  // auto-framing backs off so they aren't yanked back to the "current"
-  // event's place mid-exploration. Only borrowed, though: scrolling the
-  // timeline again means they're back to reading the story, which returns
-  // the camera to auto-framing (see the takeover effect below).
+  // Index into `places` of the centered event's place. Only the keyless
+  // placeholder banner consumes it (chip highlight) — the real camera writes
+  // straight to the map, keeping React re-renders off the scroll path.
+  const [centered, setCentered] = useState(null);
+  // Set while the reader is exploring the map (drag or Street View — zoom is
+  // theirs to keep, so it never counts) — the scroll-geared camera pauses so
+  // they aren't yanked back mid-exploration. Only borrowed, though: scrolling
+  // the timeline again means they're back to reading the story, which pans
+  // the camera back onto the track (see the camera effect below).
   const userTookOverRef = useRef(false);
-  // True only for the duration of one of our own fitBounds/setZoom calls, so
-  // the zoom_changed/dragstart events they trigger aren't mistaken for the
-  // reader's own gestures.
-  const programmaticRef = useRef(false);
   // Grows the banner to half the viewport via the Expand tab; drives
   // --tl-map-h on <html> (see bio.css) so both the fixed banner and the
   // page's clearance padding pick it up.
@@ -105,19 +107,61 @@ export default function TimelineMap({ apiKey, mapId, places }) {
     document.documentElement.classList.toggle("tl-map-expanded", expanded);
   }, [expanded]);
 
-  // Shared by the scroll-driven camera effect and the post-resize re-fit
-  // below. Clamps the auto-fit to zoom 10 — a lone revealed city at street
-  // level would be useless in a banner this short — without capping how far
-  // the reader can zoom in manually afterward.
-  const applyFraming = (ctx, frame) => {
-    programmaticRef.current = true;
-    const bounds = new ctx.maps.LatLngBounds();
-    for (const place of frame) bounds.extend({ lat: place.lat, lng: place.lng });
-    ctx.map.fitBounds(bounds, { top: 32, bottom: 32, left: 64, right: 64 });
-    ctx.maps.event.addListenerOnce(ctx.map, "idle", () => {
-      if (ctx.map.getZoom() > 10) ctx.map.setZoom(10);
-      programmaticRef.current = false;
+  // Event id -> index into `places`; shared by the camera track, the reveal
+  // spy, and the rail-pin click handler.
+  const placeByEvent = useMemo(() => {
+    const byEvent = new Map();
+    places.forEach((place, i) =>
+      place.eventIds.forEach((id) => byEvent.set(id, i))
+    );
+    return byEvent;
+  }, [places]);
+
+  // The camera track, sampled at the current scroll position. The event
+  // articles' midpoints are the track's stops, in on-screen order (sorted by
+  // rect, so the newest-first toggle and the split work/life columns come
+  // out right); the band midline picks the segment and the lerp parameter.
+  // Rects are read live — a couple dozen articles per sample — so the tag
+  // filter and the order toggle self-correct on the next sample with no
+  // cache to invalidate. Returns { center, nearest }: the lat/lng for the
+  // map and the place index of the centered event — or null while the tag
+  // filter has hidden every event.
+  const trackCamera = () => {
+    const midline =
+      (window.innerHeight - (asideRef.current?.offsetHeight ?? 0)) / 2;
+    const stops = [];
+    for (const el of document.querySelectorAll("[data-event-id]")) {
+      const i = placeByEvent.get(el.dataset.eventId);
+      if (i === undefined) continue;
+      const rect = el.getBoundingClientRect();
+      // Skip events display:none'd by the tag filter (zero-size rect).
+      if (rect.width === 0 && rect.height === 0) continue;
+      stops.push({ mid: (rect.top + rect.bottom) / 2, place: i });
+    }
+    if (!stops.length) return null;
+    stops.sort((a, b) => a.mid - b.mid);
+    const at = (i) => ({
+      lat: places[stops[i].place].lat,
+      lng: places[stops[i].place].lng,
     });
+    // Before the first midpoint / past the last, the track clamps to its end.
+    if (midline <= stops[0].mid)
+      return { center: at(0), nearest: stops[0].place };
+    const last = stops.length - 1;
+    if (midline >= stops[last].mid)
+      return { center: at(last), nearest: stops[last].place };
+    const b = stops.findIndex((s) => s.mid >= midline);
+    const span = stops[b].mid - stops[b - 1].mid;
+    const t = span === 0 ? 1 : (midline - stops[b - 1].mid) / span;
+    const from = at(b - 1);
+    const to = at(b);
+    return {
+      center: {
+        lat: from.lat + (to.lat - from.lat) * t,
+        lng: from.lng + (to.lng - from.lng) * t,
+      },
+      nearest: stops[t < 0.5 ? b - 1 : b].place,
+    };
   };
 
   // Clicking a map marker scrolls the timeline to its event. A place can
@@ -146,14 +190,12 @@ export default function TimelineMap({ apiKey, mapId, places }) {
 
   // Clicking a rail pin (the tag pins bio.astro renders on the timeline
   // rail) centers the map on that event's place, revealing its marker if the
-  // story hasn't reached it yet. Framing counts as the reader taking over
-  // the camera: it holds until they scroll, which resumes auto-framing (see
-  // the takeover effect below). Delegated, since the pins are static DOM.
+  // story hasn't reached it yet — zoom untouched (panTo glides when the
+  // place is near, cuts when far). Centering counts as the reader taking
+  // over the camera: it holds until they scroll, which pans it back onto
+  // the track (see the camera effect below). Delegated, since the pins are
+  // static DOM.
   useEffect(() => {
-    const placeByEvent = new Map();
-    places.forEach((place, i) =>
-      place.eventIds.forEach((id) => placeByEvent.set(id, i))
-    );
     const onClick = (e) => {
       const pin = e.target.closest("button.tl-pin");
       if (!pin) return;
@@ -166,16 +208,16 @@ export default function TimelineMap({ apiKey, mapId, places }) {
       const ctx = mapRef.current;
       if (!ctx) return;
       userTookOverRef.current = true;
-      applyFraming(ctx, [places[i]]);
+      ctx.map.panTo({ lat: places[i].lat, lng: places[i].lng });
     };
     document.addEventListener("click", onClick);
     return () => document.removeEventListener("click", onClick);
-  }, [places]);
+  }, [places, placeByEvent]);
 
   // Google Maps doesn't watch its container for size changes: once the
   // expand/collapse transition finishes, nudge it to pick up the new
-  // dimensions and re-fit the camera to the last framing (the canvas didn't
-  // exist at that size when fitBounds last ran) — unless the reader has
+  // dimensions and re-derive the track position — the band above the banner
+  // changed height, so the centered event moved — unless the reader has
   // taken over the camera themselves.
   useEffect(() => {
     const el = asideRef.current;
@@ -185,88 +227,79 @@ export default function TimelineMap({ apiKey, mapId, places }) {
       if (e.propertyName !== "height") return;
       ctx.maps.event.trigger(ctx.map, "resize");
       if (userTookOverRef.current) return;
-      applyFraming(ctx, lastFramingRef.current ?? [places[0]]);
+      const cam = trackCamera();
+      if (cam) ctx.map.setCenter(cam.center);
     };
     el.addEventListener("transitionend", onTransitionEnd);
     return () => el.removeEventListener("transitionend", onTransitionEnd);
   }, [places, ready]);
 
-  // Detect the reader taking manual control (drag, zoom, or Street View) so
-  // the scroll-driven camera effect below knows to pause auto-framing.
-  // Guarded by `programmaticRef` so our own fitBounds/setZoom calls don't
-  // trip it. Scrolling the timeline takes the camera back: exploring is a
-  // detour, reading is the primary mode, and the page scrolling is the
-  // clearest signal the reader has returned to it. (Wheel-scrolling over the
-  // map counts — under "cooperative" gestures a plain wheel scrolls the
-  // page.) Re-attaches after a theme rebuild (mapEpoch), which also resumes
-  // auto-framing since that's a fresh map instance.
+  // Detect the reader taking manual control (drag or Street View) so the
+  // scroll-geared camera below knows to pause. Zoom deliberately doesn't
+  // count: the camera never writes zoom, so zooming needs no pause — the pan
+  // simply continues at the reader's level. Our own setCenter/panTo calls
+  // never fire these gesture events, so no programmatic guard is needed.
+  // Scrolling the timeline takes the camera back: exploring is a detour,
+  // reading is the primary mode, and the page scrolling is the clearest
+  // signal the reader has returned to it. (Wheel-scrolling over the map
+  // counts — under "cooperative" gestures a plain wheel scrolls the page.)
+  // Re-attaches after a theme rebuild (mapEpoch), which also resumes the
+  // geared camera since that's a fresh map instance.
   useEffect(() => {
     const ctx = mapRef.current;
     if (!ctx) return;
     userTookOverRef.current = false;
     const takeOver = () => {
-      if (!programmaticRef.current) userTookOverRef.current = true;
+      userTookOverRef.current = true;
     };
     const streetView = ctx.map.getStreetView();
     const listeners = [
       ctx.maps.event.addListener(ctx.map, "dragstart", takeOver),
-      ctx.maps.event.addListener(ctx.map, "zoom_changed", takeOver),
       streetView.addListener("visible_changed", () => {
         if (streetView.getVisible()) takeOver();
       }),
     ];
-    const onScroll = () => {
-      if (!userTookOverRef.current) return;
-      userTookOverRef.current = false;
-      applyFraming(ctx, lastFramingRef.current ?? [places[0]]);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      listeners.forEach((l) => l.remove());
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, [ready, mapEpoch, places]);
+    return () => listeners.forEach((l) => l.remove());
+  }, [ready, mapEpoch]);
 
   // Scroll spy: one rect pass per tick computes both reveal (reached or
-  // passed → accumulates) and focus (on screen right now → moving window).
-  // Runs in both real-map and placeholder modes.
+  // passed → accumulates) and the centered event (article midpoint nearest
+  // the band midline → the placeholder's chip highlight; the real camera
+  // samples the track itself, unthrottled). Runs in both real-map and
+  // placeholder modes.
   useEffect(() => {
-    const placeByEvent = new Map();
-    places.forEach((place, i) =>
-      place.eventIds.forEach((id) => placeByEvent.set(id, i))
-    );
     const located = [...document.querySelectorAll("[data-event-id]")].filter(
       (el) => placeByEvent.has(el.dataset.eventId)
     );
     const pending = new Set(located);
 
     const check = () => {
-      // The banner owns the bottom ~quarter of the viewport; "on screen"
-      // means overlapping the band between the viewport top and the map.
+      // The banner owns the bottom ~quarter of the viewport; reveal triggers
+      // once an event overlaps the band between the viewport top and the map.
       const limit = window.innerHeight * 0.75;
+      const midline =
+        (window.innerHeight - (asideRef.current?.offsetHeight ?? 0)) / 2;
       const hits = [];
-      const nextFocus = new Set();
+      let nearest = null;
+      let nearestDist = Infinity;
       for (const el of located) {
         const rect = el.getBoundingClientRect();
         // Skip events display:none'd by the tag filter (zero-size rect).
         if (rect.width === 0 && rect.height === 0) continue;
+        const dist = Math.abs((rect.top + rect.bottom) / 2 - midline);
+        if (dist < nearestDist) {
+          nearestDist = dist;
+          nearest = placeByEvent.get(el.dataset.eventId);
+        }
         if (rect.top >= limit) continue; // not reached yet
-        const place = placeByEvent.get(el.dataset.eventId);
         if (pending.has(el)) {
-          hits.push(place);
+          hits.push(placeByEvent.get(el.dataset.eventId));
           pending.delete(el);
         }
-        if (rect.bottom > 0) nextFocus.add(place); // not yet scrolled off top
       }
       if (hits.length) setRevealed((prev) => new Set([...prev, ...hits]));
-      // Publish focus only when the set really changed — scroll ticks are
-      // frequent, camera refits should not be. Returning `prev` keeps the
-      // state referentially stable, so no re-render happens.
-      setFocus((prev) =>
-        prev.size === nextFocus.size && [...nextFocus].every((i) => prev.has(i))
-          ? prev
-          : nextFocus
-      );
+      // A primitive, so React skips the re-render while it doesn't change.
+      setCentered(nearest);
     };
 
     let throttle = null;
@@ -285,14 +318,14 @@ export default function TimelineMap({ apiKey, mapId, places }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
-  }, [places]);
+  }, [places, placeByEvent]);
 
   // Advanced markers require a map ID; without a custom one (cloud-styled,
   // set via PUBLIC_GOOGLE_MAPS_MAP_ID), Google's documented sandbox ID keeps
   // the default styling. Note a map ID means the map's look is cloud-owned —
   // inline `styles` arrays would be ignored, so theming rides on the API's
   // colorScheme instead.
-  const makeMap = (maps) =>
+  const makeMap = (maps, camera) =>
     new maps.Map(canvasRef.current, {
       // Blanket-hide the default UI, but re-enable zoom and Street View —
       // the reader can pan/zoom/drop the pegman in to explore a place.
@@ -305,9 +338,13 @@ export default function TimelineMap({ apiKey, mapId, places }) {
       gestureHandling: "cooperative",
       mapId: mapId || "DEMO_MAP_ID",
       colorScheme: currentScheme(),
+      // { center, zoom } — the only time the camera's zoom is ever written.
+      ...camera,
     });
 
-  // Boot the map.
+  // Boot the map: open at city scale on the track position — the first
+  // event's pin at the top of the page, or wherever a restored scroll
+  // position lands.
   useEffect(() => {
     // canvasRef only exists once the portal has rendered.
     if (!apiKey || !mounted) return;
@@ -315,7 +352,11 @@ export default function TimelineMap({ apiKey, mapId, places }) {
     loadGoogleMaps(apiKey)
       .then((maps) => {
         if (cancelled || !canvasRef.current) return;
-        const map = makeMap(maps);
+        const cam = trackCamera();
+        const map = makeMap(maps, {
+          center: cam?.center ?? { lat: places[0].lat, lng: places[0].lng },
+          zoom: OPEN_ZOOM,
+        });
         mapRef.current = { maps, map };
         if (import.meta.env.DEV) window.__tlMap = map;
         setReady(true);
@@ -375,33 +416,52 @@ export default function TimelineMap({ apiKey, mapId, places }) {
     }
   }, [revealed, ready, places, mapEpoch]);
 
-  // Camera: frame the focused places. While the focus is empty (a gap or an
-  // unlocated stretch of the timeline), hold the last framing; before
-  // anything has ever been framed, open on the journey's first place. Native
-  // fitBounds transitions by design — smooth when near, a cut when far.
-  // Re-runs after a theme rebuild (mapEpoch) to re-frame the fresh map. Backs
-  // off once the reader has taken over the camera (see the effect above) —
-  // still tracks the current framing underneath so a later theme rebuild
-  // (which hands control back) opens on the right place.
+  // Camera: glide along the camera track in sync with scroll. rAF-gated —
+  // one track sample per frame at most, with no further throttle: the pan is
+  // the scroll's mirror, so it must track every frame (setCenter, not panTo;
+  // the scroll itself supplies the motion). The first scroll after a manual
+  // takeover instead pans back onto the track — smooth when near, a cut
+  // when far, panTo's native behavior — and the gearing resumes from there.
+  // Re-attaches after a theme rebuild (mapEpoch) against the fresh map.
   useEffect(() => {
     const ctx = mapRef.current;
     if (!ctx) return;
-    if (focus.size) {
-      lastFramingRef.current = [...focus].map((i) => places[i]);
-    }
-    if (userTookOverRef.current) return;
-    applyFraming(ctx, lastFramingRef.current ?? [places[0]]);
-  }, [focus, ready, places, mapEpoch]);
+    let raf = null;
+    const onScroll = () => {
+      if (raf !== null) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        const cam = trackCamera();
+        if (!cam) return;
+        if (userTookOverRef.current) {
+          userTookOverRef.current = false;
+          ctx.map.panTo(cam.center);
+        } else {
+          ctx.map.setCenter(cam.center);
+        }
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      if (raf !== null) cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [ready, mapEpoch, places, placeByEvent]);
 
   // Follow Starlight's dark/light toggle (data-theme on <html>). colorScheme
   // is fixed at construction, so a toggle means rebuilding the map on the
-  // same canvas; bumping mapEpoch re-runs the marker effect against it.
+  // same canvas; bumping mapEpoch re-runs the marker effect against it. The
+  // old map's center and zoom carry over — the reader's zoom survives the
+  // rebuild.
   useEffect(() => {
     if (!ready) return;
     const observer = new MutationObserver(() => {
       const ctx = mapRef.current;
       if (!ctx || !canvasRef.current) return;
-      ctx.map = makeMap(ctx.maps);
+      ctx.map = makeMap(ctx.maps, {
+        center: ctx.map.getCenter(),
+        zoom: ctx.map.getZoom(),
+      });
       if (import.meta.env.DEV) window.__tlMap = ctx.map;
       setMapEpoch((epoch) => epoch + 1);
     });
@@ -439,7 +499,11 @@ export default function TimelineMap({ apiKey, mapId, places }) {
 
   const banner =
     !apiKey || failed ? (
-      <aside className="tl-map tl-map--placeholder" aria-label="Journey map">
+      <aside
+        ref={asideRef}
+        className="tl-map tl-map--placeholder"
+        aria-label="Journey map"
+      >
         {toggleButton}
         <p className="tl-map-note">
           {failed
@@ -451,7 +515,7 @@ export default function TimelineMap({ apiKey, mapId, places }) {
             <li
               key={i}
               hidden={!revealed.has(i)}
-              className={focus.has(i) ? "tl-map-pin--focus" : undefined}
+              className={centered === i ? "tl-map-pin--centered" : undefined}
             >
               {/* Chip click = marker click: scroll to the place's event. */}
               <button type="button" onClick={() => scrollToPlace(i)}>

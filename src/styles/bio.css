@@ -569,9 +569,9 @@ body:has(.tl-map) main {
   vertical-align: -0.15em;
 }
 
-/* Chips whose place is in focus (an event of theirs is on screen) — mirrors
-   the camera framing so the keyless placeholder still shows the behavior. */
-.tl-map-pins li.tl-map-pin--focus {
+/* The chip whose place hosts the centered event — mirrors the camera track
+   so the keyless placeholder still shows the behavior. */
+.tl-map-pins li.tl-map-pin--centered {
   background: var(--sl-color-accent-low, var(--sl-color-gray-5));
   color: var(--sl-color-white);
 }

@@ -39,14 +39,15 @@ const timeline = defineCollection({
     // derived from tags, since an event can carry tags from both spheres.
     sphere: z.enum(['work', 'life']),
     tags: z.array(z.string()).default([]),
-    // Optional place, kept structured so a future map can drop a marker.
-    location: z
-      .object({
-        label: z.string(),
-        lat: z.number(),
-        lng: z.number(),
-      })
-      .optional(),
+    // Where the event happened. Required: the timeline map's camera track
+    // runs through every event's pin, so an event without coordinates would
+    // be a hole in the track — the build/dev server errors on the file until
+    // the author fills it in.
+    location: z.object({
+      label: z.string(),
+      lat: z.number(),
+      lng: z.number(),
+    }),
     // Slug under src/content/docs/blog/ for the migrated post that tells the
     // full story of this event, if one exists.
     post: z.string().optional(),
