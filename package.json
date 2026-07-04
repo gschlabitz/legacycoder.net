@@ -2,6 +2,9 @@
   "name": "astronautical-asteroid",
   "type": "module",
   "version": "0.0.1",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -19,7 +22,8 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "sharp": "0.34.5",
-    "starlight-blog": "^0.27.0"
+    "starlight-blog": "^0.27.0",
+    "starlight-theme-chameleon": "*"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,

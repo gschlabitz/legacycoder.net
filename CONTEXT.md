@@ -53,6 +53,15 @@ written (a re-arrangement, never a retranslation). Images rehosted locally,
 dead video embeds replaced with a note. Comments were not migrated.
 _Avoid_: article, entry
 
+### Theming
+
+**Chameleon**:
+The skin-switching Starlight plugin developed in this repo as a workspace
+package (`packages/starlight-theme-chameleon`) and layered on top of
+starlight-blog; the site is its first adopter. It has its own context — see
+[CONTEXT-MAP.md](./CONTEXT-MAP.md).
+_Avoid_: theme plugin, theme selector, palette plugin
+
 ### Bio timeline
 
 **Timeline event**:

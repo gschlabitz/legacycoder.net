@@ -1,0 +1,8 @@
+/*
+ * starlight-theme-chameleon base styles.
+ *
+ * Skin CSS lands here in later phases. Every skin is compiled into the site
+ * at build time and scoped under `[data-skin='<name>']`, so switching skins
+ * at runtime only flips that attribute — no stylesheet loading.
+ * Motto: change the skin, not the skeleton.
+ */

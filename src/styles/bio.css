@@ -202,6 +202,9 @@
   margin: 0;
 }
 
+/* Ghost buttons: no border or fill at rest — just the glyph. Hovering (or
+   holding the filter popup open) lights a soft radial glow behind the icon;
+   active states recolor the glyph itself (see --filtering / aria-pressed). */
 .tl-filter-toggle {
   position: relative;
   display: flex;
@@ -210,30 +213,47 @@
   width: 2.25rem;
   height: 2.25rem;
   padding: 0;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 0.5rem;
-  background: var(--sl-color-bg);
+  border: none;
+  background: transparent;
   color: var(--sl-color-gray-2);
   cursor: pointer;
-  transition:
-    border-color 0.15s ease,
-    color 0.15s ease;
+  transition: color 0.15s ease;
+}
+
+/* The glow itself. A gradient can't be transitioned, so it sits on a
+   pseudo-element and fades in via opacity. */
+.tl-filter-toggle::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--sl-color-accent) 35%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.15s ease;
 }
 
 .tl-filter-toggle svg {
+  position: relative;
   width: 1.1rem;
   height: 1.1rem;
 }
 
 .tl-filter-toggle:hover,
 .tl-filter-toggle[aria-expanded="true"] {
-  border-color: var(--sl-color-accent);
   color: var(--sl-color-white);
+}
+
+.tl-filter-toggle:hover::before,
+.tl-filter-toggle[aria-expanded="true"]::before {
+  opacity: 1;
 }
 
 /* Some tag is unchecked — recolor the funnel as the "filter active" signal. */
 .tl-filter-toggle--filtering {
-  border-color: var(--sl-color-accent);
   color: var(--sl-color-accent);
 }
 
@@ -256,7 +276,6 @@
 /* Newest-first active: flip the sort arrow and recolor, mirroring the
    filter's "active" signal. */
 .tl-order-toggle[aria-pressed="true"] {
-  border-color: var(--sl-color-accent);
   color: var(--sl-color-accent);
 }
 
