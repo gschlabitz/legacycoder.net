@@ -3,6 +3,7 @@ import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 import { getCollection, render } from "astro:content";
 import TimelineFilter from "../components/TimelineFilter.jsx";
 import TimelineMap from "../components/TimelineMap.jsx";
+import TimelineOrder from "../components/TimelineOrder.jsx";
 
 // Build-time: load every life event and order it chronologically.
 const events = (await getCollection("timeline")).sort(
@@ -111,10 +112,12 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
     <div class="tl-spheres">
       <h2 class="tl-sphere">Work</h2>
       <h2 class="tl-sphere">Life</h2>
+      <TimelineOrder client:load />
       <TimelineFilter client:load tags={allTags} />
     </div>
-    {
-      years.map(([year, yearEvents]) => (
+    <div class="tl-years">
+      {
+        years.map(([year, yearEvents]) => (
         <section class="tl-year" data-timeline-year>
           <h2 class="tl-year-heading">
             {placeByYear.get(year)
@@ -146,9 +149,10 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
               );
             })}
           </div>
-        </section>
-      ))
-    }
+          </section>
+        ))
+      }
+    </div>
   </div>
   {
     showMap && (

@@ -43,7 +43,7 @@
 /* WORK hugs the left edge, LIFE the right — the wide middle is where the
    sticky year pill docks, which since it gained the place label ("Berlin,
    Germany - 1992") needs most of the row. The right padding also keeps LIFE
-   clear of the absolutely-positioned filter button. */
+   clear of the absolutely-positioned order and filter buttons. */
 .tl-spheres {
   position: sticky;
   top: calc(var(--sl-nav-height) + var(--sl-mobile-toc-height, 0rem));
@@ -51,7 +51,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-inline: 0 3rem;
+  padding-inline: 0 6rem;
   height: var(--tl-header-h);
   margin-bottom: var(--sl-spacing-md, 1rem);
   background: var(--sl-color-bg);
@@ -87,7 +87,7 @@
   padding: 0 1rem;
   /* Opaque so the rail and events pass behind the text, not through it. */
   background: var(--sl-color-bg);
-  font-size: var(--sl-text-h2);
+  font-size: calc(var(--sl-text-h2) / 2);
   color: var(--sl-color-white);
 }
 
@@ -152,8 +152,9 @@
 
 .tl-title {
   margin: 0.1rem 0 0.5rem;
-  font-size: var(--sl-text-h4);
-  color: var(--sl-color-white);
+  font-size: var(--sl-text-body);
+  font-weight: 700;
+  color: var(--sl-color-gray-1);
 }
 
 .tl-body {
@@ -234,6 +235,48 @@
 .tl-filter-toggle--filtering {
   border-color: var(--sl-color-accent);
   color: var(--sl-color-accent);
+}
+
+/* --- Order toggle island (TimelineOrder, left of the filter) --------- */
+/* Shares .tl-filter-toggle's button styling; only the placement and the
+   pressed state are its own. Absolutely positioned like .tl-filter, one
+   button-width plus a gap further from the edge. */
+.tl-order-toggle {
+  position: absolute;
+  right: 3rem;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+}
+
+.tl-order-toggle svg {
+  transition: transform 0.2s ease;
+}
+
+/* Newest-first active: flip the sort arrow and recolor, mirroring the
+   filter's "active" signal. */
+.tl-order-toggle[aria-pressed="true"] {
+  border-color: var(--sl-color-accent);
+  color: var(--sl-color-accent);
+}
+
+.tl-order-toggle[aria-pressed="true"] svg {
+  transform: rotate(180deg);
+}
+
+/* --- Timeline order -------------------------------------------------- */
+/* The DOM is always chronological (oldest first) — reversing is purely
+   visual, so the filter island's DOM queries and the map's scroll spy keep
+   working unchanged. Flipping both levels (years, and events within a year)
+   yields a fully newest-first reading order. */
+.tl-years {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline.tl-newest-first .tl-years,
+.timeline.tl-newest-first .tl-events {
+  flex-direction: column-reverse;
 }
 
 .tl-filter-pop {
