@@ -82,10 +82,11 @@ _Avoid_: location map, minimap
 **Tag pin**:
 The teardrop pin colored by an event's first tag — the same shape and color on
 the timeline rail (where every event has one in place of a dot) and as the
-timeline map's markers (colored by the place's first event). Pins are also the
-cross-navigation: clicking a rail pin centers the map on the event's place,
-clicking a map pin scrolls the timeline to its event, cycling through them
-when the place hosts several.
+timeline map's markers (colored by the place's first event). Tags with a
+glyph emoji (see `TAG_GLYPHS`) show it in the pin head; tags without one keep
+the plain punched-hole head. Pins are also the cross-navigation: clicking a
+rail pin centers the map on the event's place, clicking a map pin scrolls the
+timeline to its event, cycling through them when the place hosts several.
 _Avoid_: dot, marker icon, custom marker
 
 **Pin reveal**:

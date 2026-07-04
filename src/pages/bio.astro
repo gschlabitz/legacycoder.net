@@ -4,7 +4,7 @@ import { getCollection, render } from "astro:content";
 import TimelineFilter from "../components/TimelineFilter.jsx";
 import TimelineMap from "../components/TimelineMap.jsx";
 import TimelineOrder from "../components/TimelineOrder.jsx";
-import { pinSvg, tagColor } from "../lib/tag-pins.js";
+import { pinSvg, tagColor, tagGlyph } from "../lib/tag-pins.js";
 
 // Build-time: load every life event and order it chronologically.
 const events = (await getCollection("timeline")).sort(
@@ -38,10 +38,13 @@ for (const [year, yearEvents] of years) {
 // Distinct tags, for the filter island's chips.
 const allTags = [...new Set(events.flatMap((e) => e.data.tags))].sort();
 
-// Tag pin color for an event: its first tag decides (events carrying several
-// tags lead with the defining one). Shared with the map via src/lib/tag-pins.
+// Tag pin color and glyph for an event: its first tag decides (events
+// carrying several tags lead with the defining one). Shared with the map via
+// src/lib/tag-pins.
 const eventColor = (event: (typeof events)[number]) =>
   tagColor(event.data.tags[0], allTags);
+const eventGlyph = (event: (typeof events)[number]) =>
+  tagGlyph(event.data.tags[0]);
 
 // Pre-render each Markdown body to a component (render() is async, so it can't
 // run inside the template loop below).
@@ -65,6 +68,7 @@ type Place = {
   lng: number;
   label: string;
   color: string; // tag pin color, from the place's first (earliest) event
+  glyph: string | undefined; // tag glyph emoji, same source as color
   titles: string[];
   eventIds: string[];
 };
@@ -79,6 +83,7 @@ for (const event of events) {
       lng: loc.lng,
       label: loc.label,
       color: eventColor(event),
+      glyph: eventGlyph(event),
       titles: [],
       eventIds: [],
     });
@@ -151,14 +156,14 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                       type="button"
                       title={event.data.tags[0]}
                       aria-label={`Show ${event.data.location.label} on the map`}
-                      set:html={pinSvg(eventColor(event))}
+                      set:html={pinSvg(eventColor(event), 24, eventGlyph(event))}
                     />
                   ) : (
                     <span
                       class="tl-pin tl-pin--static"
                       title={event.data.tags[0]}
                       aria-hidden="true"
-                      set:html={pinSvg(eventColor(event))}
+                      set:html={pinSvg(eventColor(event), 24, eventGlyph(event))}
                     />
                   )}
                   <p class="tl-month">{monthFmt.format(event.data.date)}</p>

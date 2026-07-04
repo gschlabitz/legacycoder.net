@@ -124,9 +124,9 @@
    itself (per tag, see src/lib/tag-pins.js). */
 .tl-pin {
   position: absolute;
-  top: calc(0.4em - 13px);
-  width: 20px;
-  height: 20px;
+  top: calc(0.4em - 17px);
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: none;
   background: none;
@@ -156,11 +156,11 @@ button.tl-pin:focus-visible {
 }
 
 .tl-event--work .tl-pin {
-  right: -10px;
+  right: -12px;
 }
 
 .tl-event--life .tl-pin {
-  left: -10px;
+  left: -12px;
 }
 
 /* Mirror the tag chips toward the rail on the work side. */
@@ -583,7 +583,7 @@ body:has(.tl-map) main {
 
   .tl-event--work .tl-pin,
   .tl-event--life .tl-pin {
-    left: calc(var(--tl-rail-x) - 8px);
+    left: calc(var(--tl-rail-x) - 10px);
     right: auto;
   }
 

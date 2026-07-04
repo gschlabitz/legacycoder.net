@@ -18,10 +18,11 @@ import { pinSvg } from "../lib/tag-pins.js";
 //   first one, it opens on the journey's first place.
 //
 // `places` is prepared at build time in bio.astro: events sharing coordinates
-// are grouped into one place ({ lat, lng, label, color, titles, eventIds })
-// so repeat locations don't stack identical markers. `color` is the tag pin
-// color of the place's first event — markers render the same pin SVG as the
-// timeline rail (src/lib/tag-pins.js), so rail and map pins match by color.
+// are grouped into one place ({ lat, lng, label, color, glyph, titles,
+// eventIds }) so repeat locations don't stack identical markers. `color` and
+// `glyph` are the tag pin color/emoji of the place's first event — markers
+// render the same pin SVG as the timeline rail (src/lib/tag-pins.js), so
+// rail and map pins match at a glance.
 //
 // Pins are also the cross-navigation between the two views: clicking a rail
 // pin centers the map on that event's place (revealing its marker if the
@@ -343,7 +344,7 @@ export default function TimelineMap({ apiKey, mapId, places }) {
         // doesn't replay it.
         const pin = document.createElement("div");
         pin.className = "tl-map-pin tl-map-pin-drop";
-        pin.innerHTML = pinSvg(place.color, 30);
+        pin.innerHTML = pinSvg(place.color, 30, place.glyph);
         // Listen on the content div, not the marker's gmp-click. The click
         // must not reach Google's own handlers: they focus the marker, and
         // the browser's scroll-into-view for that focus cancels (or fights)
@@ -451,7 +452,10 @@ export default function TimelineMap({ apiKey, mapId, places }) {
             >
               {/* Chip click = marker click: scroll to the place's event. */}
               <button type="button" onClick={() => scrollToPlace(i)}>
-                <span style={{ color: place.color }}>⬤</span> {place.label}
+                {place.glyph ?? (
+                  <span style={{ color: place.color }}>⬤</span>
+                )}{" "}
+                {place.label}
               </button>
             </li>
           ))}
