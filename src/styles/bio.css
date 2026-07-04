@@ -18,18 +18,20 @@
   margin-top: var(--sl-spacing-lg, 1.5rem);
 }
 
-/* Continuous rail running the full height of the timeline. Thicker and
-   tinted toward the accent color (echoing .tl-dot) so it reads as the
-   timeline's spine rather than a faint divider; fades at the very top/bottom
-   so it doesn't look like it's cut off mid-line. */
+/* Continuous rail running the full height of the timeline. The same 2px
+   thickness and color as the tag pins' ring outline (mirrored by PIN_COLOR
+   and the ring stroke in src/lib/tag-pins.js — keep them in sync), which in
+   turn matches the .tl-month labels, so rail, pins, and month captions read
+   as one quiet system. Fades at the very top/bottom so it doesn't look like
+   it's cut off mid-line. */
 .timeline::before {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  left: calc(50% - 2px);
-  width: 4px;
-  --tl-rail-color: color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+  left: calc(50% - 1px);
+  width: 2px;
+  --tl-rail-color: var(--sl-color-gray-3);
   background: linear-gradient(
     to bottom,
     transparent,
@@ -87,8 +89,13 @@
   padding: 0 1rem;
   /* Opaque so the rail and events pass behind the text, not through it. */
   background: var(--sl-color-bg);
-  font-size: calc(var(--sl-text-h2) / 2);
-  color: var(--sl-color-white);
+  /* Same treatment as .tl-month, so the rail's waypoints (months, years,
+     pins) share one voice. */
+  font-size: var(--sl-text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--sl-color-gray-3);
 }
 
 /* --- Events --------------------------------------------------------- */
@@ -138,6 +145,21 @@
   height: 100%;
 }
 
+/* Glyph pins on the rail are the ringed emoji alone (no stem): a circle
+   sitting on the rail like a node on the line, centered where the plain
+   teardrop's tip would land (0.4em + 7px, the old dot's center). The 48px
+   box renders the ring at 44px — the same bubble size as the map markers. */
+.tl-pin--glyph {
+  top: calc(0.4em - 17px);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%; /* round focus outline */
+}
+
+button.tl-pin--glyph {
+  transform-origin: center; /* rings grow in place, not from a tip */
+}
+
 /* Located events render the pin as a button (click centers the map); grow it
    from the tip on hover as the affordance. */
 button.tl-pin {
@@ -163,6 +185,16 @@ button.tl-pin:focus-visible {
   left: -12px;
 }
 
+/* Rings are wider than teardrops; must come after the base side rules
+   (equal specificity) to win. */
+.tl-event--work .tl-pin--glyph {
+  right: -24px;
+}
+
+.tl-event--life .tl-pin--glyph {
+  left: -24px;
+}
+
 /* Mirror the tag chips toward the rail on the work side. */
 .tl-event--work .tl-tags {
   justify-content: flex-end;
@@ -171,6 +203,7 @@ button.tl-pin:focus-visible {
 .tl-month {
   margin: 0;
   font-size: var(--sl-text-sm);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--sl-color-gray-3);
@@ -583,8 +616,13 @@ body:has(.tl-map) main {
 
   .tl-event--work .tl-pin,
   .tl-event--life .tl-pin {
-    left: calc(var(--tl-rail-x) - 10px);
+    left: calc(var(--tl-rail-x) - 11px);
     right: auto;
+  }
+
+  .tl-event--work .tl-pin--glyph,
+  .tl-event--life .tl-pin--glyph {
+    left: calc(var(--tl-rail-x) - 23px);
   }
 
   .tl-event--work .tl-tags {

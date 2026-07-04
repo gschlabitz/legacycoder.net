@@ -38,9 +38,10 @@ for (const [year, yearEvents] of years) {
 // Distinct tags, for the filter island's chips.
 const allTags = [...new Set(events.flatMap((e) => e.data.tags))].sort();
 
-// Tag pin color and glyph for an event: its first tag decides (events
-// carrying several tags lead with the defining one). Shared with the map via
-// src/lib/tag-pins.
+// Tag glyph for an event: its first tag decides (events carrying several
+// tags lead with the defining one). Shared with the map via src/lib/tag-pins.
+// Pins render in one shared color (PIN_COLOR); the per-tag color only tints
+// the map placeholder's chips now.
 const eventColor = (event: (typeof events)[number]) =>
   tagColor(event.data.tags[0], allTags);
 const eventGlyph = (event: (typeof events)[number]) =>
@@ -152,18 +153,25 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                       map on the event's place (wired in TimelineMap). */}
                   {event.data.location ? (
                     <button
-                      class="tl-pin"
+                      class:list={[
+                        "tl-pin",
+                        eventGlyph(event) && "tl-pin--glyph",
+                      ]}
                       type="button"
                       title={event.data.tags[0]}
                       aria-label={`Show ${event.data.location.label} on the map`}
-                      set:html={pinSvg(eventColor(event), 24, eventGlyph(event))}
+                      set:html={pinSvg(48, eventGlyph(event), false)}
                     />
                   ) : (
                     <span
-                      class="tl-pin tl-pin--static"
+                      class:list={[
+                        "tl-pin",
+                        "tl-pin--static",
+                        eventGlyph(event) && "tl-pin--glyph",
+                      ]}
                       title={event.data.tags[0]}
                       aria-hidden="true"
-                      set:html={pinSvg(eventColor(event), 24, eventGlyph(event))}
+                      set:html={pinSvg(48, eventGlyph(event), false)}
                     />
                   )}
                   <p class="tl-month">{monthFmt.format(event.data.date)}</p>
