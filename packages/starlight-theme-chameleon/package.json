@@ -24,5 +24,8 @@
   "peerDependencies": {
     "@astrojs/starlight": ">=0.41",
     "astro": ">=5"
+  },
+  "dependencies": {
+    "@fontsource/inconsolata": "^5.2.8"
   }
 }

@@ -17,7 +17,7 @@ What a skin can never do is captured by the motto: it changes presentation, neve
 - **You control exposure** — render the skin selector as a visible select, a compact icon button, or hide it to pin the first skin site-wide.
 - **Light and dark, always** — every skin covers Starlight's light/dark/auto mode; that requirement is part of the curation. Readers combine any skin with either mode, the mode switch stays right next to the skin selector, and `prefers-color-scheme` keeps working everywhere.
 - **Code blocks follow along** — each skin pairs with matching syntax themes via Expressive Code, compiled into the same build and switched by the same attribute.
-- **Fonts on demand** — a skin's webfonts are only downloaded while that skin is active, so offering five skins doesn't ship five typefaces to every reader.
+- **Fonts on demand** — skin webfonts are only downloaded while their skin is active; built-in skins use `@fontsource` for non-system fonts so they avoid runtime third-party font requests without vendoring binaries.
 - **Nothing to localize** — every skin entry is a proper noun shown identically in every language, including "Starlight" for the unskinned look. The plugin's one UI string (the selector label) ships in ten languages with an English fallback — see [Localization](#localization).
 
 ## Built-in skins
@@ -25,7 +25,7 @@ What a skin can never do is captured by the motto: it changes presentation, neve
 | Name | Feel | Code pairing (dark / light) |
 | --- | --- | --- |
 | `nordic` | Calm and frosty: [Nord](https://www.nordtheme.com) colors (MIT, Sven Greb), humanist sans, soft shadows | `nord` / `slack-ochin` |
-| `catppuccin` | Soothing pastels: official [Catppuccin](https://github.com/catppuccin/palette) Mocha and Latte flavors (MIT, Catppuccin Org), mauve accent, rounded surfaces, [Hack](https://github.com/source-foundry/Hack) for code | `catppuccin-mocha` / `catppuccin-latte` |
+| `catppuccin` | Soothing pastels: official [Catppuccin](https://github.com/catppuccin/palette) Mocha and Latte flavors (MIT, Catppuccin Org), mauve accent, rounded surfaces, [Inconsolata](https://github.com/cyrealtype/Inconsolata) for code | `catppuccin-mocha` / `catppuccin-latte` |
 | `home-computer` | The 80s/90s machine on the family desk: green-phosphor CRT with glow and scanlines in dark mode, fanfold-paper printer hardcopy in light mode, mono type throughout | custom monochrome themes |
 
 ## Usage
@@ -105,6 +105,8 @@ starlightThemeChameleon({
 
 Custom skins appear in the selector after the built-in ones, and are held to the same bar as built-ins: every skin covers both light and dark mode. Chameleon warns at startup when a custom skin's CSS contains no `[data-skin='<name>']` selector, because unscoped rules leak into every skin. The full property catalog, the light/dark rules, and the starter template live in **[docs/skin-authoring.md](./docs/skin-authoring.md)**.
 
+Skin authors are free to choose the font loading strategy that fits their site: system stacks, `@fontsource`, hosted font CSS, or vendored font files. Chameleon's built-in skins prefer `@fontsource` for non-system fonts because it keeps font files out of this source tree and avoids browser requests to third-party font hosts. When using font packages, import only the weights and subsets the skin actually needs and document the license.
+
 ## Localization
 
 There is nothing you have to translate. Every entry readers see in the selector is a proper noun; the plugin's single localized UI string — the skin selector label — ships in the ten most common languages (en, zh-CN, es, fr, de, ja, ko, pt, ru, it) and falls back to English elsewhere, never to a raw translation key. To supply it in another language, add the key to your site's [Starlight i18n collection](https://starlight.astro.build/guides/i18n/#translate-starlights-ui):
@@ -122,7 +124,7 @@ Contributions of further languages are welcome.
 
 - **Skins restyle; they never restructure.** Starlight's interface icons are inline SVGs baked in at build time, so skins recolor them but cannot swap their shapes (see [docs/adr](./docs/adr)).
 - **Switching needs JavaScript.** Without it, readers get the Starlight look — the site's own styling — fully usable. That applies to pinned skins too.
-- **Every offered skin ships to every reader** (CSS only; fonts stay lazy). Keep the curated list small.
+- **Every offered skin's CSS ships to every reader.** Font package dependencies are installed with Chameleon, but browsers only download a font file when the active skin references that face. Keep the curated list small.
 
 ## Why not just install a community theme?
 
@@ -132,12 +134,12 @@ Starlight's community themes are excellent, but each one is a build-time plugin:
 
 MIT.
 
-Vendored skin ingredients, each MIT-licensed by its upstream:
+Skin ingredients and font dependencies:
 
 - **Nord** color palette (`nordic` skin) — © Sven Greb, [nordtheme/nord](https://github.com/nordtheme/nord)
 - **Catppuccin** color palette (`catppuccin` skin) — © Catppuccin Org, [catppuccin/palette](https://github.com/catppuccin/palette)
 - **Catppuccin for Starlight** variable mapping (`catppuccin` skin) — © Catppuccin Org, [catppuccin/starlight](https://github.com/catppuccin/starlight)
-- **Hack** typeface (`catppuccin` skin, vendored webfont) — © Source Foundry Authors, MIT with DejaVu lineage in the public domain, [source-foundry/Hack](https://github.com/source-foundry/Hack) (full text in [fonts/LICENSE-hack.md](./fonts/LICENSE-hack.md))
+- **Inconsolata** typeface (`catppuccin` skin, loaded via `@fontsource/inconsolata`) — © The Inconsolata Project Authors, OFL-1.1, [cyrealtype/Inconsolata](https://github.com/cyrealtype/Inconsolata)
 
 Additional artwork:
 

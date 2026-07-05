@@ -1,3 +1,6 @@
+@import '@fontsource/inconsolata/latin-400.css';
+@import '@fontsource/inconsolata/latin-700.css';
+
 /**
  * Catppuccin — soothing pastels: Mocha (dark) and Latte (light), mauve
  * accent, gently rounded surfaces.
@@ -12,48 +15,13 @@
  * Code pairing: Shiki's bundled `catppuccin-mocha` / `catppuccin-latte`,
  * see lib/skins.ts.
  *
- * Code font: Hack © Source Foundry Authors, MIT (DejaVu lineage public
- * domain) — https://github.com/source-foundry/Hack — vendored in ../fonts.
- * The @font-face declarations below can't be scoped, but browsers only
- * download a face once an active rule uses it, so Hack costs nothing while
- * another skin is showing.
+ * Code font: Inconsolata © The Inconsolata Project Authors, OFL-1.1 —
+ * loaded through @fontsource/inconsolata.
  *
  * Every rule scopes under [data-skin='catppuccin'] — change the skin, not
  * the skeleton. Dark mode is the base block; light mode overrides both the
  * palette and every mode-dependent value the base block touches.
  */
-
-@font-face {
-  font-family: 'Hack';
-  src: url('../fonts/hack-regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Hack';
-  src: url('../fonts/hack-bold.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Hack';
-  src: url('../fonts/hack-italic.woff2') format('woff2');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Hack';
-  src: url('../fonts/hack-bolditalic.woff2') format('woff2');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
 
 [data-skin='catppuccin'] {
   /* Palette — dark mode: Mocha. */
@@ -96,10 +64,10 @@
   --sl-shadow-md: 0px 4px 12px rgba(17, 17, 27, 0.3), 0px 1px 2px rgba(17, 17, 27, 0.4);
   --sl-shadow-lg: 0px 16px 40px rgba(17, 17, 27, 0.4), 0px 4px 12px rgba(17, 17, 27, 0.3);
 
-  /* Typography — rounded where the platform has it, Hack for code, cozy
+  /* Typography — rounded where the platform has it, Inconsolata for code, cozy
      leading. */
   --sl-font: ui-rounded, 'Hiragino Maru Gothic ProN', sans-serif;
-  --sl-font-mono: 'Hack', monospace;
+  --sl-font-mono: 'Inconsolata', monospace;
   --sl-line-height: 1.8;
 }
 

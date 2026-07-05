@@ -137,14 +137,27 @@ coverage mechanically, so this is a bar you hold yourself to; the
 
 ## Fonts
 
-Webfonts lazy-load for free: browsers fetch only fonts referenced by active
+Skin authors can use system stacks, `@fontsource`, hosted font CSS, or
+vendored font files. Chameleon does not forbid any of those: a skin's type is
+part of its presentation surface, and site authors who want no non-system
+fonts can curate or pin a different skin.
+
+For built-in skins, prefer `@fontsource` when a non-system font is important
+to the design. It keeps binaries out of Chameleon's source tree, avoids
+runtime requests to third-party font hosts, and lets Astro/Vite emit hashed
+font assets with the site build. Import only the weights and subsets the skin
+uses, then document the font's upstream and license.
+
+Webfonts lazy-load at runtime: browsers fetch only fonts referenced by active
 CSS rules, so a skin's `@font-face` downloads only while that skin is
-selected. Declare `@font-face` in the skin file (the declaration itself
-can't be scoped, but an unused face costs nothing) and reference the family
-from your scoped `--sl-font`. Starlight appends system fallbacks to
-`--sl-font`/`--sl-font-mono` automatically. Worked example:
-`skins/catppuccin.css` vendors the Hack typeface (four faces in `../fonts`,
-license file alongside) for its `--sl-font-mono`.
+selected. The package dependency itself is still installed with Chameleon;
+the laziness is about browser downloads, not npm installation. Declare
+`@font-face` in the skin file (the declaration itself can't be scoped, but an
+unused face costs nothing) and reference the family from your scoped
+`--sl-font`/`--sl-font-mono`. Starlight appends system fallbacks to those
+variables automatically. Worked example: `skins/catppuccin.css` imports only
+Inconsolata's Latin 400 and 700 faces from `@fontsource/inconsolata` for its
+`--sl-font-mono`.
 
 ## Code pairing
 
