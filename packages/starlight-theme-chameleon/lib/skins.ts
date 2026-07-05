@@ -19,8 +19,11 @@ export interface ChameleonSkinCode {
 export interface ChameleonSkin {
   /** Identifier used to activate the skin, e.g. `"nordic"`. Lowercase letters and dashes only. */
   name: string
-  /** Label shown to readers in the skin picker. May be a plain string or a record keyed by language. */
-  label: string | Record<string, string>
+  /**
+   * Name shown to readers in the skin picker, e.g. `"Nordic"`.
+   * Skin names are proper nouns and are never translated (ADR 0004).
+   */
+  label: string
   /** Module specifier of the skin's CSS file, e.g. `"./src/styles/skins/my-skin.css"`. */
   css: string
   /**
@@ -58,11 +61,12 @@ export interface ResolvedChameleonConfig {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Monochrome green-phosphor syntax theme for the CRT skin's dark mode.
- * Hierarchy comes from brightness and weight, not hue — like a real terminal.
+ * Monochrome green-phosphor syntax theme for the Home Computer skin's dark
+ * mode. Hierarchy comes from brightness and weight, not hue — like a real
+ * terminal.
  */
-const crtDarkCode = {
-  name: 'chameleon-crt-dark',
+const homeComputerDarkCode = {
+  name: 'chameleon-home-computer-dark',
   type: 'dark',
   colors: {
     'editor.background': '#0a120a',
@@ -84,11 +88,11 @@ const crtDarkCode = {
 } satisfies ChameleonCodeTheme
 
 /**
- * "Hardcopy" syntax theme for the CRT skin's light mode: dark greens and
- * earth tones on fanfold paper.
+ * "Hardcopy" syntax theme for the Home Computer skin's light mode: dark
+ * greens and earth tones on fanfold paper.
  */
-const crtLightCode = {
-  name: 'chameleon-crt-light',
+const homeComputerLightCode = {
+  name: 'chameleon-home-computer-light',
   type: 'light',
   colors: {
     'editor.background': '#f5f1e0',
@@ -112,15 +116,15 @@ const crtLightCode = {
 export const builtinSkins: ChameleonSkin[] = [
   {
     name: 'nordic',
-    label: { en: 'Nordic', de: 'Nordisch' },
+    label: 'Nordic',
     css: 'starlight-theme-chameleon/skins/nordic.css',
     code: { dark: 'nord', light: 'slack-ochin' },
   },
   {
-    name: 'crt',
-    label: 'CRT',
-    css: 'starlight-theme-chameleon/skins/crt.css',
-    code: { dark: crtDarkCode, light: crtLightCode },
+    name: 'home-computer',
+    label: 'Home Computer',
+    css: 'starlight-theme-chameleon/skins/home-computer.css',
+    code: { dark: homeComputerDarkCode, light: homeComputerLightCode },
   },
 ]
 
@@ -135,20 +139,11 @@ function fail(message: string): never {
 }
 
 function validateLabel(label: unknown, name: string): asserts label is ChameleonSkin['label'] {
-  if (typeof label === 'string') {
-    if (label.trim() === '') fail(`Skin \`${name}\` has an empty \`label\`.`)
-    return
-  }
-  if (typeof label === 'object' && label !== null && !Array.isArray(label)) {
-    const entries = Object.entries(label)
-    if (entries.length === 0) fail(`Skin \`${name}\` has an empty \`label\` record.`)
-    for (const [lang, value] of entries) {
-      if (typeof value !== 'string' || value.trim() === '')
-        fail(`Skin \`${name}\` has an invalid \`label\` for language \`${lang}\` — expected a non-empty string.`)
-    }
-    return
-  }
-  fail(`Skin \`${name}\` has an invalid \`label\` — expected a string or a record of language to string.`)
+  if (typeof label !== 'string' || label.trim() === '')
+    fail(
+      `Skin \`${name}\` has an invalid \`label\` — expected a non-empty string. ` +
+        'Skin names are proper nouns and are not translated, so no per-language record is needed.'
+    )
 }
 
 function validateCodeTheme(theme: unknown, name: string, slot: 'dark' | 'light'): void {
@@ -179,8 +174,12 @@ function validateCustomSkin(skin: unknown, index: number): asserts skin is Chame
   if (code !== undefined) {
     if (typeof code !== 'object' || code === null)
       fail(`Skin \`${name}\` has an invalid \`code\` — expected \`{ dark, light }\`.`)
-    validateCodeTheme((code as ChameleonSkinCode).dark, name, 'dark')
-    validateCodeTheme((code as ChameleonSkinCode).light, name, 'light')
+    const { dark, light } = code as Partial<ChameleonSkinCode>
+    // Every skin covers both modes (ADR 0005), so a pairing needs both faces.
+    if (dark === undefined || light === undefined)
+      fail(`Skin \`${name}\` has an incomplete \`code\` pairing — every skin covers both modes, so it needs both \`dark\` and \`light\` themes.`)
+    validateCodeTheme(dark, name, 'dark')
+    validateCodeTheme(light, name, 'light')
   }
 }
 

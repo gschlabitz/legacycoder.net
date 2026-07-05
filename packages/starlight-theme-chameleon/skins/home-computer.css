@@ -1,19 +1,19 @@
 /**
- * CRT — high-contrast retro terminal.
+ * Home Computer — the 80s/90s machine on the family desk.
  *
- * Dark mode is a green-phosphor monitor: monochrome green on near-black,
- * a soft glow, and faint scanlines. Light mode is the hardcopy that came
- * out of the same machine: dark green ink on fanfold paper.
+ * Dark mode is its green-phosphor CRT: monochrome green on near-black,
+ * a soft glow, and faint scanlines. Light mode is the hardcopy from the
+ * printer beside it: dark green ink on fanfold paper.
  *
- * Code pairing: custom `chameleon-crt-dark` / `chameleon-crt-light` themes,
+ * Code pairing: custom `chameleon-home-computer-dark` / `-light` themes,
  * see lib/skins.ts.
  *
- * Every rule scopes under [data-skin='crt'] — change the skin, not the
- * skeleton. Dark mode is the base block; light mode overrides both the
- * palette and every mode-dependent value the base block touches.
+ * Every rule scopes under [data-skin='home-computer'] — change the skin,
+ * not the skeleton. Dark mode is the base block; light mode overrides both
+ * the palette and every mode-dependent value the base block touches.
  */
 
-[data-skin='crt'] {
+[data-skin='home-computer'] {
   /* Palette — dark mode. P1 phosphor greens on near-black. */
   --sl-color-white: #d9ffd9;
   --sl-color-gray-1: #a8f7a8;
@@ -58,7 +58,7 @@
   --sl-line-height: 1.65;
 }
 
-[data-skin='crt'][data-theme='light'] {
+[data-skin='home-computer'][data-theme='light'] {
   /* Palette — light mode. Hardcopy: green-black ink on fanfold paper. */
   --sl-color-white: #16200a;
   --sl-color-gray-1: #24300f;
@@ -100,25 +100,25 @@
 }
 
 /* Terminal voice: headings in caps, tracked out. */
-[data-skin='crt'] .sl-markdown-content :is(h1, h2, h3, h4, h5),
-[data-skin='crt'] .content-panel h1 {
+[data-skin='home-computer'] .sl-markdown-content :is(h1, h2, h3, h4, h5),
+[data-skin='home-computer'] .content-panel h1 {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
 
 /* Sharp corners everywhere a component rounds them. */
-[data-skin='crt'] .sl-markdown-content :is(.card, .sl-link-card, .starlight-aside) {
+[data-skin='home-computer'] .sl-markdown-content :is(.card, .sl-link-card, .starlight-aside) {
   border-radius: 0;
 }
 
 /* Phosphor glow — dark mode only; the hardcopy doesn't glow. */
-[data-skin='crt']:not([data-theme='light']) body {
+[data-skin='home-computer']:not([data-theme='light']) body {
   text-shadow: 0 0 3px color-mix(in srgb, currentColor 30%, transparent);
 }
 
 /* Faint scanlines over the whole tube. Purely decorative, so it sits above
    everything but lets every event through. */
-[data-skin='crt']:not([data-theme='light']) body::after {
+[data-skin='home-computer']:not([data-theme='light']) body::after {
   content: '';
   position: fixed;
   inset: 0;
@@ -134,11 +134,11 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  [data-skin='crt']:not([data-theme='light']) body::after {
-    animation: chameleon-crt-flicker 8s infinite;
+  [data-skin='home-computer']:not([data-theme='light']) body::after {
+    animation: chameleon-home-computer-flicker 8s infinite;
   }
 
-  @keyframes chameleon-crt-flicker {
+  @keyframes chameleon-home-computer-flicker {
     0%,
     100% {
       opacity: 1;
@@ -155,7 +155,7 @@
   }
 }
 
-[data-skin='crt'] ::selection {
+[data-skin='home-computer'] ::selection {
   background-color: var(--sl-color-accent);
   color: var(--sl-color-black);
 }

@@ -77,7 +77,7 @@ layered light-mode remaps).
 
 `ThemeSelect` override (`components/ThemeSelect.astro`) rendering the skin
 picker next to the stock mode select, fed by a virtual module; the picker
-always leads with "Default" — the host's unskinned look (ADR 0003). `picker:
+always leads with "Starlight" — the host's unskinned look (ADR 0003). `picker:
 false` pins the first skin site-wide with no picker. `localStorage` key
 `starlight-skin`, inline head script (via Starlight's `head` config) applies
 the attribute before first paint, EN/DE labels via `injectTranslations`,
@@ -88,15 +88,16 @@ warns and yields).
 ### Phase 4 — Built-in skins (done, 2 of 2–4)
 
 `nordic`: Nord palette (MIT, attributed in the CSS header) on humanist sans,
-soft cold shadows; paired with `nord` / `slack-ochin`. `crt`: green-phosphor
-terminal (glow, scanlines, flicker, mono type, caps headings) whose light
-mode is a fanfold-paper hardcopy; paired with custom monochrome VS Code theme
-objects. Both cover the full palette in both modes. Room left for 1–2 more.
+soft cold shadows; paired with `nord` / `slack-ochin`. `home-computer` (né
+`crt`): green-phosphor terminal (glow, scanlines, flicker, mono type, caps
+headings) whose light mode is a fanfold-paper hardcopy; paired with custom
+monochrome VS Code theme objects. Every skin covers both modes — required
+(ADR 0005; mode locks were prototyped and removed). Room left for 1–2 more.
 
 ### Phase 5 — Polish and extraction (demo done; extraction pending)
 
 README rewritten against the real API; demo live on legacycoder.net
-(`skins: ['nordic', 'crt']`). Remaining: extract
+(`skins: ['nordic', 'home-computer']`). Remaining: extract
 `packages/starlight-theme-chameleon` to its own repo with history
 (`git filter-repo`), publish to npm, and swap the workspace dependency for a
 version range.

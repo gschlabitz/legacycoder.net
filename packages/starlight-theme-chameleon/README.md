@@ -13,19 +13,19 @@ Starlight routes its entire look through `--sl-`-prefixed CSS custom properties:
 What a skin can never do is captured by the motto: it changes presentation, never markup, layout, or components. That single rule is what makes skins safe to switch at runtime, and what keeps Chameleon composable with other Starlight plugins, including `starlight-blog`.
 
 - **Curated list** — you decide which skins your site offers and in what order.
-- **Default first** — the picker always offers "Default": your site's own unskinned look. Installing Chameleon changes nothing until a reader picks a skin.
+- **Starlight first** — the picker always offers "Starlight": your site's own unskinned look. Installing Chameleon changes nothing until a reader picks a skin.
 - **You control exposure** — offer readers the picker, or set `picker: false` to pin the first skin site-wide and ship no picker at all.
-- **Light and dark aware** — every skin covers Starlight's light/dark/auto mode; readers combine any skin with either mode. The mode switch stays right next to the skin picker.
+- **Light and dark, always** — every skin covers Starlight's light/dark/auto mode; that requirement is part of the curation. Readers combine any skin with either mode, the mode switch stays right next to the skin picker, and `prefers-color-scheme` keeps working everywhere.
 - **Code blocks follow along** — each skin pairs with matching syntax themes via Expressive Code, compiled into the same build and switched by the same attribute.
 - **Fonts on demand** — a skin's webfonts are only downloaded while that skin is active, so offering five skins doesn't ship five typefaces to every reader.
-- **Localized** — picker labels ship in English and German, and skin labels can be per-language records.
+- **Nothing to localize** — the picker is a chameleon icon that opens the list of skins by name, and every entry is a proper noun shown identically in every language, including "Starlight" for the unskinned look. The plugin's one UI string (the screen-reader label) ships in ten languages with an English fallback — see [Localization](#localization).
 
 ## Built-in skins
 
 | Name | Feel | Code pairing (dark / light) |
 | --- | --- | --- |
 | `nordic` | Calm and frosty: [Nord](https://www.nordtheme.com) colors (MIT, Sven Greb), humanist sans, soft shadows | `nord` / `slack-ochin` |
-| `crt` | High-contrast retro terminal: green phosphor with glow and scanlines in dark mode, fanfold-paper hardcopy in light mode, mono type throughout | custom monochrome themes |
+| `home-computer` | The 80s/90s machine on the family desk: green-phosphor CRT with glow and scanlines in dark mode, fanfold-paper printer hardcopy in light mode, mono type throughout | custom monochrome themes |
 
 ## Usage
 
@@ -41,7 +41,7 @@ export default defineConfig({
       plugins: [
         starlightThemeChameleon({
           // Built-in skins to offer, in picker order. Defaults to all of them.
-          skins: ['nordic', 'crt'],
+          skins: ['nordic', 'home-computer'],
           // Let readers switch (default). Set to false to pin the first skin
           // site-wide and hide the picker.
           picker: true,
@@ -75,7 +75,7 @@ starlightThemeChameleon({
   customSkins: [
     {
       name: 'crt-green',
-      label: { en: 'CRT Green', de: 'CRT-Grün' },
+      label: 'CRT Green',
       css: './src/styles/skins/crt-green.css',
       // Optional: pair syntax themes (Shiki name or VS Code theme object).
       code: { dark: 'synthwave-84', light: 'vitesse-light' },
@@ -99,23 +99,30 @@ starlightThemeChameleon({
 }
 ```
 
-Custom skins appear in the picker after the built-in ones. Chameleon warns at startup when a custom skin's CSS contains no `[data-skin='<name>']` selector, because unscoped rules leak into every skin. The full property catalog, the light/dark rules, and the starter template live in **[docs/skin-authoring.md](./docs/skin-authoring.md)**.
+Custom skins appear in the picker after the built-in ones, and are held to the same bar as built-ins: every skin covers both light and dark mode. Chameleon warns at startup when a custom skin's CSS contains no `[data-skin='<name>']` selector, because unscoped rules leak into every skin. The full property catalog, the light/dark rules, and the starter template live in **[docs/skin-authoring.md](./docs/skin-authoring.md)**.
+
+## Localization
+
+There is nothing you have to translate. Every entry readers see in the picker is a proper noun; the plugin's single localized UI string — the picker's screen-reader label — ships in the ten most common languages (en, zh-CN, es, fr, de, ja, ko, pt, ru, it) and falls back to English elsewhere, never to a raw translation key. To supply it in another language, add the key to your site's [Starlight i18n collection](https://starlight.astro.build/guides/i18n/#translate-starlights-ui):
+
+```json
+// src/content/i18n/cs.json
+{
+  "starlightThemeChameleon.skinSelect.accessibleLabel": "Vybrat skin"
+}
+```
+
+Contributions of further languages are welcome.
 
 ## Known limits
 
 - **Skins restyle; they never restructure.** Starlight's interface icons are inline SVGs baked in at build time, so skins recolor them but cannot swap their shapes (see [docs/adr](./docs/adr)).
-- **Switching needs JavaScript.** Without it, readers get the Default look — the site's own styling — fully usable. That applies to pinned skins too.
+- **Switching needs JavaScript.** Without it, readers get the Starlight look — the site's own styling — fully usable. That applies to pinned skins too.
 - **Every offered skin ships to every reader** (CSS only; fonts stay lazy). Keep the curated list small.
 
 ## Why not just install a community theme?
 
 Starlight's community themes are excellent, but each one is a build-time plugin: one theme per site, applied for every reader, often relying on component overrides. Chameleon skins are runtime-switchable precisely because they honor the motto — presentation only, scoped under an attribute, selected by the reader (or pinned by you). Palette-only community themes make great skin *ingredients* (Nordic vendors Nord's colors); structural ones are out of scope. See [docs/adr](./docs/adr) for the reasoning.
-
-## Prior art
-
-As of July 2026 no Starlight plugin offers reader-switchable themes: the ecosystem's own [themes showcase](https://starlight-themes.netlify.app/) previews each community theme as a separately built sub-site, which is the build-time-only model in a nutshell. The closest relatives live outside Starlight. [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/setup/changing-the-colors/) ships a palette toggle that can cycle through named color schemes — colors only, built into the theme rather than pluggable. [daisyUI](https://daisyui.com/docs/themes/) proves the mechanism at scale with 35 themes switched via a `data-theme` attribute, but it's a Tailwind component library, not docs tooling, and has no notion of a curated reader-facing picker.
-
-Chameleon combines pieces that each exist somewhere with a combination that doesn't: full skins (colors, typography, surface feel — not just palettes) for Starlight specifically, curated by the site author, switchable by readers at runtime, and composable with the rest of the plugin ecosystem. And the spiritual ancestor is older than all of it: Winamp skins, which understood that people love making a thing *theirs* without changing what it does.
 
 ## License
 

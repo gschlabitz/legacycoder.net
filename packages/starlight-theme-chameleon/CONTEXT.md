@@ -19,7 +19,8 @@ _Avoid_: structure, template, layout
 
 **Mode**:
 Starlight's built-in light/dark/auto axis. Orthogonal to skins: a reader
-combines any skin with any mode.
+combines any skin with any mode, and every skin is required to cover both —
+that requirement is part of the curation (ADR 0005).
 _Avoid_: theme, dark mode setting
 
 **Built-in skin**:
@@ -32,16 +33,18 @@ registers alongside the built-in ones.
 _Avoid_: user theme, override skin
 
 **Skin picker**:
-The header control readers use to choose a skin, present only when the site
-author exposes it. Chameleon's replacement for the slot Starlight's theme
-select occupies; mode switching stays available within it.
+The chameleon icon in the header that opens the list of skins by name,
+present only when the site author exposes it. Chameleon's replacement for
+the slot Starlight's theme select occupies; the stock mode select renders
+alongside it. Skin names are proper nouns and are never translated.
 _Avoid_: theme selector, dropdown
 
-**Default look**:
+**Starlight look**:
 The host site's own unskinned presentation — stock Starlight plus the site's
-custom CSS. Always the picker's first entry and every reader's initial state;
-also what no-JavaScript readers get.
-_Avoid_: base theme, fallback skin, no-skin mode
+custom CSS. Always the picker's first entry (labeled "Starlight", a proper
+noun like every skin name) and every reader's initial state; also what
+no-JavaScript readers get.
+_Avoid_: default look, base theme, fallback skin, no-skin mode
 
 **Pinned skin**:
 A skin the site author applies site-wide without offering the picker — every

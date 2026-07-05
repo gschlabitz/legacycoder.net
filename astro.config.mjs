@@ -40,7 +40,7 @@ export default defineConfig({
         }),
         // After starlightBlog so Chameleon sees the final component map (ADR 0003).
         starlightThemeChameleon({
-          skins: ["nordic", "crt"],
+          skins: ["nordic", "home-computer"],
         }),
       ],
     }),

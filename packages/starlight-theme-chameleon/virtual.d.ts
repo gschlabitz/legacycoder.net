@@ -2,7 +2,6 @@
 declare namespace StarlightApp {
   interface I18n {
     'starlightThemeChameleon.skinSelect.accessibleLabel': string
-    'starlightThemeChameleon.skinSelect.default': string
   }
 }
 
@@ -12,7 +11,7 @@ declare module 'virtual:starlight-theme-chameleon/config' {
     picker: boolean
     skins: Array<{
       name: string
-      label: string | Record<string, string>
+      label: string
     }>
   }
   export default config

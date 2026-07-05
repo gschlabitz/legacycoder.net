@@ -26,15 +26,24 @@ export default function starlightThemeChameleon(
     name: 'starlight-theme-chameleon',
     hooks: {
       'i18n:setup'({ injectTranslations }) {
+        // The picker's only translatable string, shipped in the ten most
+        // common languages. Everything readers see in the list is a proper
+        // noun — skin names, and "Starlight" for the unskinned look
+        // (ADR 0004). Sites can supply further languages through Starlight's
+        // i18n collection; the component falls back to English when the key
+        // resolves nowhere.
+        const key = 'starlightThemeChameleon.skinSelect.accessibleLabel'
         injectTranslations({
-          en: {
-            'starlightThemeChameleon.skinSelect.accessibleLabel': 'Select skin',
-            'starlightThemeChameleon.skinSelect.default': 'Default',
-          },
-          de: {
-            'starlightThemeChameleon.skinSelect.accessibleLabel': 'Skin auswählen',
-            'starlightThemeChameleon.skinSelect.default': 'Standard',
-          },
+          en: { [key]: 'Select skin' },
+          'zh-CN': { [key]: '选择皮肤' },
+          es: { [key]: 'Seleccionar skin' },
+          fr: { [key]: 'Sélectionner un skin' },
+          de: { [key]: 'Skin auswählen' },
+          ja: { [key]: 'スキンを選択' },
+          ko: { [key]: '스킨 선택' },
+          pt: { [key]: 'Selecionar skin' },
+          ru: { [key]: 'Выбрать скин' },
+          it: { [key]: 'Seleziona skin' },
         })
       },
       'config:setup'({ config, logger, updateConfig, addIntegration, astroConfig }) {

@@ -14,7 +14,7 @@ starlightThemeChameleon({
   customSkins: [
     {
       name: 'my-skin', // lowercase letters and dashes
-      label: { en: 'My Skin', de: 'Mein Skin' }, // or a plain string
+      label: 'My Skin', // a proper noun, never translated (ADR 0004)
       css: './src/styles/skins/my-skin.css',
       // Optional syntax-highlighting pairing (see "Code pairing" below).
       code: { dark: 'dracula', light: 'github-light' },
@@ -97,7 +97,7 @@ starlightThemeChameleon({
 The built-in skins are complete worked examples:
 [`skins/nordic.css`](../skins/nordic.css) (palette vendored from a
 community color scheme, soft surface feel) and
-[`skins/crt.css`](../skins/crt.css) (heavy surface styling: glow, scanlines,
+[`skins/home-computer.css`](../skins/home-computer.css) (heavy surface styling: glow, scanlines,
 per-mode effects).
 
 ## The skinnable surface
@@ -122,6 +122,18 @@ the palette and typography and let the derivations ride.
 Layout properties (`--sl-nav-height`, `--sl-sidebar-width`,
 `--sl-content-width`, z-indexes) are technically custom properties but they
 are the skeleton's geometry — leave them alone.
+
+## Both modes, always
+
+Every Chameleon skin covers light *and* dark mode — that requirement is part
+of what makes the list curated (ADR 0005). Readers combine any skin with
+either mode, and `prefers-color-scheme` keeps working under every skin, so
+there is no single-mode escape hatch. If your concept feels
+one-mode-only, design its counterpart anyway: the Home Computer skin's light
+mode — the hardcopy that came out of the machine's printer — exists because
+of this rule, and the skin is better for it. Chameleon can't check visual mode
+coverage mechanically, so this is a bar you hold yourself to; the
+"define colors twice" rule above is most of the work.
 
 ## Fonts
 

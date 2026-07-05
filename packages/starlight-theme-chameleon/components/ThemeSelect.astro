@@ -1,38 +1,57 @@
 ---
 import Default from '@astrojs/starlight/components/ThemeSelect.astro'
-import Select from '@astrojs/starlight/components/Select.astro'
 
 import config from 'virtual:starlight-theme-chameleon/config'
 
-const lang: string = Astro.locals.starlightRoute?.lang ?? 'en'
 const t = Astro.locals.t
 
-function resolveLabel(label: string | Record<string, string>): string {
-  if (typeof label === 'string') return label
-  return (
-    label[lang] ??
-    label[lang.split('-')[0] ?? ''] ??
-    label['en'] ??
-    Object.values(label)[0] ??
-    ''
-  )
-}
+// The picker's one localized string. When the key resolves nowhere — the
+// site's default locale is outside the shipped set and the site added no
+// translation — fall back to English rather than announcing the raw key.
+const labelKey = 'starlightThemeChameleon.skinSelect.accessibleLabel'
+const accessibleLabel = t.exists(labelKey) ? t(labelKey) : 'Select skin'
 
+// Skin names are proper nouns and never translated (ADR 0004). That includes
+// the first entry: the unskinned look is named after what it is — Starlight.
 const options = [
-  { label: t('starlightThemeChameleon.skinSelect.default'), value: '', selected: true },
-  ...config.skins.map((skin) => ({ label: resolveLabel(skin.label), value: skin.name, selected: false })),
+  { label: 'Starlight', value: '' },
+  ...config.skins.map((skin) => ({ label: skin.label, value: skin.name })),
 ]
 ---
 
 {
   config.picker && (
     <chameleon-skin-select>
-      <Select
-        icon="puzzle"
-        label={t('starlightThemeChameleon.skinSelect.accessibleLabel')}
-        options={options}
-        width="7.5em"
-      />
+      <label>
+        <span class="sr-only">{accessibleLabel}</span>
+        {/* The plugin's namesake: a chameleon with a curled tail. */}
+        <svg
+          class="icon"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          width="16"
+          height="16"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M2.6 14.6 a3.2 3.2 0 1 0 6.4 0 a3.2 3.2 0 1 0 -6.4 0 Z M4.55 14.6 a1.25 1.25 0 1 0 2.5 0 a1.25 1.25 0 1 0 -2.5 0 Z"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M8.3 14.9 C7.9 11.6 10.2 8.4 13.6 8 C15.3 7.8 16.9 8 18.1 8.6 C18.3 7.7 19.4 7.3 20.2 7.8 C21 8.3 21.4 9.1 21.2 9.9 C21.9 10.2 22.2 10.8 22 11.2 C21.2 11.6 20.2 11.6 19.4 11.3 C18.8 12.3 17.8 13.1 16.8 13.4 C14.2 14.3 10.9 14.9 8.3 14.9 Z M18.15 9.3 a0.85 0.85 0 1 0 1.7 0 a0.85 0.85 0 1 0 -1.7 0 Z"
+          />
+          <path d="M11.2 14.6 l-0.5 3 l1.3 0.1 l0.6 -2.9 Z M15.8 13.6 l-0.3 3.2 l1.3 0 l0.4 -3.1 Z" />
+        </svg>
+        {/* Invisible native select on top of the icon: clicking the icon pops
+            the native list of skin names, with keyboard and screen-reader
+            support for free. */}
+        <select autocomplete="off">
+          {options.map(({ value, label }) => (
+            <option value={value} selected={value === ''} set:html={label} />
+          ))}
+        </select>
+      </label>
     </chameleon-skin-select>
   )
 }
@@ -104,3 +123,47 @@ const options = [
 
 	customElements.define('chameleon-skin-select', ChameleonSkinSelect)
 </script>
+
+<style>
+	label {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		inline-size: 2rem;
+		block-size: 2rem;
+		color: var(--sl-color-gray-2);
+	}
+
+	label:hover {
+		color: var(--sl-color-white);
+	}
+
+	label:focus-within {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 0.125rem;
+		border-radius: 0.25rem;
+	}
+
+	.icon {
+		font-size: 1.25rem;
+		inline-size: 1em;
+		block-size: 1em;
+	}
+
+	select {
+		position: absolute;
+		inset: 0;
+		inline-size: 100%;
+		block-size: 100%;
+		opacity: 0;
+		border: 0;
+		cursor: pointer;
+		appearance: none;
+	}
+
+	option {
+		background-color: var(--sl-color-bg-nav);
+		color: var(--sl-color-gray-1);
+	}
+</style>
