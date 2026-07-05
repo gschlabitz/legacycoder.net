@@ -121,6 +121,12 @@ export const builtinSkins: ChameleonSkin[] = [
     code: { dark: 'nord', light: 'slack-ochin' },
   },
   {
+    name: 'catppuccin',
+    label: 'Catppuccin',
+    css: 'starlight-theme-chameleon/skins/catppuccin.css',
+    code: { dark: 'catppuccin-mocha', light: 'catppuccin-latte' },
+  },
+  {
     name: 'home-computer',
     label: 'Home Computer',
     css: 'starlight-theme-chameleon/skins/home-computer.css',

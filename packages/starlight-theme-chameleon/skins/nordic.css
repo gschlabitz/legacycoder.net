@@ -2,8 +2,9 @@
  * Nordic — calm, frosty, quietly precise.
  *
  * Colors are built on the Nord palette by Sven Greb (Arctic Ice Studio),
- * https://www.nordtheme.com — MIT licensed. Vendored here as a skin
- * ingredient per ADR 0001; typography and surface feel are Chameleon's own.
+ * https://www.nordtheme.com (https://github.com/nordtheme/nord) — MIT
+ * licensed. Vendored here as a skin ingredient per ADR 0001; typography and
+ * surface feel are Chameleon's own.
  *
  * Code pairing: `nord` (dark) / `slack-ochin` (light), see lib/skins.ts.
  *

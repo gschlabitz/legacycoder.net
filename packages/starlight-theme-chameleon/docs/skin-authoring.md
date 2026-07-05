@@ -142,7 +142,9 @@ CSS rules, so a skin's `@font-face` downloads only while that skin is
 selected. Declare `@font-face` in the skin file (the declaration itself
 can't be scoped, but an unused face costs nothing) and reference the family
 from your scoped `--sl-font`. Starlight appends system fallbacks to
-`--sl-font`/`--sl-font-mono` automatically.
+`--sl-font`/`--sl-font-mono` automatically. Worked example:
+`skins/catppuccin.css` vendors the Hack typeface (four faces in `../fonts`,
+license file alongside) for its `--sl-font-mono`.
 
 ## Code pairing
 

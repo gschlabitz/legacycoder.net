@@ -85,14 +85,18 @@ per-language skin labels resolved against `starlightRoute.lang`. Composes
 with starlight-blog (`navigation: 'header-start'` frees the slot; collision
 warns and yields).
 
-### Phase 4 — Built-in skins (done, 2 of 2–4)
+### Phase 4 — Built-in skins (done, 3 of 2–4)
 
 `nordic`: Nord palette (MIT, attributed in the CSS header) on humanist sans,
-soft cold shadows; paired with `nord` / `slack-ochin`. `home-computer` (né
-`crt`): green-phosphor terminal (glow, scanlines, flicker, mono type, caps
-headings) whose light mode is a fanfold-paper hardcopy; paired with custom
-monochrome VS Code theme objects. Every skin covers both modes — required
-(ADR 0005; mode locks were prototyped and removed). Room left for 1–2 more.
+soft cold shadows; paired with `nord` / `slack-ochin`. `catppuccin`: official
+Mocha/Latte palettes with the variable mapping adapted from
+catppuccin/starlight (both MIT, attributed), mauve accent, rounded surfaces;
+paired with Shiki's bundled `catppuccin-mocha` / `catppuccin-latte`.
+`home-computer` (né `crt`): green-phosphor terminal (glow, scanlines,
+flicker, mono type, caps headings) whose light mode is a fanfold-paper
+hardcopy; paired with custom monochrome VS Code theme objects. Every skin
+covers both modes — required (ADR 0005; mode locks were prototyped and
+removed). Room left for one more.
 
 ### Phase 5 — Polish and extraction (demo done; extraction pending)
 

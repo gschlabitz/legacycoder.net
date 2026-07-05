@@ -25,6 +25,7 @@ What a skin can never do is captured by the motto: it changes presentation, neve
 | Name | Feel | Code pairing (dark / light) |
 | --- | --- | --- |
 | `nordic` | Calm and frosty: [Nord](https://www.nordtheme.com) colors (MIT, Sven Greb), humanist sans, soft shadows | `nord` / `slack-ochin` |
+| `catppuccin` | Soothing pastels: official [Catppuccin](https://github.com/catppuccin/palette) Mocha and Latte flavors (MIT, Catppuccin Org), mauve accent, rounded surfaces, [Hack](https://github.com/source-foundry/Hack) for code | `catppuccin-mocha` / `catppuccin-latte` |
 | `home-computer` | The 80s/90s machine on the family desk: green-phosphor CRT with glow and scanlines in dark mode, fanfold-paper printer hardcopy in light mode, mono type throughout | custom monochrome themes |
 
 ## Usage
@@ -41,7 +42,7 @@ export default defineConfig({
       plugins: [
         starlightThemeChameleon({
           // Built-in skins to offer, in picker order. Defaults to all of them.
-          skins: ['nordic', 'home-computer'],
+          skins: ['nordic', 'catppuccin', 'home-computer'],
           // Let readers switch (default). Set to false to pin the first skin
           // site-wide and hide the picker.
           picker: true,
@@ -126,4 +127,11 @@ Starlight's community themes are excellent, but each one is a build-time plugin:
 
 ## License
 
-MIT. The Nord color palette vendored in the `nordic` skin is MIT-licensed, © Sven Greb.
+MIT.
+
+Vendored skin ingredients, each MIT-licensed by its upstream:
+
+- **Nord** color palette (`nordic` skin) — © Sven Greb, [nordtheme/nord](https://github.com/nordtheme/nord)
+- **Catppuccin** color palette (`catppuccin` skin) — © Catppuccin Org, [catppuccin/palette](https://github.com/catppuccin/palette)
+- **Catppuccin for Starlight** variable mapping (`catppuccin` skin) — © Catppuccin Org, [catppuccin/starlight](https://github.com/catppuccin/starlight)
+- **Hack** typeface (`catppuccin` skin, vendored webfont) — © Source Foundry Authors, MIT with DejaVu lineage in the public domain, [source-foundry/Hack](https://github.com/source-foundry/Hack) (full text in [fonts/LICENSE-hack.md](./fonts/LICENSE-hack.md))
