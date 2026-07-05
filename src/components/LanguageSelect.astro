@@ -1,0 +1,108 @@
+---
+import context from "virtual:starlight/project-context";
+import config from "virtual:starlight/user-config";
+
+const flagLocales = {
+  root: { flag: "🇺🇸", label: "English" },
+  de: { flag: "🇩🇪", label: "Deutsch" },
+};
+
+function stripTrailingSlash(path: string) {
+  return path.endsWith("/") ? path.slice(0, -1) : path;
+}
+
+function localizedPathname(locale: string): string {
+  const url = new URL(Astro.url);
+  let targetLocale = locale === "root" ? "" : locale;
+
+  if (!config.locales) return url.pathname;
+
+  const base = stripTrailingSlash(import.meta.env.BASE_URL);
+  const hasBase = url.pathname.startsWith(base);
+
+  if (hasBase) url.pathname = url.pathname.replace(base, "");
+
+  const [_leadingSlash, baseSegment] = url.pathname.split("/");
+  const htmlExt = ".html";
+  const isRootHtml = baseSegment?.endsWith(htmlExt);
+  const baseSlug = isRootHtml ? baseSegment?.slice(0, -1 * htmlExt.length) : baseSegment;
+
+  if (baseSlug && baseSlug in config.locales) {
+    if (targetLocale) {
+      url.pathname = url.pathname.replace(baseSlug, targetLocale);
+    } else if (isRootHtml) {
+      url.pathname = "/index.html";
+    } else {
+      url.pathname = url.pathname.replace(`/${baseSlug}`, "");
+    }
+  } else if (targetLocale) {
+    url.pathname = baseSegment === "index.html" ? `/${targetLocale}.html` : `/${targetLocale}${url.pathname}`;
+  }
+
+  if (hasBase) url.pathname = `${base}${url.pathname}`;
+  if (context.trailingSlash === "never") url.pathname = stripTrailingSlash(url.pathname);
+
+  return url.pathname;
+}
+
+const currentLocale = Astro.locals.starlightRoute.locale ?? "root";
+const locales =
+  config.isMultilingual && config.locales
+    ? Object.entries(flagLocales).filter(([code]) => code in config.locales!)
+    : [];
+---
+
+{
+  locales.length > 0 && (
+    <nav class="language-flags" aria-label={Astro.locals.t("languageSelect.accessibleLabel")}>
+      {locales.map(([code, locale]) => {
+        const selected = code === currentLocale;
+
+        return (
+          <a
+            class="flag-link"
+            href={localizedPathname(code)}
+            aria-label={locale.label}
+            aria-current={selected ? "true" : undefined}
+            title={locale.label}
+          >
+            <span aria-hidden="true">{locale.flag}</span>
+          </a>
+        );
+      })}
+    </nav>
+  )
+}
+
+<style>
+  .language-flags {
+    align-items: center;
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .flag-link {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    color: var(--sl-color-gray-2);
+    display: inline-flex;
+    font-size: 1.125rem;
+    height: 2rem;
+    justify-content: center;
+    line-height: 1;
+    text-decoration: none;
+    width: 2rem;
+  }
+
+  .flag-link:hover,
+  .flag-link:focus-visible {
+    background-color: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-5);
+  }
+
+  .flag-link:focus-visible {
+    outline: 2px solid var(--sl-color-accent-high);
+    outline-offset: 2px;
+  }
+</style>

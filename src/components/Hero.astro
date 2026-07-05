@@ -9,3 +9,22 @@ import CRTBackground from './CRTBackground.astro';
 
 <CRTBackground />
 <Default><slot /></Default>
+
+<style is:global>
+  @layer starlight.core {
+    .hero > img[width][height] {
+      --legacy-hero-image-size: min(70vw, 20rem);
+
+      width: var(--legacy-hero-image-size);
+      height: var(--legacy-hero-image-size);
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    @media (min-width: 50rem) {
+      .hero > img[width][height] {
+        --legacy-hero-image-size: min(35vw, 25rem);
+      }
+    }
+  }
+</style>

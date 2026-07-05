@@ -20,6 +20,7 @@ export default defineConfig({
       components: {
         // Renders starlight-blog's header link plus our own Links link.
         SiteTitle: "./src/components/SiteTitle.astro",
+        LanguageSelect: "./src/components/LanguageSelect.astro",
         // Stock hero plus the CRT typing backdrop behind the whole page.
         Hero: "./src/components/Hero.astro",
       },
@@ -41,6 +42,8 @@ export default defineConfig({
         // After starlightBlog so Chameleon sees the final component map (ADR 0003).
         starlightThemeChameleon({
           skins: ["nordic", "catppuccin", "home-computer"],
+          skinSelector: "icon",
+          themeSelector: "icon",
         }),
       ],
     }),
