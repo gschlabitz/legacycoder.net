@@ -10,6 +10,8 @@ export type {
   ChameleonCodeTheme,
   ChameleonSkin,
   ChameleonSkinCode,
+  ChameleonSkinSelector,
+  ChameleonThemeSelector,
   StarlightThemeChameleonUserConfig,
 } from './lib/skins'
 
@@ -26,7 +28,7 @@ export default function starlightThemeChameleon(
     name: 'starlight-theme-chameleon',
     hooks: {
       'i18n:setup'({ injectTranslations }) {
-        // The picker's only translatable string, shipped in the ten most
+        // The skin selector's only translatable string, shipped in the ten most
         // common languages. Everything readers see in the list is a proper
         // noun — skin names, and "Starlight" for the unskinned look
         // (ADR 0004). Sites can supply further languages through Starlight's
@@ -47,7 +49,7 @@ export default function starlightThemeChameleon(
         })
       },
       'config:setup'({ config, logger, updateConfig, addIntegration, astroConfig }) {
-        const { skins, picker } = resolveConfig(userConfig)
+        const { skins, skinSelector, themeSelector } = resolveConfig(userConfig)
         const skinNames = skins.map((skin) => skin.name)
 
         warnOnUnscopedSkinCss(skins, astroConfig.root, logger)
@@ -62,17 +64,20 @@ export default function starlightThemeChameleon(
           ...skins.map((skin) => skin.css),
         ]
 
-        // The skin picker claims Chameleon's one component slot, `ThemeSelect`
-        // (ADR 0002). A pinned skin leaves the stock mode select alone.
+        // Chameleon's selectors claim one component slot, `ThemeSelect`
+        // (ADR 0002), only when they need to render in the header.
         const components = { ...config.components }
-        let pickerActive = picker
-        if (picker) {
+        const needsThemeSelectOverride = skinSelector !== 'hidden' || themeSelector === 'icon'
+        let activeSkinSelector = skinSelector
+        let activeThemeSelector = themeSelector
+        if (needsThemeSelectOverride) {
           if (components.ThemeSelect) {
             logger.warn(
-              'A `ThemeSelect` component override is already configured — the skin picker cannot be added, so readers will not be able to switch skins. ' +
+              'A `ThemeSelect` component override is already configured — Chameleon cannot add its configured selector controls. ' +
                 'If the override comes from starlight-blog, set its `navigation` option to `"header-start"` to free the slot.'
             )
-            pickerActive = false
+            activeSkinSelector = 'hidden'
+            activeThemeSelector = 'select'
           } else {
             components.ThemeSelect = 'starlight-theme-chameleon/components/ThemeSelect.astro'
           }
@@ -80,7 +85,7 @@ export default function starlightThemeChameleon(
 
         // Applied before first paint to avoid a flash of the wrong skin,
         // mirroring Starlight's own light/dark provider.
-        const headScript = picker
+        const headScript = skinSelector !== 'hidden'
           ? `(()=>{var s=null;try{s=localStorage.getItem(${JSON.stringify(STORAGE_KEY)})}catch(e){}` +
             `if(s&&${JSON.stringify(skinNames)}.indexOf(s)>-1)document.documentElement.dataset.skin=s})();`
           : `document.documentElement.dataset.skin=${JSON.stringify(skinNames[0])};`
@@ -95,7 +100,7 @@ export default function starlightThemeChameleon(
           ...(expressiveCode ? { expressiveCode: expressiveCode as never } : {}),
         })
 
-        // The picker component reads the skin list at render time through a
+        // The selector component reads the skin list at render time through a
         // virtual module.
         addIntegration({
           name: 'starlight-theme-chameleon',
@@ -113,7 +118,8 @@ export default function starlightThemeChameleon(
                       load(id) {
                         if (id !== RESOLVED_VIRTUAL_MODULE_ID) return undefined
                         const publicConfig = {
-                          picker: pickerActive,
+                          skinSelector: activeSkinSelector,
+                          themeSelector: activeThemeSelector,
                           skins: skins.map(({ name, label }) => ({ name, label })),
                         }
                         return `export default ${JSON.stringify(publicConfig)}`
@@ -128,7 +134,7 @@ export default function starlightThemeChameleon(
 
         logger.info(
           `Registered ${skins.length} skin${skins.length === 1 ? '' : 's'}: ${skinNames.join(', ')}` +
-            (picker ? '' : ` (\`${skinNames[0]}\` pinned site-wide)`)
+            (skinSelector !== 'hidden' ? '' : ` (\`${skinNames[0]}\` pinned site-wide)`)
         )
       },
     },

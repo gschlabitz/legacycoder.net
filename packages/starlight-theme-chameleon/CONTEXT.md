@@ -32,22 +32,22 @@ A skin the site author (or any skin author) supplies as their own CSS file and
 registers alongside the built-in ones.
 _Avoid_: user theme, override skin
 
-**Skin picker**:
-The chameleon icon in the header that opens the list of skins by name,
-present only when the site author exposes it. Chameleon's replacement for
-the slot Starlight's theme select occupies; the stock mode select renders
-alongside it. Skin names are proper nouns and are never translated.
-_Avoid_: theme selector, dropdown
+**Skin selector**:
+The header control that opens the list of skins by name, present only when
+the site author exposes it. Chameleon's replacement for the slot Starlight's
+theme select occupies; Starlight's theme selector renders alongside it. Skin
+names are proper nouns and are never translated.
+_Avoid_: theme selector, dropdown, skin picker
 
 **Starlight look**:
 The host site's own unskinned presentation — stock Starlight plus the site's
-custom CSS. Always the picker's first entry (labeled "Starlight", a proper
+custom CSS. Always the skin selector's first entry (labeled "Starlight", a proper
 noun like every skin name) and every reader's initial state; also what
 no-JavaScript readers get.
 _Avoid_: default look, base theme, fallback skin, no-skin mode
 
 **Pinned skin**:
-A skin the site author applies site-wide without offering the picker — every
+A skin the site author applies site-wide without offering the skin selector — every
 reader sees it, none can change it.
 _Avoid_: locked skin, forced theme
 
@@ -62,7 +62,7 @@ site carries and whether readers may switch.
 _Avoid_: plugin user, integrator
 
 **Reader**:
-A visitor of a Chameleon-equipped site. Picks a skin when the picker is
+A visitor of a Chameleon-equipped site. Picks a skin when the skin selector is
 exposed; the choice persists across visits.
 _Avoid_: end user, visitor
 

@@ -33,6 +33,9 @@ export interface ChameleonSkin {
   code?: ChameleonSkinCode
 }
 
+export type ChameleonSkinSelector = 'hidden' | 'select' | 'icon'
+export type ChameleonThemeSelector = 'select' | 'icon'
+
 export interface StarlightThemeChameleonUserConfig {
   /**
    * Built-in skins to offer, in picker order.
@@ -44,16 +47,22 @@ export interface StarlightThemeChameleonUserConfig {
    */
   customSkins?: ChameleonSkin[]
   /**
-   * Whether readers can switch skins via the picker.
-   * When `false`, the first configured skin is pinned site-wide.
-   * @default true
+   * How the Chameleon skin selector is exposed in Starlight's `ThemeSelect`
+   * header slot. When `hidden`, the first configured skin is pinned site-wide.
+   * @default 'select'
    */
-  picker?: boolean
+  skinSelector?: ChameleonSkinSelector
+  /**
+   * How Starlight's light/dark/auto theme selector is rendered in the same slot.
+   * @default 'select'
+   */
+  themeSelector?: ChameleonThemeSelector
 }
 
 export interface ResolvedChameleonConfig {
   skins: ChameleonSkin[]
-  picker: boolean
+  skinSelector: ChameleonSkinSelector
+  themeSelector: ChameleonThemeSelector
 }
 
 /* -------------------------------------------------------------------------- */
@@ -194,9 +203,17 @@ export function resolveConfig(userConfig: StarlightThemeChameleonUserConfig): Re
   if (typeof userConfig !== 'object' || userConfig === null)
     fail('Plugin options must be an object.')
 
-  const { skins: requestedNames, customSkins = [], picker = true } = userConfig
+  const {
+    skins: requestedNames,
+    customSkins = [],
+    skinSelector = 'select',
+    themeSelector = 'select',
+  } = userConfig
 
-  if (typeof picker !== 'boolean') fail('The `picker` option must be a boolean.')
+  if (skinSelector !== 'hidden' && skinSelector !== 'select' && skinSelector !== 'icon')
+    fail('The `skinSelector` option must be one of: `hidden`, `select`, or `icon`.')
+  if (themeSelector !== 'select' && themeSelector !== 'icon')
+    fail('The `themeSelector` option must be one of: `select` or `icon`.')
 
   const builtinNames = builtinSkins.map((skin) => skin.name)
   let requested: ChameleonSkin[]
@@ -229,5 +246,5 @@ export function resolveConfig(userConfig: StarlightThemeChameleonUserConfig): Re
       fail(`Custom skin \`${skin.name}\` shadows a built-in skin name. Pick a different name.`)
   }
 
-  return { skins, picker }
+  return { skins, skinSelector, themeSelector }
 }

@@ -2,7 +2,7 @@
 
 > **Change the skin, not the skeleton.**
 
-A [Starlight](https://starlight.astro.build) plugin that gives your site switchable **skins** — coordinated colors, typography, and surface feel — chosen from a list you curate. Expose the list to your readers as a picker in the header, or pin a single skin as your site's look.
+A [Starlight](https://starlight.astro.build) plugin that gives your site switchable **skins** — coordinated colors, typography, and surface feel — chosen from a list you curate. Expose the list to your readers as a selector in the header, or pin a single skin as your site's look.
 
 > **Status:** working, pre-release. Developed in the open inside [legacycoder.net](https://legacycoder.net), which is also the live demo. Not yet published to npm.
 
@@ -13,12 +13,12 @@ Starlight routes its entire look through `--sl-`-prefixed CSS custom properties:
 What a skin can never do is captured by the motto: it changes presentation, never markup, layout, or components. That single rule is what makes skins safe to switch at runtime, and what keeps Chameleon composable with other Starlight plugins, including `starlight-blog`.
 
 - **Curated list** — you decide which skins your site offers and in what order.
-- **Starlight first** — the picker always offers "Starlight": your site's own unskinned look. Installing Chameleon changes nothing until a reader picks a skin.
-- **You control exposure** — offer readers the picker, or set `picker: false` to pin the first skin site-wide and ship no picker at all.
-- **Light and dark, always** — every skin covers Starlight's light/dark/auto mode; that requirement is part of the curation. Readers combine any skin with either mode, the mode switch stays right next to the skin picker, and `prefers-color-scheme` keeps working everywhere.
+- **Starlight first** — the skin selector always offers "Starlight": your site's own unskinned look. Installing Chameleon changes nothing until a reader picks a skin.
+- **You control exposure** — render the skin selector as a visible select, a compact icon button, or hide it to pin the first skin site-wide.
+- **Light and dark, always** — every skin covers Starlight's light/dark/auto mode; that requirement is part of the curation. Readers combine any skin with either mode, the mode switch stays right next to the skin selector, and `prefers-color-scheme` keeps working everywhere.
 - **Code blocks follow along** — each skin pairs with matching syntax themes via Expressive Code, compiled into the same build and switched by the same attribute.
 - **Fonts on demand** — a skin's webfonts are only downloaded while that skin is active, so offering five skins doesn't ship five typefaces to every reader.
-- **Nothing to localize** — the picker is a chameleon icon that opens the list of skins by name, and every entry is a proper noun shown identically in every language, including "Starlight" for the unskinned look. The plugin's one UI string (the screen-reader label) ships in ten languages with an English fallback — see [Localization](#localization).
+- **Nothing to localize** — every skin entry is a proper noun shown identically in every language, including "Starlight" for the unskinned look. The plugin's one UI string (the selector label) ships in ten languages with an English fallback — see [Localization](#localization).
 
 ## Built-in skins
 
@@ -43,9 +43,12 @@ export default defineConfig({
         starlightThemeChameleon({
           // Built-in skins to offer, in picker order. Defaults to all of them.
           skins: ['nordic', 'catppuccin', 'home-computer'],
-          // Let readers switch (default). Set to false to pin the first skin
-          // site-wide and hide the picker.
-          picker: true,
+          // How Chameleon's skin selector renders in Starlight's ThemeSelect slot.
+          // Defaults to 'select'. Use 'hidden' to pin the first skin site-wide.
+          skinSelector: 'select', // 'hidden' | 'select' | 'icon'
+          // How Starlight's light/dark/auto theme selector renders in the same slot.
+          // Defaults to 'select', which preserves Starlight's stock selector.
+          themeSelector: 'select', // 'select' | 'icon'
         }),
       ],
     }),
@@ -55,7 +58,7 @@ export default defineConfig({
 
 ### Composing with starlight-blog
 
-Chameleon claims exactly one component slot, `ThemeSelect`, for the skin picker. starlight-blog's default `navigation: 'header-end'` wants the same slot — point it at the other side of the header instead:
+Chameleon claims exactly one component slot, `ThemeSelect`, for its selector controls. starlight-blog's default `navigation: 'header-end'` wants the same slot — point it at the other side of the header instead:
 
 ```js
 plugins: [
@@ -64,7 +67,7 @@ plugins: [
 ],
 ```
 
-If the slot is already taken, Chameleon warns and leaves the existing override alone (no picker, skins unreachable) rather than fighting over it.
+If the slot is already taken, Chameleon warns and leaves the existing override alone rather than fighting over it. Set `skinSelector: 'hidden'` and `themeSelector: 'select'` if you only want a pinned skin and do not need Chameleon to render selector controls.
 
 ### Authoring your own skin
 
@@ -100,11 +103,11 @@ starlightThemeChameleon({
 }
 ```
 
-Custom skins appear in the picker after the built-in ones, and are held to the same bar as built-ins: every skin covers both light and dark mode. Chameleon warns at startup when a custom skin's CSS contains no `[data-skin='<name>']` selector, because unscoped rules leak into every skin. The full property catalog, the light/dark rules, and the starter template live in **[docs/skin-authoring.md](./docs/skin-authoring.md)**.
+Custom skins appear in the selector after the built-in ones, and are held to the same bar as built-ins: every skin covers both light and dark mode. Chameleon warns at startup when a custom skin's CSS contains no `[data-skin='<name>']` selector, because unscoped rules leak into every skin. The full property catalog, the light/dark rules, and the starter template live in **[docs/skin-authoring.md](./docs/skin-authoring.md)**.
 
 ## Localization
 
-There is nothing you have to translate. Every entry readers see in the picker is a proper noun; the plugin's single localized UI string — the picker's screen-reader label — ships in the ten most common languages (en, zh-CN, es, fr, de, ja, ko, pt, ru, it) and falls back to English elsewhere, never to a raw translation key. To supply it in another language, add the key to your site's [Starlight i18n collection](https://starlight.astro.build/guides/i18n/#translate-starlights-ui):
+There is nothing you have to translate. Every entry readers see in the selector is a proper noun; the plugin's single localized UI string — the skin selector label — ships in the ten most common languages (en, zh-CN, es, fr, de, ja, ko, pt, ru, it) and falls back to English elsewhere, never to a raw translation key. To supply it in another language, add the key to your site's [Starlight i18n collection](https://starlight.astro.build/guides/i18n/#translate-starlights-ui):
 
 ```json
 // src/content/i18n/cs.json

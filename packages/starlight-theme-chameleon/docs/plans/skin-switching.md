@@ -76,14 +76,13 @@ layered light-mode remaps).
 ### Phase 3 — Skin picker and exposure control (done)
 
 `ThemeSelect` override (`components/ThemeSelect.astro`) rendering the skin
-picker next to the stock mode select, fed by a virtual module; the picker
-always leads with "Starlight" — the host's unskinned look (ADR 0003). `picker:
-false` pins the first skin site-wide with no picker. `localStorage` key
-`starlight-skin`, inline head script (via Starlight's `head` config) applies
-the attribute before first paint, EN/DE labels via `injectTranslations`,
-per-language skin labels resolved against `starlightRoute.lang`. Composes
-with starlight-blog (`navigation: 'header-start'` frees the slot; collision
-warns and yields).
+selector next to Starlight's theme selector, fed by a virtual module; the
+selector always leads with "Starlight" — the host's unskinned look (ADR 0003).
+`skinSelector: 'hidden'` pins the first skin site-wide with no selector.
+`localStorage` key `starlight-skin`, inline head script (via Starlight's
+`head` config) applies the attribute before first paint. Composes with
+starlight-blog (`navigation: 'header-start'` frees the slot; collision warns
+and yields).
 
 ### Phase 4 — Built-in skins (done, 3 of 2–4)
 

@@ -18,9 +18,10 @@ scripts disabled the attribute never appears and the site renders the
 Starlight look, fully usable.
 
 Sites that want a skin as their identity use the other half of the exposure
-control: `picker: false` pins the first configured skin site-wide and hides
-the picker entirely. (Pinning relies on the same head script, so a no-JS
-reader of a pinned site sees the Starlight look — a documented limitation.)
+control: `skinSelector: 'hidden'` pins the first configured skin site-wide
+and hides the selector entirely. (Pinning relies on the same head script, so a
+no-JS reader of a pinned site sees the Starlight look — a documented
+limitation.)
 
 Rejected alternative: requiring site authors to register their existing look
 as a custom skin to keep it reachable. That forces rescoping work on every
