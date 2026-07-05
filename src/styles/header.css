@@ -1,0 +1,32 @@
+/* Site-level header icon sizing. Starlight sizes its header icons locally:
+   generic icons are 1em, select label icons are 0.875rem, and select carets
+   are 1.25rem. Keep those proportions, but scale the whole header icon set. */
+:root {
+  --lc-header-icon-scale: 1.5;
+  --lc-header-icon-size: calc(1rem * var(--lc-header-icon-scale));
+  --lc-header-select-icon-size: calc(0.875rem * var(--lc-header-icon-scale));
+  --lc-header-caret-size: calc(1.25rem * var(--lc-header-icon-scale));
+  --lc-header-action-size: max(2.5rem, calc(var(--lc-header-icon-size) + 0.75rem));
+}
+
+.header .social-icons a {
+  font-size: var(--lc-header-icon-size);
+}
+
+.header .language-flags .flag-link,
+.header chameleon-skin-select[data-variant="icon"] .skin-trigger,
+.header starlight-theme-select .mode-button {
+  inline-size: var(--lc-header-action-size);
+  block-size: var(--lc-header-action-size);
+}
+
+.header chameleon-skin-select[data-variant="icon"] .icon,
+.header starlight-theme-select .mode-icon,
+.header starlight-theme-select .mode-icon svg {
+  inline-size: var(--lc-header-icon-size);
+  block-size: var(--lc-header-icon-size);
+}
+
+.header .language-flags .flag-link {
+  font-size: var(--lc-header-icon-size);
+}

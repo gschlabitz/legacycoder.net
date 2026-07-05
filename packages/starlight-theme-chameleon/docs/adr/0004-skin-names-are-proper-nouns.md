@@ -14,12 +14,13 @@ that look actually is (ADR 0003). The single translatable string left is the
 skin selector label, shipped inside Chameleon (EN/DE).
 
 Implementation keeps the skeleton doctrine intact: Chameleon renders the
-selector inside its own `ThemeSelect` override (our one component slot), and
-both visual variants use a native `<select>` — native option list, keyboard
-support, and screen-reader semantics for free, with no custom menu code to
-maintain.
+selector inside its own `ThemeSelect` override (our one component slot). Both
+visual variants share one custom listbox: `skinSelector: 'select'` presents a
+Starlight-like select trigger, while `skinSelector: 'icon'` presents only the
+glyph. The popup uses each skin's `[data-skin]` variables on its own option row
+so readers can preview the look before applying it.
 
 Trade-off accepted for `skinSelector: 'icon'`: the collapsed control does not
-show the active skin's name. The whole page *is* the feedback, and the native
-list marks the current choice when opened. Sites that prefer visible state can
-use the default `skinSelector: 'select'`.
+show the active skin's name. The whole page *is* the feedback, and the popup
+marks the current choice when opened. Sites that prefer visible state can use
+the default `skinSelector: 'select'`.

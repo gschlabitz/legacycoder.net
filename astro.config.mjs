@@ -11,7 +11,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Guido Schlabitz",
-      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css"],
+      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css"],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
         { icon: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/guido-schlabitz/" },
@@ -32,7 +32,7 @@ export default defineConfig({
       plugins: [
         starlightBlog({
           title: { en: "Blog", de: "Blog" },
-          navigation: "header-start",
+          navigation: "none",
           authors: {
             guido: {
               name: "Guido Schlabitz",
@@ -42,7 +42,7 @@ export default defineConfig({
         // After starlightBlog so Chameleon sees the final component map (ADR 0003).
         starlightThemeChameleon({
           skins: ["nordic", "catppuccin", "home-computer"],
-          skinSelector: "icon",
+          skinSelector: "select",
           themeSelector: "icon",
         }),
       ],

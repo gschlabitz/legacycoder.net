@@ -138,3 +138,7 @@ Vendored skin ingredients, each MIT-licensed by its upstream:
 - **Catppuccin** color palette (`catppuccin` skin) — © Catppuccin Org, [catppuccin/palette](https://github.com/catppuccin/palette)
 - **Catppuccin for Starlight** variable mapping (`catppuccin` skin) — © Catppuccin Org, [catppuccin/starlight](https://github.com/catppuccin/starlight)
 - **Hack** typeface (`catppuccin` skin, vendored webfont) — © Source Foundry Authors, MIT with DejaVu lineage in the public domain, [source-foundry/Hack](https://github.com/source-foundry/Hack) (full text in [fonts/LICENSE-hack.md](./fonts/LICENSE-hack.md))
+
+Additional artwork:
+
+- **Chameleon glyph** selector icon — by [DarkZaitzev](https://darkzaitzev.deviantart.com) via [Game-icons.net](https://game-icons.net/1x1/darkzaitzev/chameleon-glyph.html), licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); adapted to inherit `currentColor`.

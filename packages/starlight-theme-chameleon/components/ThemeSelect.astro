@@ -2,6 +2,7 @@
 import DefaultThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro'
 
 import config from 'virtual:starlight-theme-chameleon/config'
+import ChameleonGlyph from './chameleon-glyph.svg'
 import ThemeModeButton from './ThemeModeButton.astro'
 
 const t = Astro.locals.t
@@ -23,43 +24,53 @@ const options = [
 {
   config.skinSelector !== 'hidden' && (
     <chameleon-skin-select data-variant={config.skinSelector}>
-      <label>
+      <button
+        class="skin-trigger"
+        type="button"
+        aria-label={accessibleLabel}
+        aria-haspopup="listbox"
+        aria-expanded="false"
+        title={options[0].label}
+      >
         <span class="sr-only">{accessibleLabel}</span>
-        {/* The plugin's namesake: a chameleon with a curled tail. */}
-        <svg
-          class="icon"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-          width="16"
-          height="16"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M2.6 14.6 a3.2 3.2 0 1 0 6.4 0 a3.2 3.2 0 1 0 -6.4 0 Z M4.55 14.6 a1.25 1.25 0 1 0 2.5 0 a1.25 1.25 0 1 0 -2.5 0 Z"
-          />
-          <path
-            fill-rule="evenodd"
-            d="M8.3 14.9 C7.9 11.6 10.2 8.4 13.6 8 C15.3 7.8 16.9 8 18.1 8.6 C18.3 7.7 19.4 7.3 20.2 7.8 C21 8.3 21.4 9.1 21.2 9.9 C21.9 10.2 22.2 10.8 22 11.2 C21.2 11.6 20.2 11.6 19.4 11.3 C18.8 12.3 17.8 13.1 16.8 13.4 C14.2 14.3 10.9 14.9 8.3 14.9 Z M18.15 9.3 a0.85 0.85 0 1 0 1.7 0 a0.85 0.85 0 1 0 -1.7 0 Z"
-          />
-          <path d="M11.2 14.6 l-0.5 3 l1.3 0.1 l0.6 -2.9 Z M15.8 13.6 l-0.3 3.2 l1.3 0 l0.4 -3.1 Z" />
-        </svg>
-        <select autocomplete="off">
-          {options.map(({ value, label }) => (
-            <option value={value} selected={value === ''} set:html={label} />
-          ))}
-        </select>
-        <svg
-          class="caret"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-          width="16"
-          height="16"
-        >
-          <path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1 1 0 0 0 1.42 0L17 10.59a1 1 0 0 0 0-1.42Z" />
-        </svg>
-      </label>
+        <ChameleonGlyph class="icon" aria-hidden="true" width="16" height="16" />
+        {config.skinSelector === 'select' && (
+          <>
+            <span class="selected-skin">{options[0].label}</span>
+            <svg
+              class="caret"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+              width="16"
+              height="16"
+            >
+              <path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1 1 0 0 0 1.42 0L17 10.59a1 1 0 0 0 0-1.42Z" />
+            </svg>
+          </>
+        )}
+      </button>
+      <div class="skin-menu" role="listbox" aria-label={accessibleLabel} hidden>
+        {options.map(({ value, label }) => (
+          <button
+            class="skin-option"
+            type="button"
+            role="option"
+            data-skin-value={value}
+            data-skin={value || undefined}
+            aria-selected={value === '' ? 'true' : 'false'}
+          >
+            <span class="preview">
+              <span class="preview-surface">
+                <span class="preview-accent"></span>
+                <span class="preview-line"></span>
+                <span class="preview-line short"></span>
+              </span>
+            </span>
+            <span class="skin-name" set:html={label} />
+          </button>
+        ))}
+      </div>
     </chameleon-skin-select>
   )
 }
@@ -76,8 +87,17 @@ const options = [
 		try {
 			stored = localStorage.getItem('starlight-skin') || '';
 		} catch (e) {}
-		document.querySelectorAll('chameleon-skin-select select').forEach((select) => {
-			if (stored && select.querySelector('option[value="' + stored + '"]')) select.value = stored;
+		document.querySelectorAll('chameleon-skin-select [data-skin-value]').forEach((option) => {
+			option.setAttribute('aria-selected', option.getAttribute('data-skin-value') === stored ? 'true' : 'false');
+		});
+		document.querySelectorAll('chameleon-skin-select').forEach((control) => {
+			var selected = Array.from(control.querySelectorAll('[data-skin-value]')).find((option) => option.getAttribute('data-skin-value') === stored) || control.querySelector('[data-skin-value=""]');
+			var label = selected && selected.querySelector('.skin-name');
+			var text = label && label.textContent ? label.textContent.trim() : '';
+			control.querySelectorAll('.selected-skin').forEach((node) => { node.textContent = text; });
+			control.querySelectorAll('.skin-trigger').forEach((node) => {
+				if (text) node.setAttribute('title', text);
+			});
 		});
 	})();
 </script>
@@ -107,29 +127,116 @@ const options = [
 	const applySkin = (skin: string): void => {
 		if (skin) document.documentElement.dataset.skin = skin
 		else delete document.documentElement.dataset.skin
-		document
-			.querySelectorAll<HTMLSelectElement>('chameleon-skin-select select')
-			.forEach((select) => {
-				select.value = skin
+		document.querySelectorAll<HTMLElement>('chameleon-skin-select').forEach((control) => {
+			const selectedOption =
+				Array.from(control.querySelectorAll<HTMLElement>('[data-skin-value]')).find(
+					(option) => option.dataset.skinValue === skin
+				) || control.querySelector<HTMLElement>('[data-skin-value=""]')
+			control.querySelectorAll<HTMLElement>('[data-skin-value]').forEach((option) => {
+				option.setAttribute('aria-selected', option.dataset.skinValue === skin ? 'true' : 'false')
 			})
+			const text = selectedOption?.querySelector('.skin-name')?.textContent?.trim() || ''
+			const trigger = control.querySelector<HTMLButtonElement>('.skin-trigger')
+			if (trigger && text) trigger.title = text
+			control.querySelectorAll<HTMLElement>('.selected-skin').forEach((label) => {
+				label.textContent = text
+			})
+		})
 	}
 
 	class ChameleonSkinSelect extends HTMLElement {
-		constructor() {
-			super()
-			const select = this.querySelector('select')
-			if (!select) return
+		#initialized = false
+
+		connectedCallback() {
+			if (this.#initialized) return
+			this.#initialized = true
+
 			const stored = loadSkin()
-			if (stored && select.querySelector(`option[value="${CSS.escape(stored)}"]`)) {
-				select.value = stored
+			const button = this.querySelector<HTMLButtonElement>('.skin-trigger')
+			const menu = this.querySelector<HTMLElement>('.skin-menu')
+			if (!button || !menu) {
+				applySkin(stored)
+				return
 			}
-			select.addEventListener('change', (event) => {
-				if (event.currentTarget instanceof HTMLSelectElement) {
-					const skin = event.currentTarget.value
-					storeSkin(skin)
-					applySkin(skin)
+
+			button.addEventListener('click', () => {
+				this.#isOpen() ? this.#close() : this.#open()
+			})
+
+			button.addEventListener('keydown', (event) => {
+				if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault()
+					this.#open()
+					this.#selectedOption()?.focus()
 				}
 			})
+
+			this.querySelectorAll<HTMLButtonElement>('.skin-option').forEach((option) => {
+				option.addEventListener('click', () => {
+					this.#selectSkin(option.dataset.skinValue || '')
+					this.#close()
+					button.focus()
+				})
+			})
+
+			menu.addEventListener('keydown', (event) => {
+				const options = this.#options()
+				const currentIndex = options.indexOf(document.activeElement as HTMLButtonElement)
+				if (event.key === 'Escape') {
+					event.preventDefault()
+					this.#close()
+					button.focus()
+				}
+				if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+					event.preventDefault()
+					const direction = event.key === 'ArrowDown' ? 1 : -1
+					options.at((currentIndex + direction + options.length) % options.length)?.focus()
+				}
+				if (event.key === 'Home') {
+					event.preventDefault()
+					options[0]?.focus()
+				}
+				if (event.key === 'End') {
+					event.preventDefault()
+					options.at(-1)?.focus()
+				}
+			})
+
+			document.addEventListener('click', (event) => {
+				if (!this.contains(event.target as Node)) this.#close()
+			})
+
+			applySkin(stored)
+		}
+
+		#selectSkin(skin: string) {
+			storeSkin(skin)
+			applySkin(skin)
+		}
+
+		#isOpen() {
+			return this.querySelector('.skin-menu')?.hasAttribute('hidden') === false
+		}
+
+		#open() {
+			this.querySelector('.skin-menu')?.removeAttribute('hidden')
+			this.querySelector('.skin-trigger')?.setAttribute('aria-expanded', 'true')
+		}
+
+		#close() {
+			this.querySelector('.skin-menu')?.setAttribute('hidden', '')
+			this.querySelector('.skin-trigger')?.setAttribute('aria-expanded', 'false')
+		}
+
+		#options() {
+			return Array.from(this.querySelectorAll<HTMLButtonElement>('.skin-option'))
+		}
+
+		#selectedOption() {
+			return (
+				this.querySelector<HTMLButtonElement>('.skin-option[aria-selected="true"]') ||
+				this.querySelector<HTMLButtonElement>('.skin-option')
+			)
 		}
 	}
 
@@ -140,29 +247,29 @@ const options = [
 
 <style>
 	chameleon-skin-select {
+		position: relative;
 		display: flex;
 		align-items: center;
 	}
 
-	label {
+	.skin-trigger {
 		--sl-label-icon-size: 0.875rem;
 		--sl-caret-size: 1.25rem;
 		--sl-inline-padding: 0.5rem;
 		position: relative;
-		display: flex;
+		display: inline-flex;
 		align-items: center;
 		gap: 0.25rem;
+		border: 0;
+		padding: 0;
+		background: transparent;
 		color: var(--sl-color-gray-2);
+		font: inherit;
+		cursor: pointer;
 	}
 
-	label:hover {
+	.skin-trigger:hover {
 		color: var(--sl-color-white);
-	}
-
-	label:focus-within {
-		outline: 2px solid var(--sl-color-accent);
-		outline-offset: 0.125rem;
-		border-radius: 0.25rem;
 	}
 
 	.icon {
@@ -175,34 +282,160 @@ const options = [
 		pointer-events: none;
 	}
 
-	select {
-		border: 0;
+	[data-variant='select'] .skin-trigger {
 		padding-block: 0.625rem;
-		padding-inline: calc(var(--sl-label-icon-size) + var(--sl-inline-padding) + 0.25rem)
-			calc(var(--sl-caret-size) + var(--sl-inline-padding) + 0.25rem);
+		padding-inline: calc(
+				var(--sl-label-icon-size) + var(--sl-caret-size) + var(--sl-inline-padding) + 0.5rem
+			)
+			var(--sl-inline-padding);
 		margin-inline: calc(var(--sl-inline-padding) * -1);
 		inline-size: 11.75rem;
-		background-color: transparent;
-		color: inherit;
+		text-align: start;
+	}
+
+	.selected-skin {
+		display: block;
+		overflow: hidden;
 		text-overflow: ellipsis;
-		cursor: pointer;
-		appearance: none;
+		white-space: nowrap;
 	}
 
 	.caret {
 		position: absolute;
 		top: 50%;
-		inset-inline-end: 0;
+		inset-inline-start: calc(var(--sl-label-icon-size) + 0.25rem);
 		inline-size: var(--sl-caret-size);
 		block-size: var(--sl-caret-size);
 		transform: translateY(-50%);
 		pointer-events: none;
 	}
 
-	[data-variant='icon'] label {
+	[data-variant='icon'] .skin-trigger {
 		justify-content: center;
 		inline-size: 2rem;
 		block-size: 2rem;
+		color: var(--sl-color-text-accent);
+	}
+
+	.skin-trigger:focus {
+		outline: none;
+	}
+
+	.skin-trigger:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 0.125rem;
+		border-radius: 0.25rem;
+	}
+
+	.skin-menu {
+		position: absolute;
+		z-index: 10;
+		inset-block-start: calc(100% + 0.375rem);
+		inset-inline-end: 0;
+		min-inline-size: 13rem;
+		padding: 0.35rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.375rem;
+		background-color: var(--sl-color-bg-nav);
+		box-shadow: var(--sl-shadow-md);
+	}
+
+	.skin-menu[hidden] {
+		display: none;
+	}
+
+	.skin-option {
+		display: flex;
+		align-items: center;
+		gap: 0.65rem;
+		inline-size: 100%;
+		border: 0;
+		border-radius: 0.25rem;
+		padding: 0.4rem;
+		background: var(--sl-color-bg-nav);
+		color: var(--sl-color-gray-1);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		text-align: start;
+		white-space: nowrap;
+		cursor: pointer;
+	}
+
+	.skin-option:not([data-skin]) {
+		--sl-color-white: hsl(0, 0%, 100%);
+		--sl-color-gray-1: hsl(224, 20%, 94%);
+		--sl-color-gray-2: hsl(224, 6%, 77%);
+		--sl-color-gray-4: hsl(224, 7%, 36%);
+		--sl-color-gray-5: hsl(224, 10%, 23%);
+		--sl-color-gray-6: hsl(224, 14%, 16%);
+		--sl-color-black: hsl(224, 10%, 10%);
+		--sl-color-accent: hsl(224, 100%, 60%);
+		--sl-color-accent-high: hsl(224, 100%, 85%);
+		--sl-color-bg-nav: var(--sl-color-gray-6);
+	}
+
+	:global([data-theme='light']) .skin-option:not([data-skin]) {
+		--sl-color-white: hsl(224, 10%, 10%);
+		--sl-color-gray-1: hsl(224, 14%, 16%);
+		--sl-color-gray-2: hsl(224, 10%, 23%);
+		--sl-color-gray-4: hsl(224, 6%, 56%);
+		--sl-color-gray-5: hsl(224, 6%, 77%);
+		--sl-color-gray-6: hsl(224, 20%, 94%);
+		--sl-color-black: hsl(0, 0%, 100%);
+		--sl-color-accent: hsl(234, 90%, 60%);
+		--sl-color-accent-high: hsl(234, 80%, 30%);
+		--sl-color-bg-nav: hsl(0, 0%, 100%);
+	}
+
+	.skin-option:hover,
+	.skin-option:focus,
+	.skin-option[aria-selected='true'] {
+		outline: none;
+		background-color: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+	}
+
+	.preview {
+		flex: 0 0 auto;
+		inline-size: 2.65rem;
+		block-size: 1.7rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.25rem;
+		padding: 0.2rem;
+		background: var(--sl-color-black);
+	}
+
+	.preview-surface {
+		display: grid;
+		gap: 0.18rem;
+		block-size: 100%;
+		border-radius: 0.125rem;
+		padding: 0.2rem;
+		background: var(--sl-color-bg-nav);
+	}
+
+	.preview-accent {
+		inline-size: 45%;
+		block-size: 0.2rem;
+		border-radius: 999px;
+		background: var(--sl-color-accent);
+	}
+
+	.preview-line {
+		inline-size: 80%;
+		block-size: 0.16rem;
+		border-radius: 999px;
+		background: var(--sl-color-gray-2);
+	}
+
+	.preview-line.short {
+		inline-size: 55%;
+		background: var(--sl-color-gray-4);
+	}
+
+	.skin-name {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	[data-variant='icon'] .icon {
@@ -212,27 +445,8 @@ const options = [
 		transform: none;
 	}
 
-	[data-variant='icon'] select {
-		position: absolute;
-		inset: 0;
-		inline-size: 100%;
-		block-size: 100%;
-		padding: 0;
-		margin: 0;
-		opacity: 0;
-	}
-
-	[data-variant='icon'] .caret {
-		display: none;
-	}
-
-	option {
-		background-color: var(--sl-color-bg-nav);
-		color: var(--sl-color-gray-1);
-	}
-
 	@media (min-width: 50rem) {
-		select {
+		.skin-trigger {
 			font-size: var(--sl-text-sm);
 		}
 	}
