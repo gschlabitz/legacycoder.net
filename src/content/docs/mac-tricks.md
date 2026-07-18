@@ -1,4 +1,7 @@
-# duti — set macOS default apps from the CLI
+---
+title: duti — set macOS default apps from the CLI
+draft: true
+---
 
 Manages file-type → app associations (what "Open With → Change All" does in Finder,
 but scriptable). Per-user; run as the account whose defaults you're changing.

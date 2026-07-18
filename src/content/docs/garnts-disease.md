@@ -1,3 +1,8 @@
+---
+title: Garnt's Disease
+draft: true
+---
+
 I think I've caught a case of Garnt's Disease. No matter how sloppy and badly produced, 
 if a new isekai pops up on Crunchy Roll, I have to watch it.
 
