@@ -2,6 +2,11 @@
 title: "New Teeth and Hats"
 date: 2006-06-25
 description: "Kirin's front teeth were wiggling since Christmas, but now daddy and grandma Janet had enough and pulled them (and a good piece of gums) out, ignoring much scr…"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2006-06-25-neue-zhne-und-hte-new-teeth-and-hats/01.jpg)

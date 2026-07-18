@@ -1,7 +1,12 @@
 ---
-title: "Letzte Gartenmeldung - Last Garden News"
+title: "Last Garden News"
 date: 2007-09-28
 description: "Hier nun die lang erwartete Herbsternte..."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Hier nun die lang erwartete Herbsternte...

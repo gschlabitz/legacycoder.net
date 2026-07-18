@@ -1,7 +1,13 @@
 ---
-title: "Durch den Sumpf - Through the Swamp"
+title: "Through the Swamp"
 date: 2008-08-13
 description: "Still traveling to New Orleans, the freeway hits [the swamps](http://maps.google.com/maps?f=q&hl=en&geocode=&q=New+Orleans,+LA&ie=UTF8&ll=30.056339,-90.373597&…"
+tags: [travel]
+location:
+  city: LaPlace
+  state: Louisiana
+  lat: 30.0563
+  lng: -90.3736
 ---
 
 Still traveling to New Orleans, the freeway hits [the swamps](http://maps.google.com/maps?f=q&hl=en&geocode=&q=New+Orleans,+LA&ie=UTF8&ll=30.056339,-90.373597&spn=0.000789,0.001207&t=h&z=20).

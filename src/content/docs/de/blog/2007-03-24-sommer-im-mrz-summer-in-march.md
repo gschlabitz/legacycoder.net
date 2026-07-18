@@ -2,6 +2,11 @@
 title: "Sommer im März"
 date: 2007-03-24
 description: "Heute waren es 27 Grad (im März!) und die Kinder dachten sich, daß es schön wäre sich im Ohio River abzukühlen."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-03-24-sommer-im-mrz-summer-in-march/01.jpg)

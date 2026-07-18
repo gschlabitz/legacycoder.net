@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 2 - Rock Point, Day 2"
+title: "Rock Point, Tag 2"
 date: 2005-06-20
 description: "Heute malerten wir den Computerraum der Schule, welcher auf dem Gelände der Mission ist."
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 Heute malerten wir den Computerraum der Schule, welcher auf dem Gelände der Mission ist. Mit sechs Leuten ging es ganz gut und wir hatten den Raum am Nachmittag fertig.

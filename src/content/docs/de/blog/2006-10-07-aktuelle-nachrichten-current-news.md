@@ -1,7 +1,12 @@
 ---
-title: "Aktuelle Nachrichten - Current News"
+title: "Aktuelle Nachrichten"
 date: 2006-10-07
 description: "'Tschuldigung für die lange Pause, aber ich habe jetzt wieder weniger Freizeit."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2006-10-07-aktuelle-nachrichten-current-news/01.jpg)

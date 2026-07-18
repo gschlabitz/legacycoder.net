@@ -2,6 +2,11 @@
 title: "Lilie a la Surprise"
 date: 2007-09-02
 description: "Im Frühling hatte ich haufenweise Narzissen, die einfach nicht blühen wollten."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-09-02-lilie-la-surprise/01.jpg)

@@ -1,7 +1,12 @@
 ---
-title: "Steppenläufer - Tumbleweeds"
+title: "Tumbleweeds"
 date: 2005-04-03
 description: "That is how it went for a while and, even though we had a map, every turn led to more uncertainty."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-03-steppenlufer-tumbleweeds/01.jpg)

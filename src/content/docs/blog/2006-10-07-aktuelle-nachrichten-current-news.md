@@ -1,7 +1,12 @@
 ---
-title: "Aktuelle Nachrichten - Current News"
+title: "Current News"
 date: 2006-10-07
 description: "Hello!?"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2006-10-07-aktuelle-nachrichten-current-news/01.jpg)

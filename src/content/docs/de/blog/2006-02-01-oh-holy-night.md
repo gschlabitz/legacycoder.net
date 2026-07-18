@@ -2,6 +2,11 @@
 title: "Oh Holy Night"
 date: 2006-02-01
 description: "Da meine liebe Mutti ja schon wieder (oder immer noch?) in Weihnachtsstimmung ist (siehe Kommentare des vorherigen Eintrags), muß ich doch gleich mal meine abs…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Da meine liebe Mutti ja schon wieder (oder immer noch?) in Weihnachtsstimmung ist (siehe Kommentare des vorherigen Eintrags), muß ich doch gleich mal meine absolute Lieblingsversion dieses englischen Weihnachtsliedes verlinken. Bis zum Ende anhören! Wenn man denkt, daß es gerade richtig gut ist, wird es immer noch besser!

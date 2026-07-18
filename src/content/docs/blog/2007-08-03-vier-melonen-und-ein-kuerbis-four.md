@@ -1,7 +1,12 @@
 ---
-title: "Vier Melonen und ein Kuerbis - Four Melons and a Pumpkin"
+title: "Four Melons and a Pumpkin"
 date: 2007-08-03
 description: "News Update zu meinem Melonenblüteneintrag : Bis jetzt habe ich vier Melonen gefunden."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-08-03-vier-melonen-und-ein-kuerbis-four/01.jpg)

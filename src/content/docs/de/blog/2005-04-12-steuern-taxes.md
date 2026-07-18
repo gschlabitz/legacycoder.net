@@ -1,7 +1,12 @@
 ---
-title: "Steuern - Taxes"
+title: "Steuern"
 date: 2005-04-12
 description: "Endlich sind wir mit unserer Steuererklärung fertig!"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Endlich sind wir mit unserer Steuererklärung fertig! Wußtet ihr, daß in the USA sogar die Diebe besteuert werden? Echt! Keine Witz. Hier ist ein Hinweis über den ich vor kurzem gestolpert bin als ich die Hilfe in unserem Steuerprogramm las:

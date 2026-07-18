@@ -2,6 +2,11 @@
 title: "Coen Expeditions Progress"
 date: 2005-06-14
 description: "Habe mich freiwillig als Oma Ruths Chauffeur gemeldet und bin Anfang Juni nach Illinois gefahren um sie von ihrem Besuch bei Dan nach Hause nach Arizona zu fah…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-06-14-coen-expeditions-progress/01.jpg)

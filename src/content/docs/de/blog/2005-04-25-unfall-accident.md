@@ -1,7 +1,12 @@
 ---
-title: "Unfall - Accident"
+title: "Unfall"
 date: 2005-04-25
 description: "Bandage muß bis morgen draufbleiben..."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Blut an der Axt...

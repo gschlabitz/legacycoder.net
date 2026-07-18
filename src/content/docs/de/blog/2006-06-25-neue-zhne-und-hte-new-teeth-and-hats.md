@@ -2,6 +2,11 @@
 title: "Neue Zähne und Hüte"
 date: 2006-06-25
 description: "Kirins Vorderzähne hatten schon seit Weihnachten gewackelt, nun hatten Papa und Oma Janet genug und zogen sie (und ein gutes Stück Gaumen) unter viel Schreien…"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2006-06-25-neue-zhne-und-hte-new-teeth-and-hats/01.jpg)

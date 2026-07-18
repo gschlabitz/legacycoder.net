@@ -1,7 +1,12 @@
 ---
-title: "Weihnachten 2006 - Christmas 2006"
+title: "Christmas 2006"
 date: 2006-12-23
 description: "Hier sind wir am ersten Weihnachtsfest in unserem Haus in Harrisburg."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2006-12-23-weihnachten-2006-christmas-2006/01.jpg)

@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 2 - Rock Point, Day 2"
+title: "Rock Point, Day 2"
 date: 2005-06-20
 description: "Today, we painted the computer lab of the school at the mission."
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 Today, we painted the computer lab of the school at the mission. It went pretty quick with six people and we had the room done by the afternoon.

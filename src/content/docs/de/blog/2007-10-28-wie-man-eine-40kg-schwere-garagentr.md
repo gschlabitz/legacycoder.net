@@ -2,6 +2,11 @@
 title: "Wie man eine 40kg schwere Garagentür hebtHow to lift a 86 pound heavy garage door"
 date: 2007-10-28
 description: "Zuerst braucht man einen starken Sklaven."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-10-28-wie-man-eine-40kg-schwere-garagentr/01.jpg)

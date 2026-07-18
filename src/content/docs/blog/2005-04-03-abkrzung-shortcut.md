@@ -1,7 +1,12 @@
 ---
-title: "Abkürzung - Shortcut"
+title: "Shortcut"
 date: 2005-04-03
 description: "After church today, Amy wanted to get some groceries."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-03-abkrzung-shortcut/01.jpg)

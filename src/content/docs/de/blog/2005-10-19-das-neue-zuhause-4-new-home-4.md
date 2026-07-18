@@ -2,6 +2,11 @@
 title: "Das Neue Zuhause 4"
 date: 2005-10-19
 description: "Nördlich von unserem Haus liegt dieses felsige Kliff, wo ich ab und zu sitze und über die Welt nachdenke."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-10-19-das-neue-zuhause-4-new-home-4/01.jpg)

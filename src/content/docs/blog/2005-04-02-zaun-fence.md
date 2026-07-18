@@ -1,7 +1,12 @@
 ---
-title: "Zaun - Fence"
+title: "Fence"
 date: 2005-04-02
 description: "And here is the reason why you need a fence, if you want to be a successful gardener on the reservation: free range"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-02-zaun-fence/01.jpg)

@@ -2,6 +2,11 @@
 title: "Garden of the Gods, Illinois"
 date: 2006-02-02
 description: "Hier nun endlich ein paar Bilder von unserem Besuch im Garden of the Gods (Göttergarten)."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2006-02-02-garden-of-gods-illinois/01.jpg)

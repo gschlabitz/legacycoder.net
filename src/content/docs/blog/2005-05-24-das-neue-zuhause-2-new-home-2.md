@@ -2,6 +2,11 @@
 title: "The New Home 2"
 date: 2005-05-24
 description: "On this picture you can see a local cowboy with revolver in our driveway."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-05-24-das-neue-zuhause-2-new-home-2/01.jpg)

@@ -1,15 +1,15 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import TimelineFilter from "../components/TimelineFilter.jsx";
 import TimelineMap from "../components/TimelineMap.jsx";
 import TimelineOrder from "../components/TimelineOrder.jsx";
 import { pinSvg, tagColor, tagIcon } from "../lib/tag-pins.js";
+import { getTimelineEvents } from "../lib/timeline";
 
-// Build-time: load every life event and order it chronologically.
-const events = (await getCollection("timeline")).sort(
-  (a, b) => a.data.date.getTime() - b.data.date.getTime()
-);
+// Build-time: every blog post is a timeline event (ADR-0004). The loader
+// returns them chronologically with sphere/summary/url derived.
+const events = await getTimelineEvents();
 
 // Group into year buckets, preserving that chronological order. Frontmatter
 // dates parse as UTC midnight, so read them back in UTC too — local-time
@@ -17,7 +17,7 @@ const events = (await getCollection("timeline")).sort(
 // machine west of Greenwich.
 const byYear = new Map<number, typeof events>();
 for (const event of events) {
-  const year = event.data.date.getUTCFullYear();
+  const year = event.date.getUTCFullYear();
   if (!byYear.has(year)) byYear.set(year, []);
   byYear.get(year)!.push(event);
 }
@@ -26,36 +26,38 @@ const years = [...byYear.entries()];
 // Display label for a place: "city, state" at home, "city, country" abroad —
 // derived from the location parts so label and parts can't disagree (see the
 // location schema in src/content.config.ts).
-type Location = (typeof events)[number]["data"]["location"];
+type Location = (typeof events)[number]["location"];
 const placeLabel = (loc: Location) =>
   [loc.city, loc.state ?? loc.country].filter(Boolean).join(", ");
 
 // Year headings read "Berlin, Germany - 1992": each year shows the city I
-// lived in at the time, taken from the year's first event (every event has a
-// location — the schema requires it).
+// lived in at the time, taken from the year's first event (every published
+// event has a location — the timeline loader enforces it).
 const placeByYear = new Map<number, string>();
 for (const [year, yearEvents] of years) {
-  placeByYear.set(year, placeLabel(yearEvents[0].data.location));
+  placeByYear.set(year, placeLabel(yearEvents[0].location));
 }
 
 // Distinct tags, for the filter island's chips.
-const allTags = [...new Set(events.flatMap((e) => e.data.tags))].sort();
+const allTags = [...new Set(events.flatMap((e) => e.tags))].sort();
 
 // Tag icon for an event: its first tag decides (events carrying several
-// tags lead with the defining one). Shared with the map via src/lib/tag-pins.
-// Pins render in one shared color (PIN_COLOR); the per-tag color only tints
-// the map placeholder's chips now.
+// tags lead with the defining one); untagged events keep the plain teardrop.
+// Shared with the map via src/lib/tag-pins. Pins render in one shared color
+// (PIN_COLOR); the per-tag color only tints the map placeholder's chips now.
 const eventColor = (event: (typeof events)[number]) =>
-  tagColor(event.data.tags[0], allTags);
-const eventIcon = (event: (typeof events)[number]) =>
-  tagIcon(event.data.tags[0]);
+  tagColor(event.tags[0], allTags);
+const eventIcon = (event: (typeof events)[number]) => tagIcon(event.tags[0]);
 
-// Pre-render each Markdown body to a component (render() is async, so it can't
-// run inside the template loop below).
+// Pre-render Markdown bodies for events without an authored summary — the
+// timeline shows the most deliberate summary available (excerpt ??
+// description ?? full body). render() is async, so it can't run inside the
+// template loop below.
 const bodies = new Map<string, Awaited<ReturnType<typeof render>>["Content"]>();
 for (const event of events) {
-  const { Content } = await render(event);
-  bodies.set(event.id, Content);
+  if (event.summary !== null) continue;
+  const { Content } = await render(event.entry);
+  bodies.set(event.entry.id, Content);
 }
 
 const monthFmt = new Intl.DateTimeFormat("en-US", {
@@ -78,7 +80,7 @@ type Place = {
 };
 const placesByCoord = new Map<string, Place>();
 for (const event of events) {
-  const loc = event.data.location;
+  const loc = event.location;
   const key = `${loc.lat},${loc.lng}`;
   if (!placesByCoord.has(key)) {
     placesByCoord.set(key, {
@@ -92,8 +94,8 @@ for (const event of events) {
     });
   }
   const place = placesByCoord.get(key)!;
-  place.titles.push(event.data.title);
-  place.eventIds.push(event.id);
+  place.titles.push(event.title);
+  place.eventIds.push(event.entry.id);
 }
 const places = [...placesByCoord.values()];
 
@@ -140,13 +142,13 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
           </h2>
           <div class="tl-events">
             {yearEvents.map((event) => {
-              const Body = bodies.get(event.id)!;
+              const Body = bodies.get(event.entry.id);
               return (
                 <article
-                  class:list={["tl-event", `tl-event--${event.data.sphere}`]}
+                  class:list={["tl-event", `tl-event--${event.sphere}`]}
                   data-timeline-event
-                  data-event-id={event.id}
-                  data-tags={event.data.tags.join(",")}
+                  data-event-id={event.entry.id}
+                  data-tags={event.tags.join(",")}
                 >
                   {/* Tag pin on the rail, iconed by the event's first tag.
                       Every event has a location, so every pin is a button —
@@ -158,20 +160,17 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                       eventIcon(event) && "tl-pin--glyph",
                     ]}
                     type="button"
-                    title={event.data.tags[0]}
-                    aria-label={`Show ${placeLabel(event.data.location)} on the map`}
+                    title={event.tags[0]}
+                    aria-label={`Show ${placeLabel(event.location)} on the map`}
                     set:html={pinSvg(48, eventIcon(event), false)}
                   />
-                  <p class="tl-month">{monthFmt.format(event.data.date)}</p>
-                  <h3 class="tl-title">{event.data.title}</h3>
+                  <p class="tl-month">{monthFmt.format(event.date)}</p>
+                  <h3 class="tl-title">
+                    <a href={event.url}>{event.title}</a>
+                  </h3>
                   <div class="tl-body">
-                    <Body />
+                    {event.summary !== null ? <p>{event.summary}</p> : Body && <Body />}
                   </div>
-                  {event.data.post && (
-                    <a class="tl-post-link" href={`/blog/${event.data.post}/`}>
-                      Read the full story →
-                    </a>
-                  )}
                 </article>
               );
             })}

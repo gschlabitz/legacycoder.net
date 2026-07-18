@@ -2,6 +2,11 @@
 title: "Transparency Germany"
 date: 2006-03-28
 description: "Here is a small service for [Moni](http://wasweissich.twoday.net/) on this usually unpolitical family page."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Here is a small service for [Moni](http://wasweissich.twoday.net/) on this usually unpolitical family page. My humble [translation talents](http://guidoschlabitz.language123.com/) have to be good for something. If you don't know this story, you can read about it [here](http://www.dw-world.de/dw/article/0,2144,1948301,00.html), [here](http://scottageb.blogspot.com/2006/03/transparency-international-company-in.html), [here](http://scottageb.blogspot.com/2006/03/moni-becomes-new-norma-rae.html) and [here](http://www.opiniojuris.org/posts/1143569117.shtml), also [here](http://yakalskovich.livejournal.com/123336.html).

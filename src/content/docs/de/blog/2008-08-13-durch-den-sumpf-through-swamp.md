@@ -1,7 +1,13 @@
 ---
-title: "Durch den Sumpf - Through the Swamp"
+title: "Durch den Sumpf"
 date: 2008-08-13
 description: "Immer noch auf dem Weg nach New Orleans sind wir auf einmal [im Sumpf](http://maps.google.com/maps?f=q&hl=en&geocode=&q=New+Orleans,+LA&ie=UTF8&ll=30.056339,-9…"
+tags: [travel]
+location:
+  city: LaPlace
+  state: Louisiana
+  lat: 30.0563
+  lng: -90.3736
 ---
 
 Immer noch auf dem Weg nach New Orleans sind wir auf einmal [im Sumpf](http://maps.google.com/maps?f=q&hl=en&geocode=&q=New+Orleans,+LA&ie=UTF8&ll=30.056339,-90.373597&spn=0.000789,0.001207&t=h&z=20).

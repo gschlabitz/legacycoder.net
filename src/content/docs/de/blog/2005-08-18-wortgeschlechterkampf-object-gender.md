@@ -1,7 +1,12 @@
 ---
-title: "Wortgeschlechterkampf - Object Gender Wars"
+title: "Wortgeschlechterkampf"
 date: 2005-08-18
 description: "Hier mal ein Versuch Humor zu übersetzen."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Hier mal ein Versuch Humor zu übersetzen. Im Englischen haben Dinge kein Geschlecht, also das Fernsher, das Uhr und das Mann. Ich dachte mir diese witzige Liste sollte also besonders gut im Deutschen funktionieren, aber seht selbst, manchmal musste ich ganz schön rumändern:

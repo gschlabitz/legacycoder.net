@@ -2,6 +2,11 @@
 title: "Derrrr Hrrrrrrbst"
 date: 2006-11-26
 description: "Thanksgiving bei den Schlabitzens."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2006-11-26-derrrr-hrrrrrrbst/01.jpg)

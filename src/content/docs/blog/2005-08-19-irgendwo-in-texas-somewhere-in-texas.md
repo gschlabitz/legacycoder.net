@@ -1,7 +1,12 @@
 ---
-title: "Irgendwo in Texas - Somewhere in Texas"
+title: "Somewhere in Texas"
 date: 2005-08-19
 description: "The closer wie got to the Texan state border, the more oil wells (or actually oil rigs) were see-sawing up and down next to the road."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-08-19-irgendwo-in-texas-somewhere-in-texas/01.jpg)

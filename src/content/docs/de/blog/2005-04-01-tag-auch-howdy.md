@@ -1,7 +1,13 @@
 ---
-title: "Tag auch - Howdy"
+title: "Tag auch"
 date: 2005-04-01
 description: "Natuerlich ist das hier alles zweisprachig, da ich Familie hüben wie drüben hab und beide natuerlich was davon haben wollen."
+tags: [family]
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Nun wird's modern! Mein neuer ISP hat kein Webraum und so muss ich mir was Neues einfallen lassen. Ein Blog muss her! Anstatt sporadische Massenmails auszusenden kann ich das einfach hier alles ansammeln und wen's interressiert, der kann sich das anschauen oder im Archiv Verpasstes nachholen.

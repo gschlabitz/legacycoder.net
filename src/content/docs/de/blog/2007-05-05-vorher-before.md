@@ -1,7 +1,12 @@
 ---
-title: "Vorher & Nachher - Before & After"
+title: "Vorher & Nachher"
 date: 2007-05-05
 description: "(und dem Rasenmäher)"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 <table align="center"><tbody><tr><td>Vor den Eisheiligen...<br><span style="color: rgb(153, 102, 51);">Before the spring freeze...</span></td><td style="width: 100px;"><br></td><td>...nach den Eisheiligen.<br><span style="color: rgb(153, 102, 51);">...after the spring freeze.</span></td></tr></tbody></table>

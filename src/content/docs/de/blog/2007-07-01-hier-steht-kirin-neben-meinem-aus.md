@@ -1,7 +1,12 @@
 ---
-title: "Kids und Kohl - Kids and Cabbage"
+title: "Kids und Kohl"
 date: 2007-07-01
 description: "Hier steht Kirin neben meinem aus Bambus gebasteltem Tomatenkäfig."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-07-01-hier-steht-kirin-neben-meinem-aus/01.jpg)

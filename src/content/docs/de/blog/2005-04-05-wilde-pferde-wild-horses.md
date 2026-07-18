@@ -1,7 +1,12 @@
 ---
-title: "Wilde Pferde - Wild Horses"
+title: "Wilde Pferde"
 date: 2005-04-05
 description: "Der Weg nach dem Stacheldrahttor wurde besser und besser und führte schließlich zu einer zweispurigen Sandstraße."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-04-05-wilde-pferde-wild-horses/01.jpg)

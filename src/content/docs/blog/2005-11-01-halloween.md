@@ -2,6 +2,11 @@
 title: "Halloween"
 date: 2005-11-01
 description: "Of course, Kai had to go to bed with his Batman outfit on, but decided against the mask sometime during the night."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-11-01-halloween/01.jpg)

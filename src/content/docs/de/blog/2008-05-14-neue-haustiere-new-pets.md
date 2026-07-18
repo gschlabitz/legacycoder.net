@@ -1,7 +1,12 @@
 ---
-title: "Neue Haustiere - New Pets"
+title: "Neue Haustiere"
 date: 2008-05-14
 description: "Oooh, süß!"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Oooh, süß!

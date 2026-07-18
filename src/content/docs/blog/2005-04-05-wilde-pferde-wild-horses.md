@@ -1,7 +1,12 @@
 ---
-title: "Wilde Pferde - Wild Horses"
+title: "Wild Horses"
 date: 2005-04-05
 description: "The path after the gate in the razor wire fence got better and better, and eventually led to a two lane dirt road."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-05-wilde-pferde-wild-horses/01.jpg)

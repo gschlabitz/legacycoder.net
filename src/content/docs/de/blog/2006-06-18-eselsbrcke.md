@@ -2,6 +2,11 @@
 title: "Eselsbrücke"
 date: 2006-06-18
 description: "Viele meiner werten Leser und Leserinnen kommen per Suchmaschiene auf meinem bescheidenen Familienblog an."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Viele meiner werten Leser und Leserinnen kommen per Suchmaschiene auf meinem bescheidenen Familienblog an. Diese suchen aber in fast allen Fällen nicht nach "Schlabitz," sondern nach viel seltsameren Sachen. Da viel mir das Konzept der Eselsbrücke ein. Mein Name ist nicht gerade der einprägsamste und geläufigste, selbst in deutschen Landen. Wenn also jemand damit Schwierigkeiten hat, listen diese Suchbegriffe, in Google eingegeben, dieses Blog innerhalb der ersten paar Ergebnisse auf:

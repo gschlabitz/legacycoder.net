@@ -2,6 +2,11 @@
 title: "One Horse Gap"
 date: 2006-02-27
 description: "One Horse Gap ist eine Schlucht im Shawnee Nationalpark, die gerade breit genug für ein Pferd ist, daher der Name."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2006-02-27-one-horse-gap/01.jpg)

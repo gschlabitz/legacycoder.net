@@ -1,7 +1,12 @@
 ---
-title: "Kräuterecke - Herb Corner"
+title: "Kräuterecke"
 date: 2006-07-19
 description: "Hier ist meine kleine Kräuterecke."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2006-07-19-kruterecke-herb-corner/01.jpg)

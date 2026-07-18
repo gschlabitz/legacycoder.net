@@ -1,7 +1,12 @@
 ---
-title: "Weihnachten 2007 - Christmas 2007"
+title: "Weihnachten 2007"
 date: 2007-12-24
 description: "Weinachtsabend bei den Schlabitzens: Dieses Jahr haben ich und Dan unsere Weihnachtsbäume von seinem Waldgrundstück geholt."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-12-24-weihnachten-2007-christmas-2007/01.jpg)

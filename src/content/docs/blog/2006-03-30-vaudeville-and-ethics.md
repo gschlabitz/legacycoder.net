@@ -2,6 +2,11 @@
 title: "Vaudeville and Ethics"
 date: 2006-03-30
 description: "Anyway, here is his message he sent her on Friday, 3/24/2006, as quoted in the \"[Unexpected Email from legal advisor, got until Sunday to decide](http://waswei…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Anyway, here is his message he sent her on Friday, 3/24/2006, as quoted in the "[Unexpected Email from legal advisor, got until Sunday to decide](http://wasweissich.twoday.net/stories/1742827/)" post by Moni:

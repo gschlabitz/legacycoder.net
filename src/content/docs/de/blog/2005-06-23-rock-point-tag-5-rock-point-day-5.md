@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 5 - Rock Point, Day 5"
+title: "Rock Point, Tag 5"
 date: 2005-06-23
 description: "Dieser Pinsel wird benutzt um die vielen kleinen Löcher in den Betonblöcken zu füllen:"
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 Dieser Pinsel wird benutzt um die vielen kleinen Löcher in den Betonblöcken zu füllen:

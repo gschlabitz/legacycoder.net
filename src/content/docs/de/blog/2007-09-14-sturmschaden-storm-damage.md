@@ -1,7 +1,12 @@
 ---
-title: "Sturmschaden - Storm Damage"
+title: "Sturmschaden"
 date: 2007-09-14
 description: "Einer unserer Bäume hat die Sommerhitze und Gewitter nicht gut überstanden."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-09-14-sturmschaden-storm-damage/01.jpg)

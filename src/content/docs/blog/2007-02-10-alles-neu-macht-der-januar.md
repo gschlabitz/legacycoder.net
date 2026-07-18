@@ -2,6 +2,11 @@
 title: "Alles neu macht der... Januar!"
 date: 2007-02-10
 description: "Endlich hatten wir in diesem Winter auch mal ein paar Flocken!"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-02-10-alles-neu-macht-der-januar/01.jpg)

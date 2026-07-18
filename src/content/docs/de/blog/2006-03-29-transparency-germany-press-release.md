@@ -2,6 +2,11 @@
 title: "Transparency Germany Press Release"
 date: 2006-03-29
 description: "> _The friend of a former employee published an account about a terminated work relationship between a friend and Transparency Germany (TI) in her Weblog \"Ged…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 > _The friend of a former employee published an account about a terminated work relationship between a friend and Transparency Germany (TI) in her Weblog "Gedankenträger". The contents of this post did, for the most part, not correspond to the facts and conveyed to the readers the impression that the former employee was treated unfairly.

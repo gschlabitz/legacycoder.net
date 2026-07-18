@@ -10,8 +10,11 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
 
 ## Authoring
 
-Timeline events require `location` coordinates in their frontmatter. Resolve a
-place name to a paste-ready block with:
+Every blog post is a timeline event (ADR-0004). Published posts require
+`location` coordinates in their frontmatter — drafts may omit them until
+published. Facts (tags, location, date) are mirrored to the German
+counterpart file; prose (title, description, excerpt) is per-locale. Resolve
+a place name to a paste-ready block with:
 
 ```
 npm run geocode -- "Harrisburg, Illinois"

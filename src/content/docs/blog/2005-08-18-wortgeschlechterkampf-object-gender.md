@@ -1,7 +1,12 @@
 ---
-title: "Wortgeschlechterkampf - Object Gender Wars"
+title: "Object Gender Wars"
 date: 2005-08-18
 description: "Here is a list of properties that \"determine\" what gender objects have."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Here is a list of properties that "determine" what gender objects have. The German translation is even funnier, because there, objects really do have genders. The watch is female, the TV male and a girl is neutral for whatever reason. Anyway, here's the original English version:

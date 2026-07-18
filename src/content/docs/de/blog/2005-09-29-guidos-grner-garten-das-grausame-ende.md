@@ -1,7 +1,12 @@
 ---
-title: "Guidos Grüner Garten, Das grausame Ende -Guido's Green Garden, The Terrible End"
+title: "Guidos Grüner Garten, Das grausame Ende"
 date: 2005-09-29
 description: "Das ist das Ende meines schönen Gartens!"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-09-29-guidos-grner-garten-das-grausame-ende/01.jpg)

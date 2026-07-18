@@ -2,6 +2,18 @@
 title: "New Home Illinois"
 date: 2006-06-16
 description: "We arrived in one piece in Illinois and are enjoying the overabundant greenery, the many song birds and deer, and the amenities of the Coen residence."
+tags: [travel]
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
+excerpt: >-
+  Packed a rental truck on June 4th, drove three days down what used to be
+  Route 66, and rolled in at the in-laws' in southern Illinois — trading
+  high-desert sand roads for overabundant greenery, songbirds, deer, and
+  wild tiger lilies, with the hospitality of the Coen residence as home base
+  until job and house were found.
 ---
 
 ![](../../../assets/blog/2006-06-16-neue-heimat-illinois-new-home-illinois/01.jpg)

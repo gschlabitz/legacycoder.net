@@ -1,7 +1,12 @@
 ---
-title: "Namensstreit - Name Dispute"
+title: "Name Dispute"
 date: 2005-04-06
 description: "However, I'm usually giving the names to our pets, and I thought Muddy would be cute."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-06-namensstreit-name-dispute/01.jpg)

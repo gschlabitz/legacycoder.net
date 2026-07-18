@@ -1,7 +1,12 @@
 ---
-title: "Das Neue (Hunde-)Haus -The New (Dog)House"
+title: "The New (Dog)House"
 date: 2005-11-29
 description: "Didgy survived the last winter without a dog house, but I always feel sorry for her out on the porch during these bitterly cold high desert nights."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-11-29-das-neue-hunde-haus-new-doghouse/01.jpg)

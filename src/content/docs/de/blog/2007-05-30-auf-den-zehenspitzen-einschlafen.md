@@ -1,7 +1,12 @@
 ---
-title: "Auf den Zehenspitzen einschlafen - Sleeping on your toes"
+title: "Auf den Zehenspitzen einschlafen"
 date: 2007-05-30
 description: "Viele junge Eltern fragen sich warum manche Kinder einfach überall schlafen können und ob man das anerziehen kann."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-05-30-auf-den-zehenspitzen-einschlafen/01.jpg)

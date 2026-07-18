@@ -1,7 +1,12 @@
 ---
-title: "Guido's Grüner Garten, Folge 1 - Guido's Green Garden, Episode 1"
+title: "Guido's Green Garden, Episode 1"
 date: 2005-04-20
 description: "Wednesday already and I did not write anything..."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-20-guidos-grner-garten-folge-1-guidos/01.jpg)

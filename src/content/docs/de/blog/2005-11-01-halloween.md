@@ -2,6 +2,11 @@
 title: "Halloween"
 date: 2005-11-01
 description: "Haben das erste Halloween im neuen Haus gut überstanden, da wir frühzeitig über den Andrang von verkleideten Navajokids gewarnt wurden."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-11-01-halloween/01.jpg)

@@ -1,7 +1,12 @@
 ---
-title: "Stein? Papier? Schere! - Rock? Paper? Scissors!"
+title: "Stein? Papier? Schere!"
 date: 2006-02-08
 description: "Unsere Prinzessin hatte ein paar Schwierigkeiten ihren königlichen Haargummi aus dem Pferdeschwanz zu entfernden."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Unsere Prinzessin hatte ein paar Schwierigkeiten ihren königlichen Haargummi aus dem Pferdeschwanz zu entfernden. Und anstatt den König oder die Königin um Hilfe zu bitten, dachte sie sich: 'Kein Problem, daß kann eine Schere schnell lösen!'

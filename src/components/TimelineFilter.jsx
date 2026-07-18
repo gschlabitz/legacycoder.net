@@ -58,10 +58,13 @@ export default function TimelineFilter({ tags }) {
     const events = document.querySelectorAll("[data-timeline-event]");
     for (const el of events) {
       const eventTags = (el.dataset.tags || "").split(",").filter(Boolean);
-      // Untagged events are never filtered; tagged ones stay while any of
-      // their tags is still checked.
-      const visible =
-        eventTags.length === 0 || eventTags.some((t) => checked.has(t));
+      // Filtering narrows to the checked tags. Untagged events (most of the
+      // archive — tagging is deliberate) are visible only while no filter is
+      // active; they belong to no subject thread, so any active filter
+      // prunes them.
+      const visible = filtering
+        ? eventTags.some((t) => checked.has(t))
+        : true;
       el.toggleAttribute("hidden", !visible);
     }
 

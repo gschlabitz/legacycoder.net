@@ -1,7 +1,12 @@
 ---
-title: "MP3 gegen WMA - MP3 versus WMA"
+title: "MP3 versus WMA"
 date: 2005-05-06
 description: "\"Heart of the Sunrise\", Yes\n> \\_10,717KB MP3 128 \\*\\*\\*\n> \\_16,087KB MP3 192 \\*\\*\\*\n> \\_26,827KB MP3 320 \\*\\*\\*\n> 118,393KB WAV 14k \\*\\*\\*\\*\\*\n> \\_10,803KB WMA…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 > "Der Gnom", Modest P. Mussorgsky

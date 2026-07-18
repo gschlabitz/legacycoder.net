@@ -216,19 +216,23 @@ button.tl-pin:focus-visible {
   color: var(--sl-color-gray-1);
 }
 
+/* The title is the way into the post the event is a lens on; it reads as a
+   heading until hovered. */
+.tl-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.tl-title a:hover {
+  text-decoration: underline;
+}
+
 .tl-body {
   color: var(--sl-color-gray-2);
 }
 
 .tl-body :last-child {
   margin-bottom: 0;
-}
-
-.tl-post-link {
-  display: inline-block;
-  margin: 0.5rem 0 0;
-  font-size: var(--sl-text-sm);
-  color: var(--sl-color-gray-3);
 }
 
 /* --- Tag chips (on events and in the filter) ------------------------ */

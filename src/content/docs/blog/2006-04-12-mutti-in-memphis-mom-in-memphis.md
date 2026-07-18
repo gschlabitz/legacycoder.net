@@ -1,7 +1,12 @@
 ---
-title: "Mutti in Memphis - Mom in Memphis"
+title: "Mom in Memphis"
 date: 2006-04-12
 description: "I had one of the coolest brain farts just before my parents arrived for their Christmas visit in Illinois."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2006-04-12-mutti-in-memphis-mom-in-memphis/01.jpg)

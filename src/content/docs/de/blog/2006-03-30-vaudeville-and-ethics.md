@@ -2,6 +2,11 @@
 title: "Vaudeville and Ethics"
 date: 2006-03-30
 description: "Hallo Mutti."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Hallo Mutti. 'Tschuldige, daß das hier alles gerade nur englischsprachig ist, aber wenn es um Meinungsfreiheit geht, muß ich meinen Beitrag leisten. Wir reden am Telefon darüber...

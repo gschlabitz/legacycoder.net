@@ -1,7 +1,12 @@
 ---
-title: "Benzinpreis - Gas price"
+title: "Gas price"
 date: 2005-06-29
 description: "According to [www.Benzinpreis.de](http://www.benzinpreis.de/statistik.phtml) Germans currently pay 1.23 Euros for one liter of Super (89, the middle choice, no…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 According to [www.Benzinpreis.de](http://www.benzinpreis.de/statistik.phtml) Germans currently pay 1.23 Euros for one liter of Super (89, the middle choice, not the rocket fuel). With the [current exchange rate](http://finance.yahoo.com/currency?u) of 1.2085 Dollars per Euro we get:

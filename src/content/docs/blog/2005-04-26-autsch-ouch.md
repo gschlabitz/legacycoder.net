@@ -1,7 +1,12 @@
 ---
-title: "Autsch - Ouch"
+title: "Ouch"
 date: 2005-04-26
 description: "Well okay, I am not going to be that mean, and use only links to the pictures."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Na, ich werd' mal nicht ganz so gemein sein und nur Links zu den Photos verwenden. Ich will ja nicht, das jemandem schlecht wird. ;D

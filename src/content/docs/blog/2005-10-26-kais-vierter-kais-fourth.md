@@ -1,7 +1,12 @@
 ---
-title: "Kais Vierter - Kai's Fourth"
+title: "Kai's Fourth"
 date: 2005-10-26
 description: "Here are a few pictures of Kai's little birthday party."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-10-26-kais-vierter-kais-fourth/01.jpg)

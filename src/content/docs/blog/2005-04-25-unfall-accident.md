@@ -1,7 +1,12 @@
 ---
-title: "Unfall - Accident"
+title: "Accident"
 date: 2005-04-25
 description: "Blood on the axe..."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Blut an der Axt...

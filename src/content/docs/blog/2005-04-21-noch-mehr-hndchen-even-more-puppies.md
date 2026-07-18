@@ -1,7 +1,12 @@
 ---
-title: "Noch mehr Hündchen - Even more puppies"
+title: "Even more puppies"
 date: 2005-04-21
 description: "Okay, now it really gets complicated with naming the doggies..."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Okay, now it really gets complicated with naming the doggies... It's eight puppies, if I counted correctly.

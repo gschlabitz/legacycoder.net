@@ -2,6 +2,11 @@
 title: "Das Neue Zuhause"
 date: 2005-05-24
 description: "Meine liebe Mutter hat mich nach mehr Bilder von unserem neuen Haus gefragt."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-05-24-das-neue-zuhause-new-home/01.jpg)

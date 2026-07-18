@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 4 - Rock Point, Day 4"
+title: "Rock Point, Tag 4"
 date: 2005-06-22
 description: "Heute morgen, relativ pünktlich sogar (10:05 statt 9:30), hatten wir nochmal Ferienbibelschule."
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 Heute morgen, relativ pünktlich sogar (10:05 statt 9:30), hatten wir nochmal Ferienbibelschule. Linda zeigte DEN Weg und alle sangen mit.

@@ -1,7 +1,12 @@
 ---
-title: "Mehr Videos - More videos"
+title: "Mehr Videos"
 date: 2008-01-13
 description: "Jetzt wo ich hier Videos posten kann, sollte ich vielleicht mal mehr filmen."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Jetzt wo ich hier Videos posten kann, sollte ich vielleicht mal mehr filmen. Hier mal ein paar ältere Videos zum Anfang:

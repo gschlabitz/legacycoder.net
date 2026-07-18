@@ -1,7 +1,12 @@
 ---
-title: "Weihnachten in der Coen Lodge - Christmas at the Coen Lodge"
+title: "Weihnachten in der Coen Lodge"
 date: 2006-12-28
 description: "Hier sind die Bilder vom Weihnachtsabend mit der Hälfte der Coen-Familie (18 Leute)."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Hier sind die Bilder vom Weihnachtsabend mit der Hälfte der Coen-Familie (18 Leute). Die zusammengeschobenen Esstische passten gerade mal so in die Große Stube. Der Weihnachtsbaum im Hintergrund, ist eine Zypresse von Dans Grundstück, die er selbst gesägt hat.

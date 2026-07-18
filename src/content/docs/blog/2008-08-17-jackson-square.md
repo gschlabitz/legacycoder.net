@@ -2,6 +2,12 @@
 title: "Jackson Square"
 date: 2008-08-17
 description: "Jackson Square is the heart of the French Quarter, which in turn forms the historic and cultural center of the city of New Orleans."
+tags: [travel]
+location:
+  city: New Orleans
+  state: Louisiana
+  lat: 29.9575
+  lng: -90.0629
 ---
 
 ![](../../../assets/blog/2008-08-17-jackson-square/01.jpg)

@@ -1,7 +1,12 @@
 ---
-title: "Windows-Geräusche - Windows Noises"
+title: "Windows Noises"
 date: 2005-10-06
 description: "As Oliver can surly elaborate (and will, if you want to or not ;)), windows is a poor creative medium - the other meanings of \"poor\" included."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 As Oliver can surly elaborate (and will, if you want to or not ;)), windows is a poor creative medium - the other meanings of "poor" included. For the real artists, this is but a short barrier. Rather it becomes part of the art work and expresses his creativity all the more poignant.

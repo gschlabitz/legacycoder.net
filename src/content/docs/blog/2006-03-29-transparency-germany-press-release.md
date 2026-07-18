@@ -2,6 +2,11 @@
 title: "Transparency Germany Press Release"
 date: 2006-03-29
 description: "Anyway, notice how they corroborate Moni's story but still call her a liar?"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Anyway, notice how they corroborate Moni's story but still call her a liar? Yep, that's some quality German PR...

@@ -1,7 +1,12 @@
 ---
-title: "Steppenläufer - Tumbleweeds"
+title: "Steppenläufer"
 date: 2005-04-03
 description: "Die Sandstraße die vom Highway abging war zweispurig und gar nicht so schlecht."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-04-03-steppenlufer-tumbleweeds/01.jpg)

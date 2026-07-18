@@ -1,7 +1,12 @@
 ---
-title: "Guido's Grüner Garten, Folge 3 - Guido's Green Garden, Episode 3"
+title: "Guido's Green Garden, Episode 3"
 date: 2005-05-24
 description: "After eight weeks of careful nursing, my onion and brussel sprouts were destroyed by a wild animal."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-05-24-guidos-grner-garten-folge-3-guidos/01.jpg)

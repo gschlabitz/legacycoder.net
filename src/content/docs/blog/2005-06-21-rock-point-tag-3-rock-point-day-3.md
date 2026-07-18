@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 3 - Rock Point, Day 3"
+title: "Rock Point, Day 3"
 date: 2005-06-21
 description: "As Lutherans, we were, of course, all organized and ready to start Vacation Bible School precisely at 9:30 am, until we found out that we are on Navajo Time, w…"
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 As Lutherans, we were, of course, all organized and ready to start Vacation Bible School precisely at 9:30 am, until we found out that we are on Navajo Time, which means announced times are basically a rough suggestion and could mean anything depending on circumstances. So, we painted in the morning instead and had VBS sometime in the afternoon. :-)

@@ -1,7 +1,12 @@
 ---
-title: "Guido's Grüner Garten, Folge 3 - Guido's Green Garden, Episode 3"
+title: "Guido's Grüner Garten, Folge 3"
 date: 2005-05-24
 description: "Nach acht Wochen sorgfältiger Pflege wurden meine Zwiebel- und Rosenkohlkeimlinge von einem wilden Tier zerstört."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-05-24-guidos-grner-garten-folge-3-guidos/01.jpg)

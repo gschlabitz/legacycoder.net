@@ -1,7 +1,12 @@
 ---
-title: "Der Beste Blondinenwitz! - Best Blonde Joke Ever!"
+title: "Best Blonde Joke Ever!"
 date: 2006-01-06
 description: "The Christmas/New Year-family gathering in Illinois is over and we all arrived safely at home via various ways."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Hallo!

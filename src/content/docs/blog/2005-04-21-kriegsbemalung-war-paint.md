@@ -1,7 +1,12 @@
 ---
-title: "Kriegsbemalung - War Paint"
+title: "War Paint"
 date: 2005-04-21
 description: "Ich muss mir mal diese manuellen Einstellungen durchlesen..."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-21-kriegsbemalung-war-paint/01.jpg)

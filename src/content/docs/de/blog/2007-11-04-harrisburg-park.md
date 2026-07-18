@@ -2,6 +2,11 @@
 title: "Harrisburg Park"
 date: 2007-11-04
 description: "Es ist wieder Herbst in Harrisburg."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-11-04-harrisburg-park/01.jpg)

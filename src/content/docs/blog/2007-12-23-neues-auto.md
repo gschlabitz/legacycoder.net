@@ -2,6 +2,11 @@
 title: "Neues Auto"
 date: 2007-12-23
 description: "Wir haben unseren Saturn VUE in unser vorheriges Auto, Saturn ION, umgetauscht."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-12-23-neues-auto/01.jpg)

@@ -1,7 +1,12 @@
 ---
-title: "Amy näht - Amy sews"
+title: "Amy näht"
 date: 2008-06-15
 description: "Da ich Kai's Fensterklimaanlage nun in Amy's Nähzimmer eingebaut habe, kann sie dort auch im Sommer ihr Hobby betreiben."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2008-06-15-amy-nht-amy-sews/01.jpg)

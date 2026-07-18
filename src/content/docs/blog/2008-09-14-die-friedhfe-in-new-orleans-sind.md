@@ -2,6 +2,11 @@
 title: "Die Friedhfe In New Orleans Sind"
 date: 2008-09-14
 description: "Die Friedhöfe in New Orleans sind bekannt Touristenattraktionen."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2008-09-14-die-friedhfe-in-new-orleans-sind/01.jpg)

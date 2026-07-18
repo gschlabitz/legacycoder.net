@@ -1,7 +1,12 @@
 ---
-title: "Unterm Teppich - Under the Carpet"
+title: "Under the Carpet"
 date: 2007-08-10
 description: "Kuck mal was wir unterm Teppich gefunden haben."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-08-10-unterm-teppich-under-carpet/01.jpg)

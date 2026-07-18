@@ -1,7 +1,12 @@
 ---
-title: "Besuch bei den Georges - Visiting the Georges"
+title: "Besuch bei den Georges"
 date: 2007-08-02
 description: "Im Juli, als wir Sara wieder nach Hause fuhren, ließen wir unsere Kinder für eine Woche bei den Georges, Amys Schwester Brendas Familie."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-08-02-besuch-bei-den-georges-visiting-georges/01.jpg)

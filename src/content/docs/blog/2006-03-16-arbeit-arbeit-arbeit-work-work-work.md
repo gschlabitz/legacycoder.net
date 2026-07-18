@@ -1,7 +1,12 @@
 ---
-title: "Arbeit, Arbeit, Arbeit! - Work, work, work!"
+title: "Work, work, work!"
 date: 2006-03-16
 description: "Just to let you know, why I have not been blogging very frequently lately; I've been working for this German security start-up called Hitec Security."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Just to let you know, why I have not been blogging very frequently lately; I've been working for this German security start-up called Hitec Security. I wrote all the original copy and translated a shipload of English product descriptions. Check out the [finished web site](http://www.hitecsecurity.de/index.php?language=de).

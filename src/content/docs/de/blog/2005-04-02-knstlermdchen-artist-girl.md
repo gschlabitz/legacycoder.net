@@ -1,7 +1,12 @@
 ---
-title: "Künstlermädchen - Artist girl"
+title: "Künstlermädchen"
 date: 2005-04-02
 description: "Kirin entwickelt sich zu einer richtigen Kuenstlerin und über diese Zeichnung sagt sie folgendes: \"Das ist eine Palominomammi und ihre Kinder haben den Felsen…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-04-02-knstlermdchen-artist-girl/01.jpg)

@@ -2,6 +2,11 @@
 title: "Meine Tulpen Unterm Judasbaum Beim"
 date: 2007-03-29
 description: "Meine Tulpen unterm Judasbaum beim Hauseingang und der andere Judasbaum am Garten."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-03-29-meine-tulpen-unterm-judasbaum-beim/01.jpg)

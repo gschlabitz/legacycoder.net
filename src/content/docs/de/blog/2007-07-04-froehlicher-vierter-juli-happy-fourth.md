@@ -1,7 +1,12 @@
 ---
-title: "Fröhlicher Vierter Juli - Happy Fourth of July"
+title: "Fröhlicher Vierter Juli"
 date: 2007-07-04
 description: "Heute ist Unabhängigkeitstag und die Männers haben dies zum Anlass genommen um eine kleine Angeltour zu unternehmen."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-07-04-froehlicher-vierter-juli-happy-fourth/01.jpg)

@@ -2,6 +2,11 @@
 title: "Pack(en), Pack(en), Pack(en)"
 date: 2006-06-04
 description: "Unfortunately we could not pick up the moving truck in Holbrook as promised, but U-Haul had one in Show Low."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2006-06-04-packen-packen-packen/01.jpg)

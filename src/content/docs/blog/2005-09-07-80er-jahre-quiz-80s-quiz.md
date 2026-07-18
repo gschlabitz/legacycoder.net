@@ -1,7 +1,12 @@
 ---
-title: "80er Jahre Quiz - 80s Quiz"
+title: "80s Quiz"
 date: 2005-09-07
 description: "The name of a beloved 80s TV series, which features this famous skyline in its opening credits."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-09-07-80er-jahre-quiz-80s-quiz/01.jpg)

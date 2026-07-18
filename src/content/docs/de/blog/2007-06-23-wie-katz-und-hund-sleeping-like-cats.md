@@ -2,6 +2,11 @@
 title: "Wie Katz' und Hund"
 date: 2007-06-23
 description: "Kirin hat unserem schlafenden Kater Weasly einen ihrer Plüschhunde untergeschoben."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-06-23-wie-katz-und-hund-sleeping-like-cats/01.jpg)

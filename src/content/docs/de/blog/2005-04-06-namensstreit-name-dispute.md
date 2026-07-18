@@ -1,7 +1,12 @@
 ---
-title: "Namensstreit - Name Dispute"
+title: "Namensstreit"
 date: 2005-04-06
 description: "Och, wie soll man denn diesen Hündchenblicken widerstehen?"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-04-06-namensstreit-name-dispute/01.jpg)

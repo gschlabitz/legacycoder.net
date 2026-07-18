@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 5 - Rock Point, Day 5"
+title: "Rock Point, Day 5"
 date: 2005-06-23
 description: "This brush is used to fill the many tiny holes in the concrete blocks:"
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 This brush is used to fill the many tiny holes in the concrete blocks:

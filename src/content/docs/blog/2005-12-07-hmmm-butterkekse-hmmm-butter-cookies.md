@@ -1,7 +1,12 @@
 ---
-title: "Hmmm, Butterkekse - Hmmm, Butter Cookies"
+title: "Hmmm, Butter Cookies"
 date: 2005-12-07
 description: "Currently busy with my [freelance work](http://guidoschlabitz.language123.com/)."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-12-07-hmmm-butterkekse-hmmm-butter-cookies/01.jpg)

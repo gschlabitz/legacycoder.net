@@ -1,7 +1,12 @@
 ---
-title: "Puppenhaus - Doll House"
+title: "Puppenhaus"
 date: 2005-10-29
 description: "Hier ist nun endlich das (mütterlicheseits) ersehnte Photo des Puppenhauses, das Kirin zu ihrem sechsten Geburtstag bekam."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Hier ist nun endlich das (mütterlicheseits) ersehnte Photo des Puppenhauses, das Kirin zu ihrem sechsten Geburtstag bekam. Da es ein ehemaliges Möbelstück ist, ist es architektonisch gesehen eher ein Neubaupuppenhaus. Die Puppenmöbel wurden aus Holzschablonen per Hand von uns zusammengesetzt und anschließend spray-lackiert.

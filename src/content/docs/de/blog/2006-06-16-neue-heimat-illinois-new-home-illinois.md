@@ -2,6 +2,12 @@
 title: "Neue Heimat Illinois"
 date: 2006-06-16
 description: "Wir sind heil in Illinois angekommen und erfreuen uns an der überschwänglichen Grünheit, den vielen Singvögeln und Rehen und den Annehmlichkeiten der Residenz…"
+tags: [travel]
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2006-06-16-neue-heimat-illinois-new-home-illinois/01.jpg)

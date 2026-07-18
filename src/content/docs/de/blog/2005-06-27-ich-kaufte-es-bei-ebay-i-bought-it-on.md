@@ -1,7 +1,12 @@
 ---
-title: "Ich kaufte es bei eBay - I bought  it on eBay"
+title: "Ich kaufte es bei eBay"
 date: 2005-06-27
 description: "Passend zum Weird Al Yankovic song \\\"I bought it on eBay\\\" hat jemand eine echte eBay-Auktion erstellt."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Passend zum [Weird Al Yankovic](http://www.weirdal.com/) song ["I bought it on eBay"](http://www.amazon.com/exec/obidos/clipserve/B000095J7Q001011/0/102-9388219-3896928) hat jemand eine [echte eBay-Auktion](http://cgi.ebay.com/ws/eBayISAPI.dll?ViewItem&item=5784471762&fromMakeTrack=true) erstellt. Nur noch 5 Tage! Ich mag eBay...

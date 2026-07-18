@@ -1,7 +1,6 @@
 ---
+title: "Computer Instructor at Förderkreis Berlin"
 date: 1993-03-01
-title: Computer Instructor at Förderkreis Berlin
-sphere: work
 tags: [skills, career]
 location:
   city: Berlin
@@ -9,6 +8,5 @@ location:
   lat: 52.52
   lng: 13.405
 ---
-
 Taught computer beginner courses to students of all ages, with on-premise
 tutoring and test proctoring on the side.

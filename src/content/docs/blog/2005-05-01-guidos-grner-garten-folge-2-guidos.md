@@ -1,7 +1,12 @@
 ---
-title: "Guido's Grüner Garten, Folge 2 - Guido's Green Garden, Episode 2"
+title: "Guido's Green Garden, Episode 2"
 date: 2005-05-01
 description: "Today I nailed together cedar boards to make a garden gate."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-05-01-guidos-grner-garten-folge-2-guidos/01.jpg)

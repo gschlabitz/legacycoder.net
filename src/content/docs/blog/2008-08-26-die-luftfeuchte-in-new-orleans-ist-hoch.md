@@ -2,6 +2,12 @@
 title: "Die Luftfeuchte In New Orleans Ist Hoch"
 date: 2008-08-26
 description: "In New Orleans, it is humid enough for moss and ferns to grow right in the cracks of walls."
+tags: [travel]
+location:
+  city: New Orleans
+  state: Louisiana
+  lat: 29.9511
+  lng: -90.0715
 ---
 
 ![](../../../assets/blog/2008-08-26-die-luftfeuchte-in-new-orleans-ist-hoch/01.jpg)

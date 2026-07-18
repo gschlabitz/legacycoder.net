@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 1 - Rock Point, Day 1"
+title: "Rock Point, Tag 1"
 date: 2005-06-20
 description: "Wir haben uns dieses Jahr für die Missionsreise nach Rock Point die jährlich von unserer ehemaligen Kirche in Mesa, [Victory Lutheran](http://www.victoryluther…"
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 ![](../../../../assets/blog/2005-06-20-rock-point-tag-1-rock-point-day-1/01.jpg)

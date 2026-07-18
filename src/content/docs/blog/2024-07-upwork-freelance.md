@@ -1,7 +1,6 @@
 ---
+title: "Senior Full Stack Engineer on Upwork"
 date: 2024-07-01
-title: Senior Full Stack Engineer on Upwork
-sphere: work
 tags: [career]
 location:
   city: Champaign
@@ -9,7 +8,6 @@ location:
   lat: 40.1164
   lng: -88.2434
 ---
-
 Back to freelancing as a one-man software team with front- and back-end
 expertise. Recent projects: Finaware, a SaaS platform investigating
 financial crimes with LLM and vision models processing bank statements;

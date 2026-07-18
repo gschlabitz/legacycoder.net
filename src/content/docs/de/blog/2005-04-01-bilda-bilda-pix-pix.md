@@ -1,7 +1,12 @@
 ---
-title: "Bilda, Bilda! - Pix, pix!"
+title: "Bilda, Bilda!"
 date: 2005-04-01
 description: "Natürlich poste ich regelmäßig Photos von uns."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Natürlich poste ich regelmäßig Photos von uns. Diesmal werde ich aber streng auswählen und nicht einfach die letzten 50 (oder gar alle jemals geknippsten) Photos hochladen, wie ich es früher gemacht hatte.

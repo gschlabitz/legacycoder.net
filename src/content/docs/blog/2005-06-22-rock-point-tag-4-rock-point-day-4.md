@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 4 - Rock Point, Day 4"
+title: "Rock Point, Day 4"
 date: 2005-06-22
 description: "This morning we had Vacation Bible School again, this time relatively on time (10:05 am instead of 9:30 am)."
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 This morning we had Vacation Bible School again, this time relatively on time (10:05 am instead of 9:30 am). Linda showed THE way and everybody sang along.

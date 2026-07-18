@@ -2,6 +2,11 @@
 title: "One Horse Gap"
 date: 2006-02-27
 description: "One Horse Gap is a gulch in the Shawnee National Forrest, which is just wide enough for one horse, hence the name."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2006-02-27-one-horse-gap/01.jpg)

@@ -1,7 +1,12 @@
 ---
-title: "Noch mehr Hündchen - Even more puppies"
+title: "Noch mehr Hündchen"
 date: 2005-04-21
 description: "So, nun wird es aber schwierig mit der Namensgebung..."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 So, nun wird es aber schwierig mit der Namensgebung... Wenn ich richtig gezählt habe, sind das acht Hundebabys.

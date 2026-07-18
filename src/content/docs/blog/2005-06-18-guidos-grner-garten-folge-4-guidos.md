@@ -1,7 +1,12 @@
 ---
-title: "Guido's Grüner Garten, Folge 4 - Guido's Green Garden, Episode 4"
+title: "Guido's Green Garden, Episode 4"
 date: 2005-06-18
 description: "The radishes, the spinach and the Peas grew pretty fast."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-06-18-guidos-grner-garten-folge-4-guidos/01.jpg)

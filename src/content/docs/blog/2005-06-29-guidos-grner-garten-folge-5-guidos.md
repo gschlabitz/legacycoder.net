@@ -1,7 +1,12 @@
 ---
-title: "Guidos Grüner Garten, Folge 5 -Guido's Green Garden, Episode 5"
+title: "Guido's Green Garden, Episode 5"
 date: 2005-06-29
 description: "The radishes are ready!"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 The radishes are ready!

@@ -2,6 +2,11 @@
 title: "Thanksgiving 2007 bei den Georges"
 date: 2007-11-22
 description: "Dieses Jahr ging es zum Thanksgiving in die Nähe von Republic, MO (Missouri) zum ländlichen Hause der George Family."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Dieses Jahr ging es zum Thanksgiving in die Nähe von [Republic, MO](http://maps.google.com/maps?f=d&hl=en&geocode=&time=&date=&ttype=&saddr=harrisburg,+il&daddr=36.949892,-90.131836+to:republic,+mo&mra=dpe&mrcr=0&mrsp=1&sz=5&via=1&sll=38.358888,-88.769531&sspn=13.386778,29.882813&ie=UTF8&z=5&om=1) (Missouri) zum ländlichen Hause der George Family. Brenda schneidet gerade den Puter in Stücke:

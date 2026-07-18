@@ -2,6 +2,11 @@
 title: "Halloween Update"
 date: 2005-11-04
 description: "Hier ist die Kürbistorte (Pumpkin Pie), die ich aus dem Inneren unseres Halloweenkürbisses gemacht habe."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-11-04-halloween-update/01.jpg)

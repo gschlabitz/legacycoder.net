@@ -2,6 +2,11 @@
 title: "Geburstagsvideo"
 date: 2007-11-01
 description: "Herzlichen Glückwunsch zum 29. Geburtstag."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Hallo liebe Mutti,

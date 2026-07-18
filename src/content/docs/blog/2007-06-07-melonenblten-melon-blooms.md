@@ -1,7 +1,12 @@
 ---
-title: "Melonenblüten - melon blooms"
+title: "melon blooms"
 date: 2007-06-07
 description: "Yippee, my melons are blooming!"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-06-07-melonenblten-melon-blooms/01.jpg)

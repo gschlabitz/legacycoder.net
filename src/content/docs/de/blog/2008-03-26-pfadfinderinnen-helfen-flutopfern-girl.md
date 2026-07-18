@@ -1,7 +1,12 @@
 ---
-title: "Pfadfinderinnen helfen Flutopfern - Girl Scouts help flood victims"
+title: "Pfadfinderinnen helfen Flutopfern"
 date: 2008-03-26
 description: "Unsere Pfadfinderinnentruppe 269 (Amy ist die Leiterin) hat Kekse und andere Mittel dem lokalen Roten Kreuz gespendet."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 Unsere Pfadfinderinnentruppe 269 (Amy ist die Leiterin) hat Kekse und andere Mittel dem lokalen Roten Kreuz gespendet. Die [hier berühmten und schnell verkauften Pfadfinderinnen-Kekse](http://www.girlscoutcookies.org/) sind die Haupteinnahmequelle für die gemeinnützige Pfadfinderinnenorganisation, und die Mädchen haben somit einen Teil ihrer Einnahmen aufgegeben, die sonst Aktivitäten und Feldausflüge finanziert hätten. Der englische Text auf der Webseite heißt auf deutsch:

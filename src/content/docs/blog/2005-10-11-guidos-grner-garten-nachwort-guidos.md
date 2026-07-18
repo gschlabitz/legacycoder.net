@@ -1,7 +1,12 @@
 ---
-title: "Guidos Grüner Garten, Nachwort -Guido's Green Garden, Epilogue"
+title: "Guido's Green Garden, Epilogue"
 date: 2005-10-11
 description: "In spite of the unplanned summer drought, some veggies struggled hard and perked up, once I reestablished the water flow."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-10-11-guidos-grner-garten-nachwort-guidos/01.jpg)

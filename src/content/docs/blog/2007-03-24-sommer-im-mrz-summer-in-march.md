@@ -2,6 +2,11 @@
 title: "Summer in March"
 date: 2007-03-24
 description: "Today it was 80 degrees (in March!) and the Kids thought that it would be nice to cool off in the Ohio River."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-03-24-sommer-im-mrz-summer-in-march/01.jpg)

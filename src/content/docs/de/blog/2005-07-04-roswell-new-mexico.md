@@ -2,6 +2,11 @@
 title: "Roswell, New Mexico"
 date: 2005-07-04
 description: "Heute haben wir unseren Urlaub mit einer Reise von zu Hause nach [Roswell, New Mexico](http://www.mapquest.com/maps/map.adp?ovi=1&zoom=2&mapdata=slIDb%2fBv9J9G…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Heute haben wir unseren Urlaub mit einer Reise von zu Hause nach [Roswell, New Mexico](http://www.mapquest.com/maps/map.adp?ovi=1&zoom=2&mapdata=slIDb%2fBv9J9GHeYIyaOOsWWlvnMawjSQIlidRD2W53BDl7NW2T5ngIACzVi4MB4Jvujc5wcQDfq90fakUT1sI1ZegilE8lgqsBMuphqVCTBldTVPmwz5PmXlneEs5ffdpmEibTF9RZoaVwaW2KTc6rxBVyHBDMpPantwntIC20gvrLGXOHTJFoR14ILKwlPRThKPc8YQDruO3JPHlfDTnwQrEm8pkh4pSpz0%2bGk%2ftLW7dkJKESUjX1ei0x%2bBcEqRvb98hReqTx92%2bDdAT%2bnASs0p8thTu0ZYG0fNuJc7xY9y5XtTkKCDA%2bxsRhYqXI9CHSSsYMRqBj3980TyTi61aK37mpjmVGDbz1Rzof9Rfkwaw6MCH4InZhWC90B8xq2uttBqoLPtOQeHGZ6lQ1wW%2bU7jTAQXiP6XWW06Jd4qm7E%3d) angefangen. Ich fahre gerne in den Staaten und bevorzuge die langsameren aber interessanteren Highways (Landstrassen) gegenüber den schnelleren aber volleren Freeways (Autobahnen). Nach mehreren Stunden leeren Weidelandes kamen wir in der internationalen UFO-Hauptstadt an und entschlossen uns zur Umgebung passend den neuen [Spielberg](http://de.wikipedia.org/wiki/Steven_Spielberg)film [Krieg der Welten](http://movies.uip.de/kriegderwelten/) anzuschauen.

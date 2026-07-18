@@ -1,7 +1,12 @@
 ---
-title: "Mutti in Memphis - Mom in Memphis"
+title: "Mutti in Memphis"
 date: 2006-04-12
 description: "Einen der tollsten Gehirnfürze hatte ich kurz vor der Ankunft meiner Ellis zum Weihnachtsbesuch in Illinois."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2006-04-12-mutti-in-memphis-mom-in-memphis/01.jpg)

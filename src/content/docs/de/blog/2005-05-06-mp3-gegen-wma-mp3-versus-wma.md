@@ -1,7 +1,12 @@
 ---
-title: "MP3 gegen WMA - MP3 versus WMA"
+title: "MP3 gegen WMA"
 date: 2005-05-06
 description: "Da ich meine Musiksammlung wegen des geklauten Computers (von dem ich in einem späteren Eintrag, wie einigen von euch versprochen, mehr berichten werde) durch…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 > "Der Gnom", Modest P. Mussorgsky

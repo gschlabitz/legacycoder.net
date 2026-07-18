@@ -1,7 +1,12 @@
 ---
-title: "Guido's Grüner Garten, Folge 2 - Guido's Green Garden, Episode 2"
+title: "Guido's Grüner Garten, Folge 2"
 date: 2005-05-01
 description: "Heute hab ich ein Gartentor aus Zedernbrettern zusammengenagelt."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-05-01-guidos-grner-garten-folge-2-guidos/01.jpg)

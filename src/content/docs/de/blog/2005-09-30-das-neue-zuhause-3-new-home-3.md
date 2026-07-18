@@ -2,6 +2,11 @@
 title: "Das Neue Zuhause 3"
 date: 2005-09-30
 description: "Nun da die Gartenserie ein abruptes Ende gefunden hat, und weil Du, liebe Mutti, in den Kommentaren ein paar mal nachgefragt hast, ist es an der Zeit diese alt…"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-09-30-das-neue-zuhause-3-new-home-3/01.jpg)

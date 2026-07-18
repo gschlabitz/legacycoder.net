@@ -1,7 +1,6 @@
 ---
+title: "Software Developer at Evolution MC"
 date: 2006-08-01
-title: Software Developer at Evolution MC
-sphere: work
 tags: [career]
 location:
   city: Herrin
@@ -9,6 +8,5 @@ location:
   lat: 37.8031
   lng: -89.0276
 ---
-
 Postgres stored procedures sped up the PHP backend for an online poker
 affiliates program by 80% while cutting code complexity in half.

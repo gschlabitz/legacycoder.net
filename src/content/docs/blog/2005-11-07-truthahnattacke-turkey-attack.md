@@ -1,7 +1,12 @@
 ---
-title: "Truthahnattacke! - Turkey Attack!"
+title: "Turkey Attack!"
 date: 2005-11-07
 description: "It's that time again."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-11-07-truthahnattacke-turkey-attack/01.jpg)

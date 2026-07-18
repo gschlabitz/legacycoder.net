@@ -1,7 +1,12 @@
 ---
-title: "Gärtner Guido - Gardner Guido"
+title: "Gardner Guido"
 date: 2006-07-10
 description: "Text noch nicht fertig!"
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2006-07-10-grtner-guido-gardner-guido/01.jpg)

@@ -2,6 +2,12 @@
 title: "Die Luftfeuchte In New Orleans Ist Hoch"
 date: 2008-08-26
 description: "Die Luftfeuchte in New Orleans ist hoch genug, daß Moos und Farne in den Ritzen der Außenwände wachsen."
+tags: [travel]
+location:
+  city: New Orleans
+  state: Louisiana
+  lat: 29.9511
+  lng: -90.0715
 ---
 
 ![](../../../../assets/blog/2008-08-26-die-luftfeuchte-in-new-orleans-ist-hoch/01.jpg)

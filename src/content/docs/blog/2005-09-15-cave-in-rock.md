@@ -2,6 +2,11 @@
 title: "Cave-In-Rock"
 date: 2005-09-15
 description: "When we stayed with Dan and Janet, we traveled the Ohio river aboard the Shawnee Queen."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-09-15-cave-in-rock/01.jpg)

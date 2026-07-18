@@ -2,6 +2,11 @@
 title: "Coen Expeditions Progress"
 date: 2005-06-14
 description: "Arrived in Shawnee National Forrest late at night and could not find the way to Dan's ranch in all the fog."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-06-14-coen-expeditions-progress/01.jpg)

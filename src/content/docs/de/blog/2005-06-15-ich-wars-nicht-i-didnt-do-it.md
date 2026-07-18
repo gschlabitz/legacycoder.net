@@ -1,7 +1,12 @@
 ---
-title: "Ich war's nicht! - I didn't do it!"
+title: "Ich war's nicht!"
 date: 2005-06-15
 description: "Dieser Betonblock ist zwar meiner, ich benutze ihn um die Plane auf dem Feuerholz zu befestigen, aber wie der nun auf die Schlange fiel weiss ich nicht."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2005-06-15-ich-wars-nicht-i-didnt-do-it/01.jpg)

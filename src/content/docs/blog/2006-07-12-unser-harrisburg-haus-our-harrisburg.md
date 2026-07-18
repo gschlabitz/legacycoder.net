@@ -1,7 +1,17 @@
 ---
-title: "Unser Harrisburg Haus - Our Harrisburg Home"
+title: "Our Harrisburg Home"
 date: 2006-07-12
 description: "Hier schnell mal zwei Photos vom Haus, das wir versuchen zu kaufen."
+tags: [family]
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
+excerpt: >-
+  Found the house in Harrisburg we set out to buy — mailbox right at the
+  door, a garden on the south side, and enough of a yard to restart Guido's
+  Green Garden in Midwestern soil.
 ---
 
 ![](../../../assets/blog/2006-07-12-unser-harrisburg-haus-our-harrisburg/01.jpg)

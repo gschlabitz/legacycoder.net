@@ -1,7 +1,12 @@
 ---
-title: "Steuern - Taxes"
+title: "Taxes"
 date: 2005-04-12
 description: "We finally finished our tax return!"
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 We finally finished our tax return! Did you know, that the IRS is even taxing thieves? Really! No joke. Here is a blurb I stumbled over when I was reading the Tax Cut help:

@@ -25,53 +25,35 @@ const tasl = z.object({
   modified: z.boolean().default(false),
 });
 
-// Auto-biography timeline. One Markdown file per life event under
-// src/content/timeline/; the Markdown body is the event description. Powers
-// the custom /bio page (src/pages/bio.astro), not a Starlight docs route.
-const timeline = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/timeline' }),
-  schema: z.object({
-    // Frontmatter date as YYYY-MM-DD; coerced to a Date for sorting/grouping.
-    date: z.coerce.date(),
-    title: z.string(),
-    // Which half of the split timeline the event renders on — the page is
-    // organized around the work/life-balance metaphor. Explicit rather than
-    // derived from tags, since an event can carry tags from both spheres.
-    sphere: z.enum(['work', 'life']),
-    // Fixed tag vocabulary — these are the filter dimensions the landing
-    // page links into (/bio/?tags=…). A tag may have no events yet.
-    tags: z
-      .array(z.enum(['career', 'skills', 'family', 'travel', 'hobby']))
-      .default([]),
-    // Where the event happened. Required: the timeline map's camera track
-    // runs through every event's pin, so an event without coordinates would
-    // be a hole in the track — the build/dev server errors on the file until
-    // the author fills it in. The display label is derived, not stored:
-    // "city, (state ?? country)" — so US events set `state` and omit
-    // `country`, events abroad set `country` and skip the state ("Potsdam,
-    // Germany", not "Potsdam, Brandenburg"). `npm run geocode` prints a
-    // paste-ready block following these conventions.
-    location: z.object({
-      // Street address, kept for precision/reference; never displayed.
-      address: z.string().optional(),
-      city: z.string(),
-      // First-level division: US state, Bundesland, province…
-      state: z.string().optional(),
-      country: z.string().optional(),
-      // A string — leading zeros matter, so quote it in YAML.
-      postalCode: z.string().optional(),
-      lat: z.number(),
-      lng: z.number(),
-    }),
-    // Slug under src/content/docs/blog/ for the migrated post that tells the
-    // full story of this event, if one exists.
-    post: z.string().optional(),
-  }),
+// Where a blog post happened (every post is a timeline event — ADR-0004).
+// Optional here because the docs collection also holds ordinary docs pages;
+// the real rule — published posts must have coordinates so the timeline
+// map's camera track has no holes, drafts are exempt — is enforced by the
+// build-time check in src/lib/timeline.ts. The display label is derived,
+// not stored: "city, (state ?? country)" — so US events set `state` and
+// omit `country`, events abroad set `country` and skip the state
+// ("Potsdam, Germany", not "Potsdam, Brandenburg"). `npm run geocode`
+// prints a paste-ready block following these conventions.
+const location = z.object({
+  // Street address, kept for precision/reference; never displayed.
+  address: z.string().optional(),
+  city: z.string(),
+  // First-level division: US state, Bundesland, province…
+  state: z.string().optional(),
+  country: z.string().optional(),
+  // A string — leading zeros matter, so quote it in YAML.
+  postalCode: z.string().optional(),
+  lat: z.number(),
+  lng: z.number(),
 });
 
 export const collections = {
-  docs: defineCollection({ loader: docsLoader(), schema: docsSchema({ extend: (context) => blogSchema(context) }) }),
-  timeline,
+  docs: defineCollection({
+    loader: docsLoader(),
+    schema: docsSchema({
+      extend: (context) => blogSchema(context).merge(z.object({ location: location.optional() })),
+    }),
+  }),
   credits: defineCollection({
     loader: glob({
       pattern: '**/*.{png,jpg,jpeg,webp,avif,gif,svg}.json',

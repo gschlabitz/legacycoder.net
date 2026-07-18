@@ -1,7 +1,12 @@
 ---
-title: "Tut mir leid! - Sorry!"
+title: "Tut mir leid!"
 date: 2005-08-06
 description: "..."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ... das es so lange gedauert hat, bis ihr mal wieder was von mir hört.

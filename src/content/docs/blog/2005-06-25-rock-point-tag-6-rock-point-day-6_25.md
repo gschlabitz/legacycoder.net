@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 6 - Rock Point, Day 6"
+title: "Rock Point, Day 6"
 date: 2005-06-25
 description: "Thus we busied ourselves otherwise before our departure..."
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 On the last day we were supposed to finish up the last office room, but it was locked and the lady with the key was out and about. Luckily, the actual painting was as good as done and putting back the furniture was all that remained.

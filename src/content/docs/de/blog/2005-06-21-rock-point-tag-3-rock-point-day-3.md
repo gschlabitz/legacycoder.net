@@ -1,7 +1,13 @@
 ---
-title: "Rock Point, Tag 3 - Rock Point, Day 3"
+title: "Rock Point, Tag 3"
 date: 2005-06-21
 description: "Wir Lutheraner waren natürlich durchorganisiert und bereit die Ferienbibelschule um Punkt 9:30 anzufangen, als wir mitbekamen, daß wir in der Navajo Zeitzone s…"
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
 ---
 
 Wir Lutheraner waren natürlich durchorganisiert und bereit die Ferienbibelschule um Punkt 9:30 anzufangen, als wir mitbekamen, daß wir in der Navajo Zeitzone sind, das heißt, alle Zeiten sind grobe Vorschläge und könnten je nach Umständen alles mögliche bedeuten. Also hieß es stattdessen malern am Morgen, und die FBS war irgendwann am Nachmittag. :-)

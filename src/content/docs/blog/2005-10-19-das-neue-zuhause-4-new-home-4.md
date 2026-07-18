@@ -2,6 +2,11 @@
 title: "The New Home 4"
 date: 2005-10-19
 description: "To the north of our house lies this rocky cliff, where I sometimes sit and contemplate the world."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-10-19-das-neue-zuhause-4-new-home-4/01.jpg)

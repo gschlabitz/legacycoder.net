@@ -1,7 +1,19 @@
 ---
-title: "Rock Point, Tag 1 - Rock Point, Day 1"
+title: "Rock Point, Day 1"
 date: 2005-06-20
 description: "This year we signed up for the annual mission trip to Rock Point organized by our former church in Mesa, [Victory Lutheran](http://www.victorylutheran.com/)."
+tags: [travel]
+location:
+  city: Rock Point
+  state: Arizona
+  lat: 36.72
+  lng: -109.63
+excerpt: >-
+  A week at the Navajo Evangelical Lutheran Mission in Rock Point with old
+  friends from our former church in Mesa — painting the school's computer
+  lab, helping with repairs and the summer vacation bible school, and
+  learning that at 1,400 meters the desert cools off mercifully fast after
+  dark.
 ---
 
 ![](../../../assets/blog/2005-06-20-rock-point-tag-1-rock-point-day-1/01.jpg)

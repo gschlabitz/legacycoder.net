@@ -2,6 +2,11 @@
 title: "Sleeping Like Cats and Dogs"
 date: 2007-06-23
 description: "Kirin sneaked in one of her plush dogs into our sleeping cat Weasly's arms."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2007-06-23-wie-katz-und-hund-sleeping-like-cats/01.jpg)

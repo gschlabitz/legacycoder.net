@@ -1,7 +1,12 @@
 ---
-title: "Besuch in Illinois 2005 - Illinois Visit 2005"
+title: "Illinois Visit 2005"
 date: 2006-04-23
 description: "Here are the rest of the photos that I made during the parent's visit in Illinois."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2006-04-23-besuch-in-illinois-2005-illinois-visit/01.jpg)

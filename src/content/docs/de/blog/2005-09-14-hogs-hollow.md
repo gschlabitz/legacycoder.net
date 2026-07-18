@@ -2,6 +2,11 @@
 title: "Hogs Hollow"
 date: 2005-09-14
 description: "Bevor ich anfange, muß ich schnell noch den hervorragenden Kundenservice den wir in Arkansas erhalten haben erwähnen."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Before I start, I just want to mention the outstanding service we've received in Arkansas. We spend the night at the Best Western in Hope, AR, birthplace of Bill Clinton, and it was almost a shocking friendliness compared to the Woodfield Suites in San Antonio. Naturally, there was a Western Sizzlin across the parking lot, where we ate a great steak dinner and received our second shock. When paying, I forgot the discount that the concierge of the Best Western had mentioned earlier. I only remembered it, after the cashier had printed the receipt already. The manager had overheard my mumbling, stepped up to the register, pushed some buttons and gave me back the discount percentage in cash. How's that for service? I am not asking the battle-hardened Europeans here, I am asking you, the spoiled Americans! I was blown away. Good job Hope, AR!

@@ -1,7 +1,12 @@
 ---
-title: "Weihnachten 2005 - Christmas 2005"
+title: "Christmas 2005"
 date: 2006-02-23
 description: "Here are a few snaps of Christmas 2005."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Here are a few snaps of Christmas 2005.

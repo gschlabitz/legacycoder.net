@@ -16,3 +16,6 @@ My cross-country, cross-device, cross-browser bookmarks. No syncing needed. I ju
 # Games
 
 - [Whose Art Thou?](https://kai-schlabitz.itch.io/whose-art-thou) (written by [Kai](https://codeberg.org/Kai-Schlabitz)!)
+
+# Tools
+- [Pearcleaner](https://github.com/alienator88/Pearcleaner)

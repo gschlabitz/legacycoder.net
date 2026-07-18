@@ -1,7 +1,12 @@
 ---
-title: "Schnee! - Snow!"
+title: "Schnee!"
 date: 2006-03-25
 description: "Vor ein paar Wochen bekamen wir endlich auch ein bißchen Schnee hier im niederschlagsarmen Arizona (143 Tage kein Regen)."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../../assets/blog/2006-03-25-schnee-snow/01.jpg)

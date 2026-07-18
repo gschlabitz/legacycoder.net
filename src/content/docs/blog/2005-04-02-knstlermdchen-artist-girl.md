@@ -1,7 +1,12 @@
 ---
-title: "Künstlermädchen - Artist girl"
+title: "Artist girl"
 date: 2005-04-02
 description: "Kirin is becoming quite the artist."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-04-02-knstlermdchen-artist-girl/01.jpg)

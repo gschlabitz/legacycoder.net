@@ -2,6 +2,11 @@
 title: "Transparency Germany"
 date: 2006-03-28
 description: "Hier mal ein kleiner Dienst für [Moni](http://wasweissich.twoday.net/) auf dieser normalerweise unpolitischen Familienseite."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 Hier mal ein kleiner Dienst für [Moni](http://wasweissich.twoday.net/) auf dieser normalerweise unpolitischen Familienseite. Meine bescheidenen [Übersetztungstalente](http://guidoschlabitz.language123.com/) müssen doch auch mal für was gut sein. Falls ihr diese ganze Geschichte nicht kennt, könnt ihr [hier](http://focus.msn.de/digital/netguide/transparency-international_nid_26808.html), [hier](http://www.netzeitung.de/internet/389465.html) und [hier](http://www.tagesschau.de/aktuell/meldungen/0,1185,OID5374766_TYP6_THE_NAV_REF1_BAB,00.html)(Tagesschau mal parteiisch und [schlecht recherchiert](http://www.24stunden.de/index.php/2006-03/keiner-hat-die-fakten-uberpruft/), wow) und [hier](http://www.basicthinking.de/blog/2006/03/25/transparency-deutschland-als-arbeitgeber-in-verruf/) auch und dann noch [hier](http://nikki.kenmai.de/KuroiBlog.php/2006/03/28/der_nachste_bitte_transparency_internati) und [hier](http://www.jensscholz.com/2006_03_01_archive.htm#114356746345522132) und [hier](http://www.netzpolitik.org/2006/transparency-international-war-alles-nicht-so-gemeint/) nachlesen.

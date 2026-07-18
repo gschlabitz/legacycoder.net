@@ -1,7 +1,12 @@
 ---
-title: "Wüstenimpressionen - Desert Impressions"
+title: "Desert Impressions"
 date: 2005-11-10
 description: "The photos from the cliff by our house were well received."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-11-10-wstenimpressionen-desert-impressions/01.jpg)

@@ -2,6 +2,11 @@
 title: "The New Home"
 date: 2005-05-24
 description: "My dear mother asked me for more pictures of our new house."
+location:
+  city: Jeddito
+  state: Arizona
+  lat: 35.56
+  lng: -110.13
 ---
 
 ![](../../../assets/blog/2005-05-24-das-neue-zuhause-new-home/01.jpg)

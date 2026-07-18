@@ -1,7 +1,12 @@
 ---
-title: "Zoo Besuch - Zoo Visit"
+title: "Zoo Besuch"
 date: 2008-05-04
 description: "Die Girl Scouts gehen zum Zoo."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 *[Image lost to time — the original was hosted on Blogspot and is no longer available.]*

@@ -1,7 +1,12 @@
 ---
-title: "Eis, Eis, Baby - Ice, Ice, Baby"
+title: "Ice, Ice, Baby"
 date: 2008-02-21
 description: "Genau so wie alles andere in Harrisburg vereist war."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../assets/blog/2008-02-21-eis-eis-baby-ice-ice-baby/01.jpg)

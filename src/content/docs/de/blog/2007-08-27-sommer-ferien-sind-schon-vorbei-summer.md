@@ -1,7 +1,12 @@
 ---
-title: "Sommer Ferien sind schon vorbei? - Summer Vacation is over already?"
+title: "Sommer Ferien sind schon vorbei?"
 date: 2007-08-27
 description: "Schon sind die ersten Sommerferien im neuen Haus vorbei."
+location:
+  city: Harrisburg
+  state: Illinois
+  lat: 37.7384
+  lng: -88.5406
 ---
 
 ![](../../../../assets/blog/2007-08-27-sommer-ferien-sind-schon-vorbei-summer/01.jpg)
