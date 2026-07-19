@@ -2,7 +2,6 @@
 import DefaultThemeSelect from '@astrojs/starlight/components/ThemeSelect.astro'
 
 import config from 'virtual:starlight-theme-chameleon/config'
-import ChameleonGlyph from './chameleon-glyph.svg'
 import ThemeModeButton from './ThemeModeButton.astro'
 
 const t = Astro.locals.t
@@ -33,7 +32,6 @@ const options = [
         title={options[0].label}
       >
         <span class="sr-only">{accessibleLabel}</span>
-        <ChameleonGlyph class="icon" aria-hidden="true" width="16" height="16" />
         {config.skinSelector === 'select' && (
           <>
             <span class="selected-skin">{options[0].label}</span>
@@ -51,6 +49,8 @@ const options = [
         )}
       </button>
       <div class="skin-menu" role="listbox" aria-label={accessibleLabel} hidden>
+        {/* Visual heading; the listbox already announces the same label. */}
+        <div class="skin-menu-heading" aria-hidden="true">{accessibleLabel}</div>
         {options.map(({ value, label }) => (
           <button
             class="skin-option"
@@ -272,22 +272,11 @@ const options = [
 		color: var(--sl-color-white);
 	}
 
-	.icon {
-		position: absolute;
-		top: 50%;
-		inset-inline-start: 0;
-		inline-size: var(--sl-label-icon-size);
-		block-size: var(--sl-label-icon-size);
-		transform: translateY(-50%);
-		pointer-events: none;
-	}
-
 	[data-variant='select'] .skin-trigger {
 		padding-block: 0.625rem;
-		padding-inline: calc(
-				var(--sl-label-icon-size) + var(--sl-caret-size) + var(--sl-inline-padding) + 0.5rem
-			)
-			var(--sl-inline-padding);
+		padding-inline: var(--sl-inline-padding) calc(
+				var(--sl-caret-size) + var(--sl-inline-padding) + 0.25rem
+			);
 		margin-inline: calc(var(--sl-inline-padding) * -1);
 		inline-size: 11.75rem;
 		text-align: start;
@@ -303,7 +292,7 @@ const options = [
 	.caret {
 		position: absolute;
 		top: 50%;
-		inset-inline-start: calc(var(--sl-label-icon-size) + 0.25rem);
+		inset-inline-end: var(--sl-inline-padding);
 		inline-size: var(--sl-caret-size);
 		block-size: var(--sl-caret-size);
 		transform: translateY(-50%);
@@ -342,6 +331,17 @@ const options = [
 
 	.skin-menu[hidden] {
 		display: none;
+	}
+
+	.skin-menu-heading {
+		padding: 0.25rem 0.4rem 0.35rem;
+		border-block-end: 1px solid var(--sl-color-gray-5);
+		margin-block-end: 0.35rem;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
 	}
 
 	.skin-option {
@@ -387,7 +387,6 @@ const options = [
 		--sl-color-bg-nav: hsl(0, 0%, 100%);
 	}
 
-	.skin-option:hover,
 	.skin-option:focus,
 	.skin-option[aria-selected='true'] {
 		outline: none;
@@ -402,7 +401,6 @@ const options = [
 		border: 1px solid var(--sl-color-gray-5);
 		border-radius: 0.25rem;
 		padding: 0.2rem;
-		background: var(--sl-color-black);
 	}
 
 	.preview-surface {
@@ -436,13 +434,7 @@ const options = [
 	.skin-name {
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-
-	[data-variant='icon'] .icon {
-		position: static;
-		inline-size: 1.25rem;
-		block-size: 1.25rem;
-		transform: none;
+		color: var(--sl-color-text);
 	}
 
 	@media (min-width: 50rem) {

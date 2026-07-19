@@ -150,8 +150,18 @@ const labels: Record<Theme, string> = {
 		return themes[(themes.indexOf(theme) + 1) % themes.length] || 'auto'
 	}
 
-	matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+	// Follow the OS setting while in auto. The MediaQueryList stays referenced
+	// so its listener can't be dropped, and the scheme is re-applied whenever
+	// the tab becomes visible again: browsers may defer or drop change events
+	// for hidden tabs, leaving the page in a stale mode after the OS theme
+	// flipped in the background.
+	const systemScheme = matchMedia('(prefers-color-scheme: light)')
+	const followSystem = () => {
 		if (loadTheme() === 'auto') onThemeChange('auto')
+	}
+	systemScheme.addEventListener('change', followSystem)
+	document.addEventListener('visibilitychange', () => {
+		if (!document.hidden) followSystem()
 	})
 
 	class StarlightThemeSelect extends HTMLElement {
