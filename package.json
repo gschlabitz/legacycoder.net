@@ -12,7 +12,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "geocode": "node scripts/geocode.mjs"
+    "geocode": "node scripts/geocode.mjs",
+    "morph:status": "morphcloud devbox list",
+    "morph:task": "node scripts/morph-task.mjs",
+    "snapshots:list": "morphcloud snapshot list",
+    "snapshots:create": "morphcloud devbox save"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.0",
