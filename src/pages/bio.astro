@@ -126,7 +126,11 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
       display: none;
     }
   </style>
-  <div class="timeline">
+  {/* Static HTML defaults to newest-first (tl-newest-first flips the visual
+      order of the chronologically-ordered DOM). The TimelineOrder island
+      reconciles this with the ?order= param after hydration — ?order=oldest
+      removes the class again. */}
+  <div class="timeline tl-newest-first">
     <div class="tl-spheres">
       <h2 class="tl-sphere">Work</h2>
       <h2 class="tl-sphere">Life</h2>
