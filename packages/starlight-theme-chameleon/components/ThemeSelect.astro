@@ -57,10 +57,11 @@ const options = [
             type="button"
             role="option"
             data-skin-value={value}
-            data-skin={value || undefined}
             aria-selected={value === '' ? 'true' : 'false'}
           >
-            <span class="preview">
+            {/* data-skin scopes the skin's palette to the swatch alone; the
+                rest of the option renders in the page's active skin. */}
+            <span class="preview" data-skin={value || undefined}>
               <span class="preview-surface">
                 <span class="preview-accent"></span>
                 <span class="preview-line"></span>
@@ -361,29 +362,34 @@ const options = [
 		cursor: pointer;
 	}
 
-	.skin-option:not([data-skin]) {
-		--sl-color-white: hsl(0, 0%, 100%);
-		--sl-color-gray-1: hsl(224, 20%, 94%);
+	/* Skins don't define --sl-color-bg-nav, so re-derive the swatch surface
+	   from the skin's own palette (mirroring Starlight's mode mapping)
+	   rather than inheriting the page's. */
+	.preview[data-skin] {
+		--sl-color-bg-nav: var(--sl-color-gray-6);
+	}
+
+	:global([data-theme='light']) .preview[data-skin] {
+		--sl-color-bg-nav: var(--sl-color-gray-7);
+	}
+
+	/* The unskinned option's swatch shows Starlight's own palette, which the
+	   page variables no longer hold once a skin is active. */
+	.preview:not([data-skin]) {
 		--sl-color-gray-2: hsl(224, 6%, 77%);
 		--sl-color-gray-4: hsl(224, 7%, 36%);
 		--sl-color-gray-5: hsl(224, 10%, 23%);
 		--sl-color-gray-6: hsl(224, 14%, 16%);
-		--sl-color-black: hsl(224, 10%, 10%);
 		--sl-color-accent: hsl(224, 100%, 60%);
-		--sl-color-accent-high: hsl(224, 100%, 85%);
 		--sl-color-bg-nav: var(--sl-color-gray-6);
 	}
 
-	:global([data-theme='light']) .skin-option:not([data-skin]) {
-		--sl-color-white: hsl(224, 10%, 10%);
-		--sl-color-gray-1: hsl(224, 14%, 16%);
+	:global([data-theme='light']) .preview:not([data-skin]) {
 		--sl-color-gray-2: hsl(224, 10%, 23%);
 		--sl-color-gray-4: hsl(224, 6%, 56%);
 		--sl-color-gray-5: hsl(224, 6%, 77%);
 		--sl-color-gray-6: hsl(224, 20%, 94%);
-		--sl-color-black: hsl(0, 0%, 100%);
 		--sl-color-accent: hsl(234, 90%, 60%);
-		--sl-color-accent-high: hsl(234, 80%, 30%);
 		--sl-color-bg-nav: hsl(0, 0%, 100%);
 	}
 

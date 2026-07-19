@@ -60,7 +60,9 @@
   --sl-line-height: 1.8;
 }
 
-[data-skin='nordic'][data-theme='light'] {
+/* The descendant variant covers skin-scoped elements that don't carry
+   data-theme themselves, like the selector's preview swatches. */
+:is([data-skin='nordic'][data-theme='light'], [data-theme='light'] [data-skin='nordic']) {
   /* Palette — light mode. Snow Storm surfaces, Polar Night text. */
   --sl-color-white: #2e3440; /* nord0 */
   --sl-color-gray-1: #3b4252; /* nord1 */

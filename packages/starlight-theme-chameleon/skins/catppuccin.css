@@ -71,7 +71,12 @@
   --sl-line-height: 1.8;
 }
 
-[data-skin='catppuccin'][data-theme='light'] {
+/* The descendant variant covers skin-scoped elements that don't carry
+   data-theme themselves, like the selector's preview swatches. */
+:is(
+  [data-skin='catppuccin'][data-theme='light'],
+  [data-theme='light'] [data-skin='catppuccin']
+) {
   /* Palette — light mode: Latte. */
   --sl-color-white: #4c4f69; /* text */
   --sl-color-gray-1: #5c5f77; /* subtext1 */
