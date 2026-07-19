@@ -21,6 +21,8 @@ export default defineConfig({
         // Renders starlight-blog's header link plus our own Links link.
         SiteTitle: "./src/components/SiteTitle.astro",
         LanguageSelect: "./src/components/LanguageSelect.astro",
+        // Stock social icons, but external profiles open in a new tab.
+        SocialIcons: "./src/components/SocialIcons.astro",
         // Stock hero plus the CRT typing backdrop behind the whole page.
         Hero: "./src/components/Hero.astro",
       },
