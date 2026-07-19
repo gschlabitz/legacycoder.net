@@ -186,3 +186,18 @@ The family's Farkle-style dice game (and its page). Also the in-game call:
 betting at the start of your turn that you'll outscore your predecessor's round
 by at least 50 points.
 _Avoid_: Farkle
+
+### Strudel
+
+**Strudel lab**:
+The docs page (`/strudel`) holding the full Strudel live-coding REPL for
+experimenting with music as code. The heavy editor island is confined to this
+page (ADR-0005).
+_Avoid_: playground, sandbox
+
+**Player island**:
+The click-to-play toggle (`StrudelPlayer.jsx`) that puts a fixed Strudel
+pattern behind any content page as background music. It downloads its engine
+on first click, never with the page, and never autoplays — browsers require
+the gesture anyway.
+_Avoid_: autoplay, embed
