@@ -16,6 +16,9 @@ export const REPO_SLUG = "gschlabitz/legacycoder.net";
 export const DEV_PORT = 4321;
 export const AGENT_SESSION = "agent";
 export const DEV_SESSION = "dev";
+// Touched by the task agent as its last action, after pushing and opening
+// the PR - the file's existence is what makes a box reapable (issue #16).
+export const DONE_SIGNAL = "/root/.task-done";
 
 // Morph exposes sshd directly on :22; the username is the instance id and
 // each instance has its own key pair.

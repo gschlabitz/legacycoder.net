@@ -10,6 +10,7 @@ import { join } from "node:path";
 import {
   DEV_PORT,
   DEV_SESSION,
+  DONE_SIGNAL,
   PROJECT,
   REPO_PATH,
   ageInDays,
@@ -68,6 +69,24 @@ export function issuePrompt(issueNumber) {
     `Start with \`gh issue view ${issueNumber} --comments\` to read the issue and its discussion, ` +
     `then implement what it asks, respecting any acceptance criteria it lists. ` +
     `When you are done, add a short comment to the issue summarizing what you changed.`
+  );
+}
+
+/**
+ * Finishing instructions appended to every task prompt. The agent - not a
+ * script - commits, pushes, and opens the draft PR, working like a normal
+ * developer; touching DONE_SIGNAL is its last action and is what marks the
+ * box reapable, so it must come after the push (issue #16).
+ */
+export function finishInstructions({ branch, instanceId, issue }) {
+  return (
+    `\n\nWhen the task is complete, finish like a developer would, logging each step:\n` +
+    `1. Commit all your work (run \`git status\` to verify nothing is left uncommitted).\n` +
+    `2. Push the branch: \`git push -u origin ${branch}\`.\n` +
+    `3. Open a draft PR against main with \`gh pr create --draft\`. Mention instance ` +
+    `\`${instanceId}\` in the body${issue ? ` and include "Refs #${issue}"` : ""}.\n` +
+    `4. Only after the push and PR succeeded, run \`touch ${DONE_SIGNAL}\` - this marks the ` +
+    `box as done and safe to clean up. If you could not push, do NOT touch that file.`
   );
 }
 

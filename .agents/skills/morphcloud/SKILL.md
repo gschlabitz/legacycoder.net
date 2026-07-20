@@ -26,6 +26,12 @@ user to set it — never handle the values yourself.
 ./morph attach <id> --cmux       # cmux workspace: agent session + preview
 ./morph status                            # list this project's instances
 ./morph snapshots list
+./morph sleep                    # pause ALL project boxes (dry-run: --dry-run)
+./morph reap                     # stop boxes whose done signal exists; skip the rest
+./morph reap --force <id>...     # kill specific boxes unconditionally
+./morph reap --force --all       # kill everything
+./morph sweep                    # keep latest warm snapshot, delete superseded + debris
+./morph sweep --all              # delete the latest warm snapshot too
 ```
 
 ## Workflow: run a task remotely
@@ -48,11 +54,26 @@ user to set it — never handle the values yourself.
    via the injected token, so the agent can read review comments and
    manage PRs/issues itself — e.g. `opencode run --continue "Read the
    review comments on our PR with gh, address them, commit and push."`
-5. When the agent finishes with commits, a draft PR opens automatically —
-   the user reviews it; don't mark it ready yourself.
+5. The remote agent finishes like a developer: it commits, pushes, opens
+   a draft PR with `gh`, and touches `/root/.task-done` (the **done
+   signal**) as its last action. The user reviews the PR; don't mark it
+   ready yourself.
 
 Done means: the task is running (or its draft PR exists), and the user
 has the instance ID, preview URL, and attach commands.
+
+## Cleanup
+
+- `./morph sleep` pauses every project box immediately (busy or not).
+- `./morph reap` stops boxes whose done signal exists — that file is the
+  only test. No signal (agent failed, never pushed, or interactive box)
+  means the box is left alone for inspection; after post-mortem, finish
+  it with `./morph reap --force <id>`.
+- `./morph sweep` keeps the latest ready warm snapshot and deletes
+  superseded warm snapshots plus all purpose-less snapshots (build
+  debris). Never sweep while a warm build is running.
+- All three take `--dry-run`; reap's dry-run briefly resumes paused
+  boxes to check the signal, then re-pauses them.
 
 ## Rules
 

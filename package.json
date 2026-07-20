@@ -18,8 +18,10 @@
     "morph:attach": "node scripts/morph/attach.mjs",
     "morph:cmux": "node scripts/morph/cmux.mjs",
     "morph:status": "node scripts/morph/status.mjs",
-    "snapshots:list": "node scripts/morph/snapshots.mjs list",
-    "snapshots:create": "node scripts/morph/snapshots.mjs create"
+    "morph:sleep": "node scripts/morph/sleep.mjs",
+    "morph:reap": "node scripts/morph/reap.mjs",
+    "morph:sweep": "node scripts/morph/sweep.mjs",
+    "snapshots:list": "node scripts/morph/snapshots.mjs list"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.0",

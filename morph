@@ -4,7 +4,8 @@
 //   ./morph task --issue 5
 //   ./morph cmux --name experiments
 //   ./morph attach --zed
-//   ./morph warm / status / snapshots list / snapshots create <id> <name>
+//   ./morph warm / status / snapshots list
+//   ./morph sleep / reap / sweep
 //
 // The npm scripts (npm run morph:task -- ...) keep working and run the same
 // files; this is just the shorter front door.
@@ -16,6 +17,9 @@ const commands = {
   cmux: "cmux.mjs",
   status: "status.mjs",
   snapshots: "snapshots.mjs",
+  sleep: "sleep.mjs",
+  reap: "reap.mjs",
+  sweep: "sweep.mjs",
 };
 
 const [command, ...rest] = process.argv.slice(2);
