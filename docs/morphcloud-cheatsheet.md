@@ -30,7 +30,7 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
   skips it (no done signal) — finish it with `reap --force <id>` when
   back at the laptop. (Not a devbox: the devbox service can't start from
   personal snapshots, it's templates-only.) Phone setup:
-  [iphone-hot-box-runbook.md](./iphone-hot-box-runbook.md) — set `SSHID`
+  [iphone-hot-box-runbook.md](./iphone-hot-box-runbook.md) — set `SSHID_HANDLE`
   (Termius SSH ID handle) once and the phone's keys are fetched from
   sshid.io onto every hot box at build time.
 - **Task instance** — a fresh VM started from the warm snapshot for one

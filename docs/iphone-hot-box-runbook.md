@@ -19,15 +19,15 @@ point of the page).
 ### 2. Put the handle in `~/.zshenv` (one command on the Mac)
 
 ```sh
-echo 'export SSHID="<handle>"' >> ~/.zshenv
+echo 'export SSHID_HANDLE="<handle>"' >> ~/.zshenv
 source ~/.zshenv
 ```
 
 That's it — no key copying. `./morph hot` fetches the current public
-keys from `https://sshid.io/$SSHID` at build time and installs them on
+keys from `https://sshid.io/$SSHID_HANDLE` at build time and installs them on
 the box, so every device you've enabled SSH ID on (now or later) can
 open your hot boxes without touching this again. Other tools can reuse
-the same `SSHID` variable.
+the same `SSHID_HANDLE` variable.
 
 ### 3. Create the host entry in Termius
 
@@ -86,7 +86,7 @@ targeted `--force` is the intended way to finish one.
 
 ## Troubleshooting
 
-- **Permission denied (publickey):** the box was built without `SSHID`
+- **Permission denied (publickey):** the box was built without `SSHID_HANDLE`
   in the environment — rebuild with `./morph hot`, or fall back to
   importing the per-instance key it printed
   (`~/.ssh/morph/<instance-id>.pem`).

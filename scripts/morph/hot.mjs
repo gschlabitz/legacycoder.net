@@ -10,7 +10,7 @@
 //   ./morph hot --name errand  # branch sandbox/errand
 //
 // The box carries secrets on its paused disk - the same exposure as any
-// task box, just longer-lived. Set SSHID (a Termius SSH ID handle - see
+// task box, just longer-lived. Set SSHID_HANDLE (a Termius SSH ID handle - see
 // docs/iphone-hot-box-runbook.md) and the public keys published at
 // https://sshid.io/<handle> are fetched fresh at build time and added to
 // the box's authorized_keys, so the phone never needs the per-instance
@@ -56,7 +56,7 @@ const branch = `sandbox/${slug}`;
 // permanent identity instead of importing each box's per-instance key.
 // Fetched fresh each build, so newly enrolled SSH ID devices just work -
 // and fetched before any box gets billed, so a bad handle fails free.
-const sshid = process.env.SSHID?.trim();
+const sshid = process.env.SSHID_HANDLE?.trim();
 let phoneKeys;
 if (sshid) {
   const response = await fetch(`https://sshid.io/${encodeURIComponent(sshid)}`);
@@ -64,7 +64,7 @@ if (sshid) {
   // Unknown handles answer 200 with an empty body - only a non-empty key
   // list proves the handle is right.
   if (!phoneKeys) {
-    console.error(`https://sshid.io/${sshid} has no published keys - check the SSHID handle.`);
+    console.error(`https://sshid.io/${sshid} has no published keys - check SSHID_HANDLE.`);
     process.exit(1);
   }
 }
@@ -117,7 +117,7 @@ const phoneLines = phoneKeys
   host:     ssh.cloud.morph.so
   user:     ${instance.id}
   auth:     SSH ID`
-  : `Phone setup (no SSHID set - install the per-instance key):
+  : `Phone setup (no SSHID_HANDLE set - install the per-instance key):
   host:     ssh.cloud.morph.so
   user:     ${instance.id}
   key:      ${access.keyPath}   (install this in the SSH app)
