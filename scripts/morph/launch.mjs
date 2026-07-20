@@ -28,13 +28,23 @@ export function requireGitToken() {
 }
 
 export function readOpencodeAuth() {
-  const path = join(homedir(), ".local", "share", "opencode", "auth.json");
+  const dir = join(homedir(), ".local", "share", "opencode");
+  let auth;
   try {
-    return readFileSync(path, "utf8");
+    auth = readFileSync(join(dir, "auth.json"), "utf8");
   } catch {
-    console.error(`No opencode credentials at ${path} - run \`opencode auth login\` first.`);
+    console.error(`No opencode credentials at ${join(dir, "auth.json")} - run \`opencode auth login\` first.`);
     process.exit(1);
   }
+  // account.json carries the account/model entitlements; without it the box
+  // may pick a model the credentials can't actually use ("Unknown model").
+  let account;
+  try {
+    account = readFileSync(join(dir, "account.json"), "utf8");
+  } catch {
+    account = undefined;
+  }
+  return { auth, account };
 }
 
 /** Sanitize a user-picked name into a slug usable as branch suffix and metadata. */
@@ -96,6 +106,9 @@ export async function catchUp(instance, branch) {
       "git fetch origin main",
       `git checkout -B ${shellQuote(branch)} origin/main`,
       "npm install",
+      // The box's npm major may differ from the lockfile author's and churn
+      // it; discard that noise so it can't end up in the agent's commit.
+      "git checkout -- package-lock.json",
     ].join(" && "),
   );
 }
@@ -111,7 +124,10 @@ export async function injectSecrets(instance, { gitToken, opencodeAuth, extraFil
     "umask 077",
     `printf 'export GITHUB_TOKEN=%s\\nexport GH_TOKEN=%s\\n' ${shellQuote(gitToken)} ${shellQuote(gitToken)} > /root/.task-env`,
     "mkdir -p /root/.local/share/opencode",
-    `cat > /root/.local/share/opencode/auth.json <<'EOF_AUTH'\n${opencodeAuth}\nEOF_AUTH`,
+    `cat > /root/.local/share/opencode/auth.json <<'EOF_AUTH'\n${opencodeAuth.auth}\nEOF_AUTH`,
+    ...(opencodeAuth.account
+      ? [`cat > /root/.local/share/opencode/account.json <<'EOF_ACCOUNT'\n${opencodeAuth.account}\nEOF_ACCOUNT`]
+      : []),
     `cd ${REPO_PATH}`,
     'git config user.name "opencode agent"',
     `git config user.email "agent@${PROJECT}"`,

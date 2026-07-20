@@ -47,6 +47,7 @@ const { values: flags, positionals } = parseArgs({
   options: {
     name: { type: "string" },
     issue: { type: "string" },
+    model: { type: "string" }, // opencode model override, e.g. opencode/gpt-5-nano
     ttl: { type: "string", default: "120" }, // minutes
     snapshot: { type: "string" },
   },
@@ -96,8 +97,14 @@ set -uo pipefail
 source /root/.task-env
 cd /root/legacycoder.net
 
-opencode run ${shellQuote(task)}
-echo "--- opencode run finished (exit $?) ---"
+opencode run ${flags.model ? `--model ${shellQuote(flags.model)} ` : ""}${shellQuote(task)}
+oc_exit=$?
+echo "--- opencode run finished (exit $oc_exit) ---"
+
+if [ "$oc_exit" -ne 0 ]; then
+  echo "opencode failed - skipping commit/push/PR. Post-mortem: this log, then retry or attach."
+  exit "$oc_exit"
+fi
 
 git add -A
 git diff --cached --quiet || git commit -m ${shellQuote(`agent: ${flags.issue ? `work issue #${flags.issue}` : task.slice(0, 72)}`)}
@@ -124,10 +131,14 @@ await injectSecrets(instance, {
 
 const service = await startDevServer(instance);
 
+// The trailing shell keeps the session alive after the runner exits, so
+// "watch" works post-hoc and follow-ups can reuse the session.
 await execStep(
   instance,
   "start-agent",
-  `tmux new-session -d -s ${AGENT_SESSION} ${shellQuote("/root/run-task.sh 2>&1 | tee /root/task.log")}`,
+  `tmux new-session -d -s ${AGENT_SESSION} ${shellQuote(
+    "bash -c '/root/run-task.sh 2>&1 | tee /root/task.log; exec bash'",
+  )}`,
 );
 
 await syncSshConfig(client);
