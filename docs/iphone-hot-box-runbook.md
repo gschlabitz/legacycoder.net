@@ -35,11 +35,11 @@ Hosts → **+** → New Host:
 
 - Label: `morph hot`
 - Hostname: `ssh.cloud.morph.so`, port `22`
-- In the **Credentials** section:
-  - **Username**: leave blank for now — it's per-box, see below
-  - Auth: tap **"+ SSH ID, Key, Certificate, FIDO2"** and choose **SSH
-    ID** (there's no key to pick — it automatically uses this device's
-    passkey, gated by Face ID).
+- Auth: tap **"+ SSH ID, Key, Certificate, FIDO2"** and choose **SSH
+  ID** (there's no key to pick — it automatically uses this device's
+  passkey, gated by Face ID). The **Username** field is on this SSH ID
+  screen; it defaults to your handle (`@<handle>`), but for Morph it
+  must be the instance id — you'll set it per outing (step 5).
 
 ## Per outing
 
@@ -55,14 +55,17 @@ not compute.
 
 ### 5. Update the username on the phone
 
-Edit the `morph hot` host entry (Hosts → tap the host → edit) and in
-**Credentials**, set **Username** to the printed instance id. That's
+Edit the `morph hot` host entry (Hosts → tap the host → edit), open
+its **SSH ID** credential, and set **Username** to the printed
+instance id (`morphvm_…`), replacing the `@<handle>` default. That's
 the only per-outing step on the phone.
 
 (Why a username when the key authenticates? Morph runs one shared SSH
 endpoint for every VM, and the username is how it routes the connection
 to *your* box — it's the instance id, which changes with each hot
-build. The SSH ID key then authenticates you to that box.)
+build. The SSH ID key then authenticates you to that box. Termius's
+default of `@<handle>` assumes servers where your account name matches
+the handle, which Morph's proxy is not.)
 
 ### 6. Connect
 
