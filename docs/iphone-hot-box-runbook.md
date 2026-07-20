@@ -18,22 +18,25 @@ point of the page).
 
 ### 2. Put the public key in `~/.zshenv` (one command on the Mac)
 
-Fetch the key from your public key page and append the export line in
-one go:
+Fetch the key from your public key page into a shell variable, then
+append the export line:
 
 ```sh
-key="$(curl --fail --silent https://sshid.io/<handle>)" &&
-  echo "export MORPH_PHONE_PUBKEY=\"$key\"" >> ~/.zshenv &&
-  source ~/.zshenv
+# fetch the public key; the variable makes the next step skippable on failure
+key="$(curl --fail --silent https://sshid.io/<handle>)"
+
+# append the export line only if the fetch produced something
+[ -n "$key" ] && echo "export MORPH_PHONE_PUBKEY=\"$key\"" >> ~/.zshenv
+
+source ~/.zshenv
 ```
 
-The `&&` chain means a failed fetch appends nothing. sshid.io returns
-one line per device you enabled SSH ID on; all of them end up in the
-variable, so every SSH ID device can open your hot boxes. The key is
-baked into the file rather than curled at shell start on purpose —
-`~/.zshenv` runs on every shell, and a network call there would slow
-all of them down. (Enabled SSH ID on a new device later? Re-run the
-command and delete the old export line from `~/.zshenv`.)
+sshid.io returns one line per device you enabled SSH ID on; all of
+them end up in the variable, so every SSH ID device can open your hot
+boxes. The key is baked into the file rather than curled at shell
+start on purpose — `~/.zshenv` runs on every shell, and a network call
+there would slow all of them down. (Enabled SSH ID on a new device
+later? Re-run this and delete the old export line from `~/.zshenv`.)
 
 ### 3. Create the host entry in Termius
 
