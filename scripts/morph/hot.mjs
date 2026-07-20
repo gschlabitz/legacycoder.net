@@ -10,10 +10,12 @@
 //   ./morph hot --name errand  # branch sandbox/errand
 //
 // The box carries secrets on its paused disk - the same exposure as any
-// task box, just longer-lived. Its per-instance SSH key must be installed
-// in the phone app once per hot build (the command prints where it is).
-// No done signal ever appears here: reap skips hot boxes; finish one with
-// ./morph reap --force <id> when back at the laptop.
+// task box, just longer-lived. Set MORPH_PHONE_PUBKEY (the phone's public
+// key, generated once in the SSH app - see docs/iphone-hot-box-runbook.md)
+// and it is added to the box's authorized_keys, so the phone never needs
+// the per-instance key; without it, the printed per-instance .pem must be
+// installed on the phone each build. No done signal ever appears here:
+// reap skips hot boxes; finish one with ./morph reap --force <id>.
 
 import { parseArgs } from "node:util";
 import {
@@ -72,6 +74,22 @@ await execStep(
   )}`,
 );
 
+// The phone's own public key (not a secret) lets the phone app keep one
+// permanent identity instead of importing each box's per-instance key.
+const phonePubkey = process.env.MORPH_PHONE_PUBKEY?.trim();
+if (phonePubkey) {
+  await execStep(
+    instance,
+    "install-phone-key",
+    [
+      "mkdir -p /root/.ssh",
+      "chmod 700 /root/.ssh",
+      `printf '%s\\n' ${shellQuote(phonePubkey)} >> /root/.ssh/authorized_keys`,
+      "chmod 600 /root/.ssh/authorized_keys",
+    ].join(" && "),
+  );
+}
+
 await instance.setWakeOn(true, true); // SSH wakes it; so does hitting the preview URL
 const access = await sshAccess(instance);
 await syncSshConfig(client);
@@ -79,13 +97,21 @@ await syncSshConfig(client);
 console.log("Pausing (wake-on-SSH armed)...");
 await instance.pause();
 
-console.log(`
-Hot box ready (paused): ${instance.id}  branch ${branch}
-
-Phone setup (once per hot build - the key is per-instance):
+const phoneLines = phonePubkey
+  ? `Phone (key already on the box - just set the username in the SSH app):
+  host:     ssh.cloud.morph.so
+  user:     ${instance.id}
+  key:      your phone key (MORPH_PHONE_PUBKEY)`
+  : `Phone setup (no MORPH_PHONE_PUBKEY set - install the per-instance key):
   host:     ssh.cloud.morph.so
   user:     ${instance.id}
   key:      ${access.keyPath}   (install this in the SSH app)
+  Tip: docs/iphone-hot-box-runbook.md sets up a permanent phone key instead.`;
+
+console.log(`
+Hot box ready (paused): ${instance.id}  branch ${branch}
+
+${phoneLines}
 
 Connecting wakes the box; then: tmux attach -t ${AGENT_SESSION}
 Preview (also wakes it): ${service?.url ?? "(exposing failed)"}
