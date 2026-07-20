@@ -16,6 +16,13 @@ Face ID — no passphrase needed. Your public keys are published at
 `https://sshid.io/<handle>` (public keys are not secrets; that's the
 point of the page).
 
+**Key type matters:** Morph Cloud only accepts `ssh-ed25519` or
+`ssh-rsa` keys — nothing else. Make sure the passkey is one of those
+(**ED25519** preferred): on the host's SSH ID screen, set **Passkey
+type** accordingly rather than leaving whatever "Default" resolves to,
+and check that the key line fetched in step 2 starts with
+`ssh-ed25519` or `ssh-rsa`.
+
 ### 2. Register the phone key as your Morph account key (one command on the Mac)
 
 Morph's `ssh.cloud.morph.so` terminates SSH itself and never consults a
@@ -38,6 +45,10 @@ Notes:
 - The account holds a single key, so if you've enabled SSH ID on
   several devices (sshid.io returns one line each), pick the phone's
   line instead of the raw `curl`.
+- The key must start with `ssh-ed25519` or `ssh-rsa` — Morph rejects
+  other types. If the default fetch returns something else (e.g. an
+  ECDSA key), fetch the type explicitly:
+  `https://sshid.io/<handle>/ED25519` (or `/RSA`).
 
 ### 3. Create the host entry in Termius
 
