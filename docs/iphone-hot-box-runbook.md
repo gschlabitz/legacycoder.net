@@ -35,10 +35,11 @@ Hosts → **+** → New Host:
 
 - Label: `morph hot`
 - Hostname: `ssh.cloud.morph.so`, port `22`
-- Username: *(leave blank for now — it's per-box, see below)*
-- Auth: tap **"+ SSH ID, Key, Certificate, FIDO2"** and choose **SSH
-  ID** (there's no key to pick — it automatically uses this device's
-  passkey, gated by Face ID).
+- In the **Credentials** section:
+  - **Username**: leave blank for now — it's per-box, see below
+  - Auth: tap **"+ SSH ID, Key, Certificate, FIDO2"** and choose **SSH
+    ID** (there's no key to pick — it automatically uses this device's
+    passkey, gated by Face ID).
 
 ## Per outing
 
@@ -54,8 +55,9 @@ not compute.
 
 ### 5. Update the username on the phone
 
-Edit the `morph hot` host entry and set **Username** to the printed
-instance id. That's the only per-outing step on the phone.
+Edit the `morph hot` host entry (Hosts → tap the host → edit) and in
+**Credentials**, set **Username** to the printed instance id. That's
+the only per-outing step on the phone.
 
 (Why a username when the key authenticates? Morph runs one shared SSH
 endpoint for every VM, and the username is how it routes the connection
