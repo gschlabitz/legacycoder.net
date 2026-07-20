@@ -14,8 +14,10 @@
 // catch the clone up to origin/main on its own sandbox/ branch, start the dev
 // server (per-task, never baked warm - decision #4), inject secrets at exec
 // time (never into snapshot layers - decision #3), then leave `opencode run`
-// working in a tmux session. A scripted post-step - not the LLM - commits,
-// pushes, and opens a draft PR as gschlabitz via the fine-grained PAT.
+// working in a tmux session. The agent itself commits, pushes, and opens a
+// draft PR via gh (finishInstructions), then touches the done signal as its
+// last action - the runner is bare orchestration, not part of the dev flow
+// (issue #16).
 //
 // Requires MORPH_API_KEY and MORPH_GIT_TOKEN (PAT: contents, pull-requests,
 // issues - read/write on this repo) in the local environment, and a
@@ -33,6 +35,7 @@ import {
 } from "./client.mjs";
 import {
   catchUp,
+  finishInstructions,
   injectSecrets,
   issuePrompt,
   readOpencodeAuth,
@@ -85,46 +88,22 @@ const instance = await startInstance(client, { snapshot, role: "task", slug, ttl
 
 await catchUp(instance, branch);
 
-const prBody = JSON.stringify({
-  title: `agent: ${flags.issue ? `work issue #${flags.issue}` : task.slice(0, 80)} (${slug})`,
-  head: branch,
-  base: "main",
-  draft: true,
-  body: `Opened automatically by \`morph:task\`.\n\n**Task:** ${task}\n\nInstance: \`${instance.id}\`${flags.issue ? `\n\nRefs #${flags.issue}` : ""}`,
-});
+// Bare orchestration: run the agent and log. Committing, pushing, the draft
+// PR, and the done signal are all the agent's job (finishInstructions).
+const prompt = task + finishInstructions({ branch, instanceId: instance.id, issue: flags.issue });
 const runner = `#!/bin/bash
 set -uo pipefail
 source /root/.task-env
 cd /root/legacycoder.net
 
-opencode run ${flags.model ? `--model ${shellQuote(flags.model)} ` : ""}${shellQuote(task)}
-oc_exit=$?
-echo "--- opencode run finished (exit $oc_exit) ---"
-
-if [ "$oc_exit" -ne 0 ]; then
-  echo "opencode failed - skipping commit/push/PR. Post-mortem: this log, then retry or attach."
-  exit "$oc_exit"
-fi
-
-git add -A
-git diff --cached --quiet || git commit -m ${shellQuote(`agent: ${flags.issue ? `work issue #${flags.issue}` : task.slice(0, 72)}`)}
-
-if [ "$(git rev-list --count origin/main..HEAD)" -gt 0 ]; then
-  git push -u origin ${shellQuote(branch)}
-  curl -sS -X POST "https://api.github.com/repos/${REPO_SLUG}/pulls" \\
-    -H "Authorization: Bearer \${GITHUB_TOKEN}" \\
-    -H "Accept: application/vnd.github+json" \\
-    -d @/root/.task-pr.json | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>{const j=JSON.parse(d);console.log(j.html_url ? "Draft PR: "+j.html_url : "PR creation failed: "+JSON.stringify(j));})'
-else
-  echo "No commits produced - nothing to push."
-fi
+opencode run ${flags.model ? `--model ${shellQuote(flags.model)} ` : ""}${shellQuote(prompt)}
+echo "--- opencode run finished (exit $?) ---"
 `;
 
 await injectSecrets(instance, {
   gitToken,
   opencodeAuth,
   extraFiles: {
-    "/root/.task-pr.json": { content: prBody },
     "/root/run-task.sh": { content: runner, executable: true },
   },
 });
@@ -153,4 +132,5 @@ Task launched on ${instance.id}
   attach:   ./morph attach ${instance.id} [--zed|--cmux]
   compare:  https://github.com/${REPO_SLUG}/compare/main...${encodeURIComponent(branch)}
 
-A draft PR opens automatically when the agent finishes and has commits.`);
+The agent commits, pushes, and opens a draft PR itself, then touches the
+done signal that makes the box reapable (./morph reap).`);

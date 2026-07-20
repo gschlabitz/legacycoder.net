@@ -10,12 +10,19 @@ import { MorphCloudClient } from "morphcloud";
 
 export const PROJECT = "legacycoder.net";
 export const WARM_PURPOSE = "warm-dev";
+// Hot boxes are paused wake-on-SSH instances (role=hot), not snapshots -
+// the devbox service can't start from personal snapshots. The purpose tag
+// remains so sweep purges any hot snapshots from the earlier design.
+export const HOT_PURPOSE = "hot-dev";
 export const REPO_PATH = "/root/legacycoder.net";
 export const REPO_URL = "https://github.com/gschlabitz/legacycoder.net.git";
 export const REPO_SLUG = "gschlabitz/legacycoder.net";
 export const DEV_PORT = 4321;
 export const AGENT_SESSION = "agent";
 export const DEV_SESSION = "dev";
+// Touched by the task agent as its last action, after pushing and opening
+// the PR - the file's existence is what makes a box reapable (issue #16).
+export const DONE_SIGNAL = "/root/.task-done";
 
 // Morph exposes sshd directly on :22; the username is the instance id and
 // each instance has its own key pair.
