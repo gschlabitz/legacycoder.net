@@ -39,9 +39,12 @@ npm run snapshots:list
 3. To check on it: `npm run morph:attach -- <id>` for connect info, or
    `ssh <alias> 'tail -f /root/task.log'` for the live log. Detach from
    tmux with `Ctrl-b d` — `exit` kills the run.
-4. Follow-ups go to the *same* box through attach (a new `opencode run
-   --continue` in the agent session), never a second `morph:task` for the
-   same piece of work.
+4. Follow-ups and PR review feedback go to the *same* box through attach
+   (a new `opencode run --continue` in the agent session), never a second
+   `morph:task` for the same piece of work. The box has `gh` authenticated
+   via the injected token, so the agent can read review comments and
+   manage PRs/issues itself — e.g. `opencode run --continue "Read the
+   review comments on our PR with gh, address them, commit and push."`
 5. When the agent finishes with commits, a draft PR opens automatically —
    the user reviews it; don't mark it ready yourself.
 

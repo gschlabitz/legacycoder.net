@@ -7,8 +7,9 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
 
 - `MORPH_API_KEY` and `MORPH_GIT_TOKEN` in `~/.zshenv` (non-login shells —
   npm scripts, agents — read only that file, not `.zprofile`).
-  `MORPH_GIT_TOKEN` is a fine-grained PAT for this repo: contents +
-  pull-requests, read/write.
+  `MORPH_GIT_TOKEN` is a fine-grained PAT for this repo: contents,
+  pull-requests, and issues — read/write. (It doubles as `GH_TOKEN` on the
+  box, so agents can run `gh` to read reviews and manage PRs/tickets.)
 - Local opencode logged in (`opencode auth login`) — its credentials are
   copied to the box per run.
 - One-time: `Include ~/.ssh/morph_config` in `~/.ssh/config` (the scripts
@@ -51,7 +52,11 @@ npm run snapshots:create -- <id> <name>   # deliberate exception only (see vocab
    Detach from tmux with `Ctrl-b d` — `exit` kills the run.
 3. When the agent finishes with commits, a **draft PR** opens
    automatically as gschlabitz. Review, then mark ready or close.
-4. Boxes pause themselves at TTL. Cleanup of stale instances/snapshots is
+4. Review feedback goes back to the *same* box: attach, then in the agent
+   session run `opencode run --continue "Read the review comments on our
+   PR with gh, address them, commit and push."` — gh is on the box and
+   already authenticated via the injected token.
+5. Boxes pause themselves at TTL. Cleanup of stale instances/snapshots is
    manual for now (`morph:status`, dashboard) — a `morph:sweep` command is
    planned.
 

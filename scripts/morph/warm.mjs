@@ -45,6 +45,15 @@ const provisioned = await base.setup(
     "curl -fsSL https://deb.nodesource.com/setup_22.x | bash -",
     "apt-get install -y nodejs",
     "node --version && npm --version",
+    // gh so agents can read/manage PRs and issues; it auths via the GH_TOKEN
+    // env var injected per run - no login, no credential in this layer.
+    "mkdir -p -m 755 /etc/apt/keyrings",
+    "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg",
+    "chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg",
+    'echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list',
+    "apt-get update",
+    "apt-get install -y gh",
+    "gh --version",
     "npm install -g opencode-ai",
     "opencode --version",
   ]),

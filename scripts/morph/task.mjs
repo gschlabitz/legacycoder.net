@@ -142,7 +142,7 @@ await execStep(
   "inject-secrets",
   [
     "umask 077",
-    `printf 'export GITHUB_TOKEN=%s\\n' ${shellQuote(gitToken)} > /root/.task-env`,
+    `printf 'export GITHUB_TOKEN=%s\\nexport GH_TOKEN=%s\\n' ${shellQuote(gitToken)} ${shellQuote(gitToken)} > /root/.task-env`,
     "mkdir -p /root/.local/share/opencode",
     `cat > /root/.local/share/opencode/auth.json <<'EOF_AUTH'\n${opencodeAuth}\nEOF_AUTH`,
     `cat > /root/.task-pr.json <<'EOF_PR'\n${prBody}\nEOF_PR`,
