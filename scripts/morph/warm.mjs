@@ -67,7 +67,11 @@ const cloned = await provisioned.setup(
 console.log(`  -> ${cloned.id}`);
 
 console.log("Layer 3/3: npm install...");
-const installed = await cloned.setup(commandBlock([`cd ${REPO_PATH}`, "npm install"]));
+// Discard any lockfile churn from the box's npm so the snapshot bakes a
+// clean working tree - a dirty tree breaks catch-up's branch switch.
+const installed = await cloned.setup(
+  commandBlock([`cd ${REPO_PATH}`, "npm install", "git checkout -- package-lock.json"]),
+);
 console.log(`  -> ${installed.id}`);
 
 // Merge, never replace: setup() keeps its chain hash in metadata, and
