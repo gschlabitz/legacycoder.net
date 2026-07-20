@@ -2,8 +2,8 @@
 // nothing else. The dev server starts per task, not here, and no secret ever
 // enters a setup() layer - snapshots must stay shareable (issue #11).
 //
-//   npm run morph:warm
-//   npm run morph:warm -- --vcpus 4 --memory 8192 --disk 32768
+//   ./morph warm
+//   ./morph warm --vcpus 4 --memory 8192 --disk 32768
 //
 // Each setup() layer is cached by a chain hash: re-running after a failure
 // resumes from the last completed layer instead of rebuilding. Rebuilds are
@@ -67,7 +67,11 @@ const cloned = await provisioned.setup(
 console.log(`  -> ${cloned.id}`);
 
 console.log("Layer 3/3: npm install...");
-const installed = await cloned.setup(commandBlock([`cd ${REPO_PATH}`, "npm install"]));
+// Discard any lockfile churn from the box's npm so the snapshot bakes a
+// clean working tree - a dirty tree breaks catch-up's branch switch.
+const installed = await cloned.setup(
+  commandBlock([`cd ${REPO_PATH}`, "npm install", "git checkout -- package-lock.json"]),
+);
 console.log(`  -> ${installed.id}`);
 
 // Merge, never replace: setup() keeps its chain hash in metadata, and

@@ -1,8 +1,8 @@
 // Start an interactive instance and open it as a cmux workspace:
 //
-//   npm run morph:cmux -- --name pin-experiments
-//   npm run morph:cmux -- --issue 42        # name becomes issue-42
-//   npm run morph:cmux -- --name big-thing --ttl 240
+//   ./morph cmux --name pin-experiments
+//   ./morph cmux --issue 42        # name becomes issue-42
+//   ./morph cmux --name big-thing --ttl 240
 //
 // Same launch sequence as morph:task (fresh instance, sandbox branch, dev
 // server, per-run secrets), but the agent tmux session runs the opencode
@@ -24,7 +24,7 @@ import {
   startInstance,
   taskSlug,
 } from "./launch.mjs";
-import { openCmuxWorkspace, agentAttachCommand } from "./workspace.mjs";
+import { agentAttachCommand, ensureCmuxRunning, openCmuxWorkspace } from "./workspace.mjs";
 
 const { values: flags } = parseArgs({
   options: {
@@ -37,7 +37,7 @@ const { values: flags } = parseArgs({
 
 const name = flags.name ?? (flags.issue && /^\d+$/.test(flags.issue) ? `issue-${flags.issue}` : undefined);
 if (!name) {
-  console.error("Usage: npm run morph:cmux -- --name <name> | --issue <number>  [--ttl <minutes>] [--snapshot <id>]");
+  console.error("Usage: ./morph cmux --name <name> | --issue <number>  [--ttl <minutes>] [--snapshot <id>]");
   process.exit(1);
 }
 
@@ -45,6 +45,10 @@ const gitToken = requireGitToken();
 const opencodeAuth = readOpencodeAuth();
 const slug = taskSlug(name);
 const branch = `sandbox/${slug}`;
+
+// Wake cmux before the slow instance work so a cold app start is free -
+// and so a broken cmux fails the command before a box gets billed.
+await ensureCmuxRunning();
 
 const client = createClient();
 const snapshot = await resolveSnapshot(client, flags.snapshot);
@@ -77,7 +81,7 @@ Interactive instance ${instance.id}
   branch:   ${branch}
   preview:  ${service?.url ?? "(exposing failed - check morph:status)"}
   ssh:      ssh ${alias}
-  resume:   npm run morph:attach -- ${instance.id} --cmux
+  resume:   ./morph attach ${instance.id} --cmux
   terminal: ${agentAttachCommand(alias)}
 `);
 

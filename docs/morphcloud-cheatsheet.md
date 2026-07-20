@@ -40,26 +40,26 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
 ## Commands
 
 ```sh
-npm run morph:warm                        # build/refresh the warm snapshot (manual, resumable)
-npm run morph:task -- --name fix-pins "Implement X"   # fresh instance, opencode runs the task
-npm run morph:task -- --issue 42                      # name issue-42 + generated "work this issue" prompt
-npm run morph:task -- --issue 42 "guidance..."        # extra text appended to the generated prompt
-npm run morph:cmux -- --name experiments  # interactive: opencode TUI in a cmux workspace
-npm run morph:cmux -- --issue 42          # same, named issue-42
-npm run morph:attach                      # newest instance: print connect info
-npm run morph:attach -- <id> --zed        # open the repo in Zed over SSH
-npm run morph:attach -- <id> --cmux       # cmux workspace: agent session + preview pane
-npm run morph:status                      # what's running/burning money
-npm run snapshots:list
-npm run snapshots:create -- <id> <name>   # deliberate exception only (see vocabulary)
+./morph warm                              # build/refresh the warm snapshot (manual, resumable)
+./morph task --name fix-pins "Implement X"   # fresh instance, opencode runs the task
+./morph task --issue 42                      # name issue-42 + generated "work this issue" prompt
+./morph task --issue 42 "guidance..."        # extra text appended to the generated prompt
+./morph cmux --name experiments  # interactive: opencode TUI in a cmux workspace
+./morph cmux --issue 42          # same, named issue-42
+./morph attach                            # newest instance: print connect info
+./morph attach <id> --zed        # open the repo in Zed over SSH
+./morph attach <id> --cmux       # cmux workspace: agent session + preview pane
+./morph status                            # what's running/burning money
+./morph snapshots list
+./morph snapshots create <id> <name>   # deliberate exception only (see vocabulary)
 ```
 
 ## Typical workflow
 
-1. `npm run morph:task -- --issue 42` — prints branch, preview URL, SSH
+1. `./morph task --issue 42` — prints branch, preview URL, SSH
    alias, and attach commands, then returns; the agent keeps working on
    the box (it reads the issue itself with gh).
-2. Watch or steer: `npm run morph:attach -- <id> --cmux` (or `--zed`).
+2. Watch or steer: `./morph attach <id> --cmux` (or `--zed`).
    Detach from tmux with `Ctrl-b d` — `exit` kills the run.
 3. When the agent finishes with commits, a **draft PR** opens
    automatically as gschlabitz. Review, then mark ready or close.

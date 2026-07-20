@@ -12,8 +12,7 @@ export function agentAttachCommand(alias) {
 }
 
 export async function openCmuxWorkspace(instance, { alias, preview }) {
-  const cmuxBinary = resolveCmux();
-  await ensureCmuxRunning(cmuxBinary);
+  const cmuxBinary = await ensureCmuxRunning();
 
   const layout = {
     direction: "horizontal",
@@ -54,19 +53,56 @@ export function run(command, args, quiet = false) {
   });
 }
 
+const CMUX_APP = "/Applications/cmux.app";
+
 function resolveCmux() {
   if (process.env.CMUX_BIN?.trim()) return process.env.CMUX_BIN.trim();
-  const appBinary = "/Applications/cmux.app/Contents/Resources/bin/cmux";
+  const appBinary = `${CMUX_APP}/Contents/Resources/bin/cmux`;
   if (existsSync(appBinary)) return appBinary;
   return "cmux";
 }
 
-async function ensureCmuxRunning(cmuxBinary) {
-  if ((await run(cmuxBinary, ["ping"], true)) === 0) return;
-  await run("open", ["-a", "cmux"], true);
-  for (let attempt = 0; attempt < 40; attempt += 1) {
-    await new Promise((r) => setTimeout(r, 500));
-    if ((await run(cmuxBinary, ["ping"], true)) === 0) return;
+/**
+ * Make sure the cmux app is up, launching it if needed; returns the CLI
+ * binary. Idempotent and cheap when cmux is already running - call it
+ * early, before slow work, so a cold app start overlaps with the rest.
+ */
+const ACCESS_DENIED_HELP =
+  'cmux is running but refuses control from outside cmux (socketControlMode "cmuxOnly", the default).\n' +
+  "One-time fix: in cmux Settings (or ~/.config/cmux/cmux.json under \"automation\") set\n" +
+  '  socketControlMode: "password"  and a  socketPassword,\n' +
+  "then run `cmux reload-config`. The CLI picks the saved password up automatically;\n" +
+  "set CMUX_SOCKET_PASSWORD only if you keep the password out of Settings.";
+
+export async function ensureCmuxRunning() {
+  const cmuxBinary = resolveCmux();
+  const first = await ping(cmuxBinary);
+  if (first.ok) return cmuxBinary;
+  if (first.denied) throw new Error(ACCESS_DENIED_HELP);
+
+  console.log("cmux is not running - launching it...");
+  // Open the bundle by path when we know it; `-a cmux` depends on Launch
+  // Services knowing the name and can fail silently.
+  const opened = existsSync(CMUX_APP) ? await run("open", [CMUX_APP], true) : await run("open", ["-a", "cmux"], true);
+  if (opened !== 0) {
+    throw new Error("Could not launch cmux. Open it manually, then retry (or set CMUX_BIN).");
   }
-  throw new Error("cmux is not responding on its control socket. Open cmux, then retry.");
+  for (let attempt = 0; attempt < 120; attempt += 1) {
+    await new Promise((r) => setTimeout(r, 500));
+    const probe = await ping(cmuxBinary);
+    if (probe.ok) return cmuxBinary;
+    if (probe.denied) throw new Error(ACCESS_DENIED_HELP);
+  }
+  throw new Error("cmux launched but its control socket did not come up within 60s. Retry once it is open.");
+}
+
+function ping(cmuxBinary) {
+  return new Promise((resolve) => {
+    const child = spawn(cmuxBinary, ["ping"], { stdio: ["ignore", "pipe", "pipe"] });
+    let output = "";
+    child.stdout.on("data", (chunk) => (output += chunk));
+    child.stderr.on("data", (chunk) => (output += chunk));
+    child.on("error", () => resolve({ ok: false, denied: false }));
+    child.on("exit", (code) => resolve({ ok: code === 0, denied: /access denied/i.test(output) }));
+  });
 }

@@ -17,29 +17,29 @@ user to set it — never handle the values yourself.
 ## Commands
 
 ```sh
-npm run morph:warm                        # build/refresh the warm snapshot (manual, resumable)
-npm run morph:task -- --name <name> "task description"   # fresh instance, opencode runs the task
-npm run morph:task -- --issue 42          # name issue-42 + generated work-this-issue prompt
-npm run morph:cmux -- --name <name>       # interactive opencode TUI in a cmux workspace
-npm run morph:attach                      # newest instance: connect info
-npm run morph:attach -- <id> --zed        # open repo in Zed over SSH
-npm run morph:attach -- <id> --cmux       # cmux workspace: agent session + preview
-npm run morph:status                      # list this project's instances
-npm run snapshots:list
+./morph warm                              # build/refresh the warm snapshot (manual, resumable)
+./morph task --name <name> "task description"   # fresh instance, opencode runs the task
+./morph task --issue 42          # name issue-42 + generated work-this-issue prompt
+./morph cmux --name <name>       # interactive opencode TUI in a cmux workspace
+./morph attach                            # newest instance: connect info
+./morph attach <id> --zed        # open repo in Zed over SSH
+./morph attach <id> --cmux       # cmux workspace: agent session + preview
+./morph status                            # list this project's instances
+./morph snapshots list
 ```
 
 ## Workflow: run a task remotely
 
-1. `npm run morph:task -- --issue <n>` for issue work, or
+1. `./morph task --issue <n>` for issue work, or
    `--name <name> "<task>"` otherwise — the name is required (pick it,
    usually the issue number; it becomes the `sandbox/<name>` branch). A
    fresh instance starts every time (never reuse a running one — parallel
    tasks each get their own), the dev server comes up, and `opencode run`
    works in the `agent` tmux session. If it reports no warm snapshot, run
-   `npm run morph:warm` first (minutes, resumable).
+   `./morph warm` first (minutes, resumable).
 2. Report the printed branch, preview URL, and attach commands to the
    user. The task runs unattended from here.
-3. To check on it: `npm run morph:attach -- <id>` for connect info, or
+3. To check on it: `./morph attach <id>` for connect info, or
    `ssh <alias> 'tail -f /root/task.log'` for the live log. Detach from
    tmux with `Ctrl-b d` — `exit` kills the run.
 4. Follow-ups and PR review feedback go to the *same* box through attach
