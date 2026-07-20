@@ -24,7 +24,7 @@ import {
   startInstance,
   taskSlug,
 } from "./launch.mjs";
-import { openCmuxWorkspace, agentAttachCommand } from "./workspace.mjs";
+import { agentAttachCommand, ensureCmuxRunning, openCmuxWorkspace } from "./workspace.mjs";
 
 const { values: flags } = parseArgs({
   options: {
@@ -45,6 +45,10 @@ const gitToken = requireGitToken();
 const opencodeAuth = readOpencodeAuth();
 const slug = taskSlug(name);
 const branch = `sandbox/${slug}`;
+
+// Wake cmux before the slow instance work so a cold app start is free -
+// and so a broken cmux fails the command before a box gets billed.
+await ensureCmuxRunning();
 
 const client = createClient();
 const snapshot = await resolveSnapshot(client, flags.snapshot);
