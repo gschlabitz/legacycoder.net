@@ -7,19 +7,35 @@ username.
 
 ## One-time setup
 
-### 1. Generate the phone's keypair (in the SSH app, so the private key never leaves the phone)
+### 1. Create the phone's key
 
-**Termius:** Keychain → **+** → **Generate Key** → type **ED25519**, name
-it `morph-phone`, no passphrase (or one you'll happily type on glass) →
-Generate. Then open the key and **copy the public key**.
+**Termius (preferred — SSH ID):** Settings → **SSH ID** → follow the
+guided setup and pick a handle. This creates a device-bound passkey:
+the private key is generated on the phone, can't be exported, and each
+use is gated by Face ID — no passphrase needed. Your public keys are
+published at `https://sshid.io/<handle>` (public keys are not secrets;
+that's the point of the page).
+
+**Termius (manual alternative):** Keychain → **+** → **Generate Key** →
+type **ED25519**, name it `morph-phone` → Generate → copy the public
+key.
 
 **Blink:** Settings → Keys → **+** → Generate New Key → ED25519, name
 `morph-phone` → Copy Public Key.
 
 ### 2. Get the public key to the Mac
 
-It's a public key — any channel is fine (AirDrop a note, iMessage it to
-yourself, Universal Clipboard). It's one line that looks like:
+**With SSH ID:** fetch it straight from the key page:
+
+```sh
+curl -fs https://sshid.io/<handle>
+```
+
+(One line per device you enabled SSH ID on — include the line(s) you
+want the boxes to trust.)
+
+**Manual key:** any channel is fine — AirDrop a note, iMessage it to
+yourself, Universal Clipboard. It's one line that looks like:
 
 ```
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... morph-phone
@@ -31,7 +47,10 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... morph-phone
 export MORPH_PHONE_PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... morph-phone"
 ```
 
-New shells pick it up; for the current one, `source ~/.zshenv`.
+New shells pick it up; for the current one, `source ~/.zshenv`. (Paste
+the key line itself, not the curl command — `~/.zshenv` runs on every
+shell start, and a network call there would slow all of them down.
+Multiple lines from sshid.io are fine inside the quotes.)
 
 ### 4. Create the host entry in the SSH app
 
@@ -40,7 +59,7 @@ New shells pick it up; for the current one, `source ~/.zshenv`.
 - Label: `morph hot`
 - Hostname: `ssh.cloud.morph.so`, port `22`
 - Username: *(leave blank for now — it's per-box, see below)*
-- Key: `morph-phone`
+- Key: the SSH ID passkey (or `morph-phone` if you generated manually)
 
 **Blink:** Settings → Hosts → **+**, same values.
 
