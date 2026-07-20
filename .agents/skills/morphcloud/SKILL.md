@@ -1,48 +1,58 @@
 ---
 name: morphcloud
-description: Manage MorphCloud remote devboxes with the morphcloud CLI. Use when the user wants to run a coding agent on a remote devbox, parallelize tasks across devboxes, or mentions morphcloud, devboxes, or snapshots.
+description: Run coding tasks on Morph Cloud VMs via this repo's morph:* npm scripts. Use when the user wants to run a coding agent on a remote instance, parallelize tasks across cloud VMs, or mentions morph, warm snapshots, or task instances.
 ---
 
-# MorphCloud devboxes
+# Morph task instances
 
-MorphCloud provides remote **devboxes** — cloud VMs for running coding agents in parallel, isolated from the local machine. A devbox is started from a **template** (or a saved **snapshot**), worked in over SSH, and saved back as a snapshot to preserve its state.
+This repo runs coding agents on Morph Cloud VMs at the instance layer —
+no devbox service, no Python CLI (ADR-0006). One **task instance** per
+task, started fresh from a **warm snapshot** (toolchain + repo +
+`node_modules`), driven by **opencode**, TTL'd so nothing runs forever.
 
-Requires the `morphcloud` CLI (`pipx install morphcloud`) and a `MORPH_API_KEY` environment variable. If a command fails with an auth error, ask the user to set the key — never enter or store it yourself.
+Requires `MORPH_API_KEY` and `MORPH_GIT_TOKEN` in the environment and a
+logged-in local opencode. If a command fails on a missing key, ask the
+user to set it — never handle the values yourself.
 
-## Prefer project wrappers
-
-If the current project's `package.json` has `morph:*` or `snapshots:*` scripts, use those (`npm run morph:status`, `npm run morph:task -- "…"`) — they encode project defaults like the template ID. Fall back to the raw CLI below otherwise.
-
-## Core commands
-
-```sh
-morphcloud devbox list                          # all devboxes + status
-morphcloud devbox start <template-id> --name <name>
-morphcloud devbox ssh <devbox-id>               # interactive session
-morphcloud devbox ssh <devbox-id> <command...>  # run one remote command
-morphcloud devbox save <devbox-id> <name>       # snapshot current state
-morphcloud snapshot list                        # saved snapshots
-morphcloud devbox pause <devbox-id>             # stop billing, keep state
-morphcloud devbox resume <devbox-id>
-morphcloud devbox delete <devbox-id>
-```
-
-Long-running work belongs in a **terminal** (a tmux session on the devbox) so it survives SSH disconnects:
+## Commands
 
 ```sh
-morphcloud devbox terminal start <devbox-id> --name <session>
-morphcloud devbox terminal list <devbox-id>
-morphcloud devbox terminal connect <devbox-id> <session>
+npm run morph:warm                        # build/refresh the warm snapshot (manual, resumable)
+npm run morph:task -- "task description"  # fresh instance, opencode runs the task
+npm run morph:task -- --ttl 240 "task"    # longer TTL (minutes)
+npm run morph:attach                      # newest task instance: connect info
+npm run morph:attach -- <id> --zed        # open repo in Zed over SSH
+npm run morph:attach -- <id> --cmux       # cmux workspace: agent session + preview
+npm run morph:status                      # list this project's instances
+npm run snapshots:list
 ```
 
-Add `--json` to `list`/`start`/`save` when you need to parse the output.
+## Workflow: run a task remotely
 
-## Workflow: run an agent task remotely
+1. `npm run morph:task -- "<task>"`. It starts a fresh instance (never
+   reuse a running one — parallel tasks each get their own), cuts a
+   `sandbox/` branch, starts the dev server, and leaves `opencode run`
+   working in the `agent` tmux session. If it reports no warm snapshot,
+   run `npm run morph:warm` first (minutes, resumable).
+2. Report the printed branch, preview URL, and attach commands to the
+   user. The task runs unattended from here.
+3. To check on it: `npm run morph:attach -- <id>` for connect info, or
+   `ssh <alias> 'tail -f /root/task.log'` for the live log. Detach from
+   tmux with `Ctrl-b d` — `exit` kills the run.
+4. Follow-ups go to the *same* box through attach (a new `opencode run
+   --continue` in the agent session), never a second `morph:task` for the
+   same piece of work.
+5. When the agent finishes with commits, a draft PR opens automatically —
+   the user reviews it; don't mark it ready yourself.
 
-1. **Find or start a devbox.** `morphcloud devbox list` — reuse a READY devbox for the project if one exists; otherwise `morphcloud devbox start <template-id>`. Template IDs are project-specific; look in the project's npm scripts or docs, and ask the user if none is recorded.
-2. **Start a terminal** on the devbox named after the task, so the run is detachable and inspectable later.
-3. **Send the task** to the coding agent inside that terminal, e.g. `claude -p "<task>"` (or the agent the user names).
-4. **Check on it** with `terminal connect`; detach with the tmux detach key (`Ctrl-b d`) — never `exit`, which kills the run.
-5. **Save a snapshot** (`devbox save <devbox-id> <descriptive-name>`) once the work reaches a state worth keeping, and report the devbox ID and connect command to the user.
+Done means: the task is running (or its draft PR exists), and the user
+has the instance ID, preview URL, and attach commands.
 
-Done means: the task is running (or finished) on the devbox, and the user has the devbox ID plus the exact command to attach to it.
+## Rules
+
+- Never put secrets in `morph:warm`'s snapshot layers or snapshot a task
+  instance — task disks carry per-run credentials.
+- Every instance start goes through the scripts (they set TTLs); don't
+  start instances via the SDK ad hoc.
+- Reference: `docs/morphcloud-cheatsheet.md` (vocabulary, workflow),
+  ADR-0006 (why instance-layer), `scripts/morph/` (implementation).

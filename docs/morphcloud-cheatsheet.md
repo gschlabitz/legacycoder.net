@@ -1,64 +1,60 @@
-# MorphCloud cheat sheet
+# Morph cheat sheet
 
-Remote devboxes for running coding agents in parallel, off the local machine.
+Fresh cloud VMs per coding task, driven by opencode, attached via cmux or
+Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
 
 ## Prerequisites
 
-- CLI: `pipx install morphcloud`
-- Auth: `MORPH_API_KEY` in `~/.zprofile`
-- New devbox from scratch: a template ID in `MORPH_TEMPLATE`
-  (`morphcloud devbox template list` — first-time setup for this project is TBD)
+- `MORPH_API_KEY` and `MORPH_GIT_TOKEN` in `~/.zshenv` (non-login shells —
+  npm scripts, agents — read only that file, not `.zprofile`).
+  `MORPH_GIT_TOKEN` is a fine-grained PAT for this repo: contents +
+  pull-requests, read/write.
+- Local opencode logged in (`opencode auth login`) — its credentials are
+  copied to the box per run.
+- One-time: `Include ~/.ssh/morph_config` in `~/.ssh/config` (the scripts
+  print the line if it's missing).
 
-## Concepts
+## Vocabulary
 
-- **Devbox** — a cloud VM started from a template or snapshot. Statuses:
-  READY (billing, usable), PAUSED (state kept, no billing).
-- **Snapshot** — a saved VM state; restartable later, the unit of "save my work".
-- **Template** — a base definition new devboxes start from.
-- **Terminal** — a tmux session on the devbox; long-running agent work lives
-  here so it survives SSH disconnects.
+- **Warm snapshot** — the prebuilt VM image tasks start from: toolchain
+  (node, git, tmux, opencode) + repo clone + `node_modules`. No secrets,
+  no running dev server. Found by metadata (`purpose: warm-dev`), latest
+  ready one wins.
+- **Task instance** — a fresh VM started from the warm snapshot for one
+  task, TTL'd (default 2 h, then pause). Never reused, never snapshotted;
+  its disk carries per-run secrets.
+- **Catch-up** — the startup delta on a task instance: fetch `origin/main`,
+  cut a `sandbox/<slug>-<timestamp>` branch, `npm install`.
+- **Attach** — connecting to a live task instance: plain SSH, the agent's
+  tmux session, Zed remote, or a cmux workspace.
 
-## npm shortcuts (this repo)
-
-```sh
-npm run morph:status                     # list devboxes
-npm run snapshots:list                   # list snapshots
-npm run snapshots:create -- <id> <name>  # snapshot a devbox
-npm run morph:task -- "Implement issue X"  # start/reuse devbox, send task to agent
-```
-
-`morph:task` reuses a READY devbox tagged `project=legacycoder.net`, or starts
-one from `MORPH_TEMPLATE`. The agent it launches defaults to `claude`;
-override with `MORPH_AGENT=codex npm run morph:task -- "…"`.
-
-## Raw CLI
+## Commands
 
 ```sh
-morphcloud devbox list
-morphcloud devbox start <template-id> --name <name>
-morphcloud devbox ssh <devbox-id>                # interactive
-morphcloud devbox ssh <devbox-id> <command>      # one-shot remote command
-morphcloud devbox save <devbox-id> <name>        # snapshot
-morphcloud devbox pause <devbox-id>              # stop billing, keep state
-morphcloud devbox resume <devbox-id>
-morphcloud devbox delete <devbox-id>
-
-morphcloud snapshot list
-
-morphcloud devbox terminal start <devbox-id> --name <session>
-morphcloud devbox terminal list <devbox-id>
-morphcloud devbox terminal connect <devbox-id> <session>
+npm run morph:warm                        # build/refresh the warm snapshot (manual, resumable)
+npm run morph:task -- "Implement X"       # fresh instance, opencode runs the task
+npm run morph:task -- --ttl 240 "Big X"   # longer TTL (minutes)
+npm run morph:attach                      # newest task instance: print connect info
+npm run morph:attach -- <id> --zed        # open the repo in Zed over SSH
+npm run morph:attach -- <id> --cmux       # cmux workspace: agent session + preview pane
+npm run morph:status                      # what's running/burning money
+npm run snapshots:list
+npm run snapshots:create -- <id> <name>   # deliberate exception only (see vocabulary)
 ```
 
 ## Typical workflow
 
-1. `npm run morph:task -- "Implement issue X"` — prints the devbox ID and
-   connect command.
-2. Check in: `morphcloud devbox terminal connect <id> <session>`;
-   detach with `Ctrl-b d` (not `exit`, which kills the run).
-3. Happy with the state? `npm run snapshots:create -- <id> issue-x-done`.
-4. Done for the day: `morphcloud devbox pause <id>`.
+1. `npm run morph:task -- "Implement issue X"` — prints branch, preview
+   URL, SSH alias, and attach commands, then returns; the agent keeps
+   working on the box.
+2. Watch or steer: `npm run morph:attach -- <id> --cmux` (or `--zed`).
+   Detach from tmux with `Ctrl-b d` — `exit` kills the run.
+3. When the agent finishes with commits, a **draft PR** opens
+   automatically as gschlabitz. Review, then mark ready or close.
+4. Boxes pause themselves at TTL. Cleanup of stale instances/snapshots is
+   manual for now (`morph:status`, dashboard) — a `morph:sweep` command is
+   planned.
 
-The agent-facing version of this lives at `.agents/skills/morphcloud/SKILL.md`
-in this repo (symlinked from `.claude/skills/`); extract it to the dotfiles
-repo later if it proves universal.
+The agent-facing version lives at `.agents/skills/morphcloud/SKILL.md`
+(symlinked from `.claude/skills/`). Decisions and rationale: ADR-0006 and
+issue #11.

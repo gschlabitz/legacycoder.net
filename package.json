@@ -13,10 +13,12 @@
     "preview": "astro preview",
     "astro": "astro",
     "geocode": "node scripts/geocode.mjs",
-    "morph:status": "morphcloud devbox list",
-    "morph:task": "node scripts/morph-task.mjs",
-    "snapshots:list": "morphcloud snapshot list",
-    "snapshots:create": "morphcloud devbox save"
+    "morph:warm": "node scripts/morph/warm.mjs",
+    "morph:task": "node scripts/morph/task.mjs",
+    "morph:attach": "node scripts/morph/attach.mjs",
+    "morph:status": "node scripts/morph/status.mjs",
+    "snapshots:list": "node scripts/morph/snapshots.mjs list",
+    "snapshots:create": "node scripts/morph/snapshots.mjs create"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.0",
@@ -27,6 +29,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "astro": "7.0.2",
+    "morphcloud": "^0.0.20",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "sharp": "0.34.5",
@@ -36,7 +39,9 @@
   "allowScripts": {
     "esbuild@0.28.1": true,
     "sharp@0.34.5": true,
-    "fsevents@2.3.3": true
+    "fsevents@2.3.3": true,
+    "ssh2@1.17.0": true,
+    "cpu-features@0.0.10": true
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
