@@ -1,6 +1,7 @@
 // Delete stale snapshots (issue #16). Keeps the latest ready warm snapshot;
-// deletes superseded warm snapshots, ALL hot snapshots (secrets on board -
-// made when heading out, swept when back at the laptop), and all debris.
+// deletes superseded warm snapshots, any hot-dev snapshots (secrets on
+// board; hot boxes are instances now, but early ones were snapshots), and
+// all debris.
 // Debris = any snapshot with no `purpose` metadata field, account-wide:
 // setup() layers and bases never get metadata, so purpose-less means
 // reproducible build leftovers (single-operator account - anything worth

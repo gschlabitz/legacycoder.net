@@ -91,9 +91,10 @@ for (const instance of targets) {
   if (done) {
     stopped = await stop(instance, `done signal present, ${label}`);
   } else {
+    const role = instance.metadata?.role;
     const why =
-      instance.metadata?.role === "interactive"
-        ? "no done signal (interactive box - use ./morph reap --force <id> when finished)"
+      role === "interactive" || role === "hot"
+        ? `no done signal (${role} box - use ./morph reap --force <id> when finished)`
         : "no done signal (agent not finished, or work never pushed)";
     console.log(`${instance.id}  skipped: ${why} (${label})`);
   }

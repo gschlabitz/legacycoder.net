@@ -23,10 +23,13 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
   (node, git, tmux, opencode) + repo clone + `node_modules`. No secrets,
   no running dev server. Found by metadata (`purpose: warm-dev`), latest
   ready one wins.
-- **Hot snapshot** — warm + credentials baked in and the opencode TUI
-  already open (`purpose: hot-dev`). Made by `./morph hot` for starting a
-  dashboard devbox from a phone. Never share one; `sweep` deletes all of
-  them. Make one when heading out, sweep when back at the laptop.
+- **Hot box** — a paused, wake-on-SSH instance made by `./morph hot` for
+  working from a phone: caught up to main, credentials on disk, dev
+  server running, opencode TUI open in the agent session. An SSH app
+  connecting to it wakes it; it re-pauses after the TTL. Reap always
+  skips it (no done signal) — finish it with `reap --force <id>` when
+  back at the laptop. (Not a devbox: the devbox service can't start from
+  personal snapshots, it's templates-only.)
 - **Task instance** — a fresh VM started from the warm snapshot for one
   task, TTL'd (default 2 h, then pause). Never reused, never snapshotted;
   its disk carries per-run secrets.
@@ -53,7 +56,7 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
 
 ```sh
 ./morph warm                              # build/refresh the warm snapshot (manual, resumable)
-./morph hot [--name <n>]         # hot snapshot for phone devboxes (secrets baked in!)
+./morph hot [--name <n>]         # paused wake-on-SSH box for phone sessions (secrets on disk!)
 ./morph task --name fix-pins "Implement X"   # fresh instance, opencode runs the task
 ./morph task --issue 42                      # name issue-42 + generated "work this issue" prompt
 ./morph task --issue 42 "guidance..."        # extra text appended to the generated prompt
@@ -69,7 +72,7 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
 ./morph reap <id>...             # same rule, only these boxes
 ./morph reap --force <id>...     # kill these unconditionally
 ./morph reap --force --all       # kill everything (deliberate double flag)
-./morph sweep                    # keep latest warm snapshot; delete superseded + hot + debris
+./morph sweep                    # keep latest warm snapshot; delete superseded + hot-dev + debris
 ./morph sweep --all              # delete the latest warm snapshot too
 ```
 

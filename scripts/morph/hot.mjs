@@ -1,26 +1,29 @@
-// Build a HOT snapshot: the warm snapshot caught up to origin/main, with
-// secrets injected and the opencode TUI already open in the agent tmux
-// session. Start a dashboard devbox from it (cloud.morph.so -> Devboxes ->
-// new -> pick the snapshot) and you have a working, authenticated session
-// from a phone - TUI on screen, gh and pushes working.
+// Build a HOT box: an instance from the warm snapshot, caught up to
+// origin/main, secrets injected, dev server running, opencode TUI open in
+// the agent tmux session - then paused with wake-on-SSH. From a phone, an
+// SSH app (Termius, Blink) connecting to it wakes it and `tmux attach -t
+// agent` puts the TUI on screen. Instance-native on purpose: the devbox
+// service cannot start from personal snapshots (its service key can't see
+// them - verified 2026-07), so the dashboard/devbox route is a dead end.
 //
 //   ./morph hot                # branch sandbox/hot
 //   ./morph hot --name errand  # branch sandbox/errand
 //
-// This deliberately bakes MORPH_GIT_TOKEN and the opencode credentials into
-// the snapshot - the exception to the warm rule. Hot snapshots must never
-// be shared, and ./morph sweep deletes ALL of them: make one when heading
-// out, sweep when back at the laptop.
+// The box carries secrets on its paused disk - the same exposure as any
+// task box, just longer-lived. Its per-instance SSH key must be installed
+// in the phone app once per hot build (the command prints where it is).
+// No done signal ever appears here: reap skips hot boxes; finish one with
+// ./morph reap --force <id> when back at the laptop.
 
 import { parseArgs } from "node:util";
 import {
   AGENT_SESSION,
-  HOT_PURPOSE,
-  PROJECT,
   REPO_PATH,
   createClient,
   execStep,
   shellQuote,
+  sshAccess,
+  syncSshConfig,
 } from "./client.mjs";
 import {
   catchUp,
@@ -37,7 +40,7 @@ const { values: flags } = parseArgs({
   options: {
     name: { type: "string", default: "hot" },
     snapshot: { type: "string" },
-    ttl: { type: "string", default: "30" }, // builder safety net, minutes
+    ttl: { type: "string", default: "120" }, // minutes awake per wake-up, then pause again
   },
 });
 
@@ -50,17 +53,17 @@ const client = createClient();
 const warm = await resolveSnapshot(client, flags.snapshot);
 const instance = await startInstance(client, {
   snapshot: warm,
-  role: "hot-builder",
+  role: "hot",
   slug,
   ttlMinutes: Number(flags.ttl),
 });
 
 await catchUp(instance, branch);
 await injectSecrets(instance, { gitToken, opencodeAuth });
-await startDevServer(instance);
+const service = await startDevServer(instance);
 
-// Bake the TUI in open: it snapshots idle at its prompt and resumes there.
-// The trailing shell keeps the session alive if opencode ever exits.
+// The TUI is left open so a wake resumes straight into it; the trailing
+// shell keeps the session alive if opencode ever exits.
 await execStep(
   instance,
   "start-opencode",
@@ -69,23 +72,24 @@ await execStep(
   )}`,
 );
 
-console.log("Snapshotting (memory state included - the TUI stays open)...");
-const snapshot = await instance.snapshot();
-await snapshot.setMetadata({
-  ...snapshot.metadata,
-  project: PROJECT,
-  purpose: HOT_PURPOSE,
-  name: slug,
-});
+await instance.setWakeOn(true, true); // SSH wakes it; so does hitting the preview URL
+const access = await sshAccess(instance);
+await syncSshConfig(client);
 
-console.log("Stopping builder instance...");
-await instance.stop();
+console.log("Pausing (wake-on-SSH armed)...");
+await instance.pause();
 
 console.log(`
-Hot snapshot ready: ${snapshot.id}  (branch ${branch}, secrets on board - do not share)
+Hot box ready (paused): ${instance.id}  branch ${branch}
 
-From the phone: cloud.morph.so -> Devboxes -> new -> pick ${snapshot.id}.
-The agent tmux session has the opencode TUI open; the dev server runs in
-the dev session (expose its port via the devbox UI for a preview).
+Phone setup (once per hot build - the key is per-instance):
+  host:     ssh.cloud.morph.so
+  user:     ${instance.id}
+  key:      ${access.keyPath}   (install this in the SSH app)
 
-Back at the laptop: ./morph sweep deletes all hot snapshots.`);
+Connecting wakes the box; then: tmux attach -t ${AGENT_SESSION}
+Preview (also wakes it): ${service?.url ?? "(exposing failed)"}
+Laptop: ${access.sshCommand}
+
+It re-pauses ${flags.ttl} min after each wake. Secrets are on its disk -
+when back at the laptop, finish it with: ./morph reap --force ${instance.id}`);

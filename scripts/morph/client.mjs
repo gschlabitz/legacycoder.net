@@ -10,9 +10,9 @@ import { MorphCloudClient } from "morphcloud";
 
 export const PROJECT = "legacycoder.net";
 export const WARM_PURPOSE = "warm-dev";
-// Hot = warm + credentials baked in (and the opencode TUI already open) so
-// a dashboard devbox started from it works from a phone. Never share one;
-// ./morph sweep purges all of them (issue #16 follow-up).
+// Hot boxes are paused wake-on-SSH instances (role=hot), not snapshots -
+// the devbox service can't start from personal snapshots. The purpose tag
+// remains so sweep purges any hot snapshots from the earlier design.
 export const HOT_PURPOSE = "hot-dev";
 export const REPO_PATH = "/root/legacycoder.net";
 export const REPO_URL = "https://github.com/gschlabitz/legacycoder.net.git";
