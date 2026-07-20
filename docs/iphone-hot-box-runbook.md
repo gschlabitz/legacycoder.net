@@ -23,32 +23,29 @@ type** accordingly rather than leaving whatever "Default" resolves to,
 and check that the key line fetched in step 2 starts with
 `ssh-ed25519` or `ssh-rsa`.
 
-### 2. Register the phone key as your Morph account key (one command on the Mac)
+### 2. Register the phone key as your Morph account key (dashboard)
 
 Morph's `ssh.cloud.morph.so` terminates SSH itself and never consults a
 VM's `authorized_keys` — keys on the box do nothing. What it does honor
 is the **account-level user SSH key**, so the phone key is registered
 once with the account and every instance (hot, task, cmux) accepts it
-from then on:
+from then on.
 
-```sh
-curl --request PUT "https://cloud.morph.so/api/user/ssh-key" \
-  --header "Authorization: Bearer $MORPH_API_KEY" \
-  --header "Content-Type: application/json" \
-  --data "{\"public_key\": \"$(curl --fail --silent https://sshid.io/<handle>)\"}"
-```
+This works right on the phone: open `https://sshid.io/<handle>` and
+copy your key line, then in the Morph dashboard
+([cloud.morph.so](https://cloud.morph.so)) go to **Manage Account** →
+**SSH Keys** → **Update SSH Key** and paste it.
 
 Notes:
 
 - This **replaces** the account's current user key (the per-instance
   keys the morph scripts use are unaffected).
-- The account holds a single key, so if you've enabled SSH ID on
-  several devices (sshid.io returns one line each), pick the phone's
-  line instead of the raw `curl`.
+- The account holds a single key, so if sshid.io lists several devices
+  (one line each), paste only the phone's line.
 - The key must start with `ssh-ed25519` or `ssh-rsa` — Morph rejects
-  other types. If the default fetch returns something else (e.g. an
-  ECDSA key), fetch the type explicitly:
-  `https://sshid.io/<handle>/ED25519` (or `/RSA`).
+  other types. If your key page shows something else (e.g. an ECDSA
+  key), fetch the type explicitly: `https://sshid.io/<handle>/ED25519`
+  (or `/RSA`).
 
 ### 3. Create the host entry in Termius
 
@@ -118,10 +115,10 @@ targeted `--force` is the intended way to finish one.
 ## Troubleshooting
 
 - **Prompted for a password / permission denied:** the account key
-  doesn't match the phone — re-run the step-2 `curl` (did sshid.io
-  return several lines? only one key fits) — or fall back to importing
-  the per-instance key `./morph hot` printed
-  (`~/.ssh/morph/<instance-id>.pem`).
+  doesn't match the phone — redo step 2 (several lines on sshid.io?
+  only one key fits; wrong key type? Morph accepts only ssh-ed25519 and
+  ssh-rsa) — or fall back to importing the per-instance key
+  `./morph hot` printed (`~/.ssh/morph/<instance-id>.pem`).
 - **Connection times out:** paused boxes take a few seconds to wake;
   retry once. Check `./morph status` from a laptop if it persists.
 - **TUI looks garbled:** resize the terminal once (rotate the phone or
