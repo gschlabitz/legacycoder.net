@@ -59,7 +59,10 @@ Multiple lines from sshid.io are fine inside the quotes.)
 - Label: `morph hot`
 - Hostname: `ssh.cloud.morph.so`, port `22`
 - Username: *(leave blank for now — it's per-box, see below)*
-- Key: the SSH ID passkey (or `morph-phone` if you generated manually)
+- Auth: tap **"+ SSH ID, Key, Certificate, FIDO2"** and choose **SSH
+  ID** (there's no key to pick — it automatically uses this device's
+  passkey, gated by Face ID). If you generated a key manually instead,
+  select `morph-phone` here. Don't leave both attached.
 
 **Blink:** Settings → Hosts → **+**, same values.
 
