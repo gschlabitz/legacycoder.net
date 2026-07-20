@@ -17,7 +17,7 @@ from a template bridged to an SDK-built snapshot — was designed first and
 rejected as two toolchains for zero added capability.
 
 The same review settled how work leaves a box: the instance pushes a
-`sandbox/<slug>-<timestamp>` branch and opens a draft PR, authorized by a
+`sandbox/<name>` branch and opens a draft PR, authorized by a
 fine-grained PAT (`MORPH_GIT_TOKEN`, contents + pull-requests on this repo
 only) injected at exec time. Pull-based review (fetching from the box over
 SSH, no credential on the box at all) was the safer alternative and was

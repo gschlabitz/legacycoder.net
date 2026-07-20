@@ -1,7 +1,13 @@
 // Run a coding task on a fresh Morph instance (issue #11):
 //
-//   npm run morph:task -- "Fix the timeline pin overlap"
-//   npm run morph:task -- --ttl 240 "Bigger task"
+//   npm run morph:task -- --name pin-overlap "Fix the timeline pin overlap"
+//   npm run morph:task -- --issue 42
+//   npm run morph:task -- --issue 42 "Prefer the SDK over the CLI throughout"
+//
+// The name is yours to pick (it becomes the sandbox/<name> branch and the
+// instance label); --issue N derives name issue-N and generates a prompt
+// telling the agent to read the issue with gh and work it. Extra positional
+// text is appended to the generated prompt as guidance.
 //
 // Fresh instance per task, always - follow-ups go through morph:attach, not a
 // second task on the same box. The flow: start from the latest warm snapshot,
@@ -26,9 +32,9 @@ import {
   syncSshConfig,
 } from "./client.mjs";
 import {
-  branchTimestamp,
   catchUp,
   injectSecrets,
+  issuePrompt,
   readOpencodeAuth,
   requireGitToken,
   resolveSnapshot,
@@ -39,22 +45,38 @@ import {
 
 const { values: flags, positionals } = parseArgs({
   options: {
+    name: { type: "string" },
+    issue: { type: "string" },
     ttl: { type: "string", default: "120" }, // minutes
     snapshot: { type: "string" },
   },
   allowPositionals: true,
 });
 
-const task = positionals.join(" ").trim();
-if (!task) {
-  console.error('Usage: npm run morph:task -- [--ttl <minutes>] [--snapshot <id>] "task description"');
+const usage =
+  'Usage: npm run morph:task -- --name <name> "task description"\n' +
+  "       npm run morph:task -- --issue <number> [\"extra guidance\"]\n" +
+  "Options: --ttl <minutes> --snapshot <id>";
+
+let task = positionals.join(" ").trim();
+let name = flags.name;
+if (flags.issue) {
+  if (!/^\d+$/.test(flags.issue)) {
+    console.error(`--issue expects a number, got "${flags.issue}".`);
+    process.exit(1);
+  }
+  name ??= `issue-${flags.issue}`;
+  task = task ? `${issuePrompt(flags.issue)}\n\nAdditional guidance: ${task}` : issuePrompt(flags.issue);
+}
+if (!task || !name) {
+  console.error(usage);
   process.exit(1);
 }
 
 const gitToken = requireGitToken();
 const opencodeAuth = readOpencodeAuth();
-const slug = taskSlug(task, "task");
-const branch = `sandbox/${slug}-${branchTimestamp()}`;
+const slug = taskSlug(name);
+const branch = `sandbox/${slug}`;
 
 const client = createClient();
 const snapshot = await resolveSnapshot(client, flags.snapshot);
@@ -63,11 +85,11 @@ const instance = await startInstance(client, { snapshot, role: "task", slug, ttl
 await catchUp(instance, branch);
 
 const prBody = JSON.stringify({
-  title: `agent: ${task.slice(0, 80)}`,
+  title: `agent: ${flags.issue ? `work issue #${flags.issue}` : task.slice(0, 80)} (${slug})`,
   head: branch,
   base: "main",
   draft: true,
-  body: `Opened automatically by \`morph:task\`.\n\n**Task:** ${task}\n\nInstance: \`${instance.id}\``,
+  body: `Opened automatically by \`morph:task\`.\n\n**Task:** ${task}\n\nInstance: \`${instance.id}\`${flags.issue ? `\n\nRefs #${flags.issue}` : ""}`,
 });
 const runner = `#!/bin/bash
 set -uo pipefail
@@ -78,7 +100,7 @@ opencode run ${shellQuote(task)}
 echo "--- opencode run finished (exit $?) ---"
 
 git add -A
-git diff --cached --quiet || git commit -m ${shellQuote(`agent: ${task.slice(0, 72)}`)}
+git diff --cached --quiet || git commit -m ${shellQuote(`agent: ${flags.issue ? `work issue #${flags.issue}` : task.slice(0, 72)}`)}
 
 if [ "$(git rev-list --count origin/main..HEAD)" -gt 0 ]; then
   git push -u origin ${shellQuote(branch)}

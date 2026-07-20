@@ -37,18 +37,28 @@ export function readOpencodeAuth() {
   }
 }
 
-export function taskSlug(text, fallback) {
-  return (
-    text
-      .toLowerCase()
-      .replace(/[^a-z0-9._-]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-      .slice(0, 48) || fallback
-  );
+/** Sanitize a user-picked name into a slug usable as branch suffix and metadata. */
+export function taskSlug(text) {
+  const slug = text
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 48);
+  if (!slug || slug === "main") {
+    console.error(`"${text}" does not reduce to a usable name.`);
+    process.exit(1);
+  }
+  return slug;
 }
 
-export function branchTimestamp() {
-  return new Date().toISOString().replace(/\.\d{3}Z$/, "Z").replaceAll(":", "").replaceAll("-", "");
+/** The generated prompt for --issue N: the box has gh, so the agent self-serves. */
+export function issuePrompt(issueNumber) {
+  return (
+    `Work on GitHub issue #${issueNumber} in this repository. ` +
+    `Start with \`gh issue view ${issueNumber} --comments\` to read the issue and its discussion, ` +
+    `then implement what it asks, respecting any acceptance criteria it lists. ` +
+    `When you are done, add a short comment to the issue summarizing what you changed.`
+  );
 }
 
 export async function resolveSnapshot(client, snapshotId) {

@@ -1,7 +1,8 @@
 // Start an interactive instance and open it as a cmux workspace:
 //
-//   npm run morph:cmux
-//   npm run morph:cmux -- --ttl 240 --name pin-experiments
+//   npm run morph:cmux -- --name pin-experiments
+//   npm run morph:cmux -- --issue 42        # name becomes issue-42
+//   npm run morph:cmux -- --name big-thing --ttl 240
 //
 // Same launch sequence as morph:task (fresh instance, sandbox branch, dev
 // server, per-run secrets), but the agent tmux session runs the opencode
@@ -14,7 +15,6 @@
 import { parseArgs } from "node:util";
 import { REPO_PATH, AGENT_SESSION, createClient, hostAlias, shellQuote, syncSshConfig, execStep } from "./client.mjs";
 import {
-  branchTimestamp,
   catchUp,
   injectSecrets,
   readOpencodeAuth,
@@ -28,16 +28,23 @@ import { openCmuxWorkspace, agentAttachCommand } from "./workspace.mjs";
 
 const { values: flags } = parseArgs({
   options: {
+    name: { type: "string" },
+    issue: { type: "string" },
     ttl: { type: "string", default: "120" }, // minutes
     snapshot: { type: "string" },
-    name: { type: "string", default: "interactive" },
   },
 });
 
+const name = flags.name ?? (flags.issue && /^\d+$/.test(flags.issue) ? `issue-${flags.issue}` : undefined);
+if (!name) {
+  console.error("Usage: npm run morph:cmux -- --name <name> | --issue <number>  [--ttl <minutes>] [--snapshot <id>]");
+  process.exit(1);
+}
+
 const gitToken = requireGitToken();
 const opencodeAuth = readOpencodeAuth();
-const slug = taskSlug(flags.name, "interactive");
-const branch = `sandbox/${slug}-${branchTimestamp()}`;
+const slug = taskSlug(name);
+const branch = `sandbox/${slug}`;
 
 const client = createClient();
 const snapshot = await resolveSnapshot(client, flags.snapshot);

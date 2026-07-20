@@ -25,7 +25,8 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
   task, TTL'd (default 2 h, then pause). Never reused, never snapshotted;
   its disk carries per-run secrets.
 - **Catch-up** — the startup delta on a task instance: fetch `origin/main`,
-  cut a `sandbox/<slug>-<timestamp>` branch, `npm install`.
+  cut a `sandbox/<name>` branch (the name is required and yours to pick —
+  usually an issue number), `npm install`.
 - **Attach** — connecting to a live task instance: plain SSH, the agent's
   tmux session, Zed remote, or a cmux workspace.
 - **Interactive instance** — same box, no scripted task: `morph:cmux`
@@ -38,10 +39,11 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
 
 ```sh
 npm run morph:warm                        # build/refresh the warm snapshot (manual, resumable)
-npm run morph:task -- "Implement X"       # fresh instance, opencode runs the task
-npm run morph:task -- --ttl 240 "Big X"   # longer TTL (minutes)
-npm run morph:cmux                        # interactive: opencode TUI in a cmux workspace
-npm run morph:cmux -- --name experiments  # names the box and its sandbox/ branch
+npm run morph:task -- --name fix-pins "Implement X"   # fresh instance, opencode runs the task
+npm run morph:task -- --issue 42                      # name issue-42 + generated "work this issue" prompt
+npm run morph:task -- --issue 42 "guidance..."        # extra text appended to the generated prompt
+npm run morph:cmux -- --name experiments  # interactive: opencode TUI in a cmux workspace
+npm run morph:cmux -- --issue 42          # same, named issue-42
 npm run morph:attach                      # newest instance: print connect info
 npm run morph:attach -- <id> --zed        # open the repo in Zed over SSH
 npm run morph:attach -- <id> --cmux       # cmux workspace: agent session + preview pane
@@ -52,9 +54,9 @@ npm run snapshots:create -- <id> <name>   # deliberate exception only (see vocab
 
 ## Typical workflow
 
-1. `npm run morph:task -- "Implement issue X"` — prints branch, preview
-   URL, SSH alias, and attach commands, then returns; the agent keeps
-   working on the box.
+1. `npm run morph:task -- --issue 42` — prints branch, preview URL, SSH
+   alias, and attach commands, then returns; the agent keeps working on
+   the box (it reads the issue itself with gh).
 2. Watch or steer: `npm run morph:attach -- <id> --cmux` (or `--zed`).
    Detach from tmux with `Ctrl-b d` — `exit` kills the run.
 3. When the agent finishes with commits, a **draft PR** opens
