@@ -16,21 +16,18 @@ Face ID — no passphrase needed. Your public keys are published at
 `https://sshid.io/<handle>` (public keys are not secrets; that's the
 point of the page).
 
-### 2. Put the public key in `~/.zshenv` (one command on the Mac)
-
-Fetch the key from your public key page and append the export line:
+### 2. Put the handle in `~/.zshenv` (one command on the Mac)
 
 ```sh
-echo "export MORPH_PHONE_PUBKEY=\"$(curl --fail --silent https://sshid.io/<handle>)\"" >> ~/.zshenv
+echo 'export SSHID="<handle>"' >> ~/.zshenv
 source ~/.zshenv
 ```
 
-sshid.io returns one line per device you enabled SSH ID on; all of
-them end up in the variable, so every SSH ID device can open your hot
-boxes. The key is baked into the file rather than curled at shell
-start on purpose — `~/.zshenv` runs on every shell, and a network call
-there would slow all of them down. (Enabled SSH ID on a new device
-later? Re-run this and delete the old export line from `~/.zshenv`.)
+That's it — no key copying. `./morph hot` fetches the current public
+keys from `https://sshid.io/$SSHID` at build time and installs them on
+the box, so every device you've enabled SSH ID on (now or later) can
+open your hot boxes without touching this again. Other tools can reuse
+the same `SSHID` variable.
 
 ### 3. Create the host entry in Termius
 
@@ -89,9 +86,9 @@ targeted `--force` is the intended way to finish one.
 
 ## Troubleshooting
 
-- **Permission denied (publickey):** the box was built without
-  `MORPH_PHONE_PUBKEY` in the environment — rebuild with `./morph hot`,
-  or fall back to importing the per-instance key it printed
+- **Permission denied (publickey):** the box was built without `SSHID`
+  in the environment — rebuild with `./morph hot`, or fall back to
+  importing the per-instance key it printed
   (`~/.ssh/morph/<instance-id>.pem`).
 - **Connection times out:** paused boxes take a few seconds to wake;
   retry once. Check `./morph status` from a laptop if it persists.
