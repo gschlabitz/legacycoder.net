@@ -23,36 +23,34 @@ key.
 **Blink:** Settings → Keys → **+** → Generate New Key → ED25519, name
 `morph-phone` → Copy Public Key.
 
-### 2. Get the public key to the Mac
+### 2. Put the public key in `~/.zshenv` (one command on the Mac)
 
-**With SSH ID:** fetch it straight from the key page:
+**With SSH ID:** fetch the key from your public key page and append the
+export line in one go:
 
 ```sh
-curl -fs https://sshid.io/<handle>
+key="$(curl --fail --silent https://sshid.io/<handle>)" &&
+  echo "export MORPH_PHONE_PUBKEY=\"$key\"" >> ~/.zshenv &&
+  source ~/.zshenv
 ```
 
-(One line per device you enabled SSH ID on — include the line(s) you
-want the boxes to trust.)
+The `&&` chain means a failed fetch appends nothing. sshid.io returns
+one line per device you enabled SSH ID on; all of them end up in the
+variable, so every SSH ID device can open your hot boxes. The key is
+baked into the file rather than curled at shell start on purpose —
+`~/.zshenv` runs on every shell, and a network call there would slow
+all of them down. (Enabled SSH ID on a new device later? Re-run the
+command and delete the old export line from `~/.zshenv`.)
 
-**Manual key:** any channel is fine — AirDrop a note, iMessage it to
-yourself, Universal Clipboard. It's one line that looks like:
-
-```
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... morph-phone
-```
-
-### 3. Add it to `~/.zshenv` next to the other morph variables
+**Manual key (Blink or Termius keychain):** get the public key over any
+channel — AirDrop, iMessage to yourself, Universal Clipboard — and add
+the export line by hand:
 
 ```sh
 export MORPH_PHONE_PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... morph-phone"
 ```
 
-New shells pick it up; for the current one, `source ~/.zshenv`. (Paste
-the key line itself, not the curl command — `~/.zshenv` runs on every
-shell start, and a network call there would slow all of them down.
-Multiple lines from sshid.io are fine inside the quotes.)
-
-### 4. Create the host entry in the SSH app
+### 3. Create the host entry in the SSH app
 
 **Termius:** Hosts → **+** → New Host:
 
@@ -68,7 +66,7 @@ Multiple lines from sshid.io are fine inside the quotes.)
 
 ## Per outing
 
-### 5. Build the hot box (laptop, before heading out)
+### 4. Build the hot box (laptop, before heading out)
 
 ```sh
 ./morph hot
@@ -78,12 +76,12 @@ It prints the instance id (e.g. `morphvm_2vrcn62h`) and confirms the
 phone key is on the box. The box is left **paused** — costing storage,
 not compute.
 
-### 6. Update the username on the phone
+### 5. Update the username on the phone
 
 Edit the `morph hot` host entry and set **Username** to the printed
 instance id. That's the only per-outing step on the phone.
 
-### 7. Connect
+### 6. Connect
 
 Open the host. The connection itself wakes the box (allow ~5–10 s for
 the first prompt). Then:
