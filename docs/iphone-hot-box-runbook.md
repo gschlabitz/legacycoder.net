@@ -57,6 +57,11 @@ not compute.
 Edit the `morph hot` host entry and set **Username** to the printed
 instance id. That's the only per-outing step on the phone.
 
+(Why a username when the key authenticates? Morph runs one shared SSH
+endpoint for every VM, and the username is how it routes the connection
+to *your* box — it's the instance id, which changes with each hot
+build. The SSH ID key then authenticates you to that box.)
+
 ### 6. Connect
 
 Open the host. The connection itself wakes the box (allow ~5–10 s for
