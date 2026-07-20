@@ -18,16 +18,10 @@ point of the page).
 
 ### 2. Put the public key in `~/.zshenv` (one command on the Mac)
 
-Fetch the key from your public key page into a shell variable, then
-append the export line:
+Fetch the key from your public key page and append the export line:
 
 ```sh
-# fetch the public key; the variable makes the next step skippable on failure
-key="$(curl --fail --silent https://sshid.io/<handle>)"
-
-# append the export line only if the fetch produced something
-[ -n "$key" ] && echo "export MORPH_PHONE_PUBKEY=\"$key\"" >> ~/.zshenv
-
+echo "export MORPH_PHONE_PUBKEY=\"$(curl --fail --silent https://sshid.io/<handle>)\"" >> ~/.zshenv
 source ~/.zshenv
 ```
 
