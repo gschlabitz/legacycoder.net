@@ -11,29 +11,31 @@
 // working in a tmux session. A scripted post-step - not the LLM - commits,
 // pushes, and opens a draft PR as gschlabitz via the fine-grained PAT.
 //
-// Requires MORPH_API_KEY and MORPH_GIT_TOKEN (PAT: contents + pull-requests
-// read/write on this repo) in the local environment, and a logged-in local
-// opencode (its auth.json is copied to the box for the run).
+// Requires MORPH_API_KEY and MORPH_GIT_TOKEN (PAT: contents, pull-requests,
+// issues - read/write on this repo) in the local environment, and a
+// logged-in local opencode (its auth.json is copied to the box for the run).
 
-import { readFileSync } from "node:fs";
-import { homedir } from "node:os";
-import { join } from "node:path";
 import { parseArgs } from "node:util";
 import {
   AGENT_SESSION,
-  DEV_PORT,
-  DEV_SESSION,
-  PROJECT,
-  REPO_PATH,
   REPO_SLUG,
-  ageInDays,
   createClient,
   execStep,
   hostAlias,
-  latestWarmSnapshot,
   shellQuote,
   syncSshConfig,
 } from "./client.mjs";
+import {
+  branchTimestamp,
+  catchUp,
+  injectSecrets,
+  readOpencodeAuth,
+  requireGitToken,
+  resolveSnapshot,
+  startDevServer,
+  startInstance,
+  taskSlug,
+} from "./launch.mjs";
 
 const { values: flags, positionals } = parseArgs({
   options: {
@@ -49,62 +51,17 @@ if (!task) {
   process.exit(1);
 }
 
-const gitToken = process.env.MORPH_GIT_TOKEN;
-if (!gitToken) {
-  console.error("MORPH_GIT_TOKEN is not set (fine-grained PAT for this repo). Add it to ~/.zshenv.");
-  process.exit(1);
-}
-
-const opencodeAuthPath = join(homedir(), ".local", "share", "opencode", "auth.json");
-let opencodeAuth;
-try {
-  opencodeAuth = readFileSync(opencodeAuthPath, "utf8");
-} catch {
-  console.error(`No opencode credentials at ${opencodeAuthPath} - run \`opencode auth login\` first.`);
-  process.exit(1);
-}
-
-const slug =
-  task
-    .toLowerCase()
-    .replace(/[^a-z0-9._-]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 48) || "task";
-const timestamp = new Date().toISOString().replace(/\.\d{3}Z$/, "Z").replaceAll(":", "").replaceAll("-", "");
-const branch = `sandbox/${slug}-${timestamp}`;
+const gitToken = requireGitToken();
+const opencodeAuth = readOpencodeAuth();
+const slug = taskSlug(task, "task");
+const branch = `sandbox/${slug}-${branchTimestamp()}`;
 
 const client = createClient();
-const snapshot = flags.snapshot ? await client.snapshots.get({ snapshotId: flags.snapshot }) : await latestWarmSnapshot(client);
-if (!snapshot) {
-  console.error('No warm snapshot found - run "npm run morph:warm" first.');
-  process.exit(1);
-}
-const age = ageInDays(snapshot.created);
-console.log(`Warm snapshot: ${snapshot.id}${age !== undefined ? ` (${age} days old${age > 30 ? " - consider npm run morph:warm" : ""})` : ""}`);
+const snapshot = await resolveSnapshot(client, flags.snapshot);
+const instance = await startInstance(client, { snapshot, role: "task", slug, ttlMinutes: Number(flags.ttl) });
 
-console.log("Starting instance...");
-const instance = await client.instances.start({
-  snapshotId: snapshot.id,
-  metadata: { project: PROJECT, role: "task", task: slug, name: slug },
-  ttlSeconds: Number(flags.ttl) * 60,
-  ttlAction: "pause",
-});
-await instance.waitUntilReady();
-console.log(`Instance ${instance.id} ready (TTL ${flags.ttl} min, then pause).`);
+await catchUp(instance, branch);
 
-await execStep(
-  instance,
-  "catch-up",
-  [
-    `cd ${REPO_PATH}`,
-    "git fetch origin main",
-    `git checkout -B ${shellQuote(branch)} origin/main`,
-    "npm install",
-  ].join(" && "),
-);
-
-// Secrets land only on this ephemeral, TTL'd instance (0600, root-only) -
-// task boxes are never snapshotted, so nothing here can outlive the box.
 const prBody = JSON.stringify({
   title: `agent: ${task.slice(0, 80)}`,
   head: branch,
@@ -115,10 +72,7 @@ const prBody = JSON.stringify({
 const runner = `#!/bin/bash
 set -uo pipefail
 source /root/.task-env
-cd ${REPO_PATH}
-git config user.name "opencode agent"
-git config user.email "agent@${PROJECT}"
-git config credential.helper '!f() { echo "username=x-access-token"; echo "password=\${GITHUB_TOKEN}"; }; f'
+cd /root/legacycoder.net
 
 opencode run ${shellQuote(task)}
 echo "--- opencode run finished (exit $?) ---"
@@ -137,25 +91,16 @@ else
 fi
 `;
 
-await execStep(
-  instance,
-  "inject-secrets",
-  [
-    "umask 077",
-    `printf 'export GITHUB_TOKEN=%s\\nexport GH_TOKEN=%s\\n' ${shellQuote(gitToken)} ${shellQuote(gitToken)} > /root/.task-env`,
-    "mkdir -p /root/.local/share/opencode",
-    `cat > /root/.local/share/opencode/auth.json <<'EOF_AUTH'\n${opencodeAuth}\nEOF_AUTH`,
-    `cat > /root/.task-pr.json <<'EOF_PR'\n${prBody}\nEOF_PR`,
-    `cat > /root/run-task.sh <<'EOF_RUNNER'\n${runner}\nEOF_RUNNER`,
-    "chmod 700 /root/run-task.sh",
-  ].join("\n"),
-);
+await injectSecrets(instance, {
+  gitToken,
+  opencodeAuth,
+  extraFiles: {
+    "/root/.task-pr.json": { content: prBody },
+    "/root/run-task.sh": { content: runner, executable: true },
+  },
+});
 
-await execStep(
-  instance,
-  "start-dev-server",
-  `tmux new-session -d -s ${DEV_SESSION} ${shellQuote(`cd ${REPO_PATH} && npm run dev -- --host`)}`,
-);
+const service = await startDevServer(instance);
 
 await execStep(
   instance,
@@ -163,7 +108,6 @@ await execStep(
   `tmux new-session -d -s ${AGENT_SESSION} ${shellQuote("/root/run-task.sh 2>&1 | tee /root/task.log")}`,
 );
 
-const service = await instance.exposeHttpService("dev", DEV_PORT);
 await syncSshConfig(client);
 
 const alias = hostAlias(instance);

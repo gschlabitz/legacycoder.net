@@ -28,6 +28,11 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
   cut a `sandbox/<slug>-<timestamp>` branch, `npm install`.
 - **Attach** — connecting to a live task instance: plain SSH, the agent's
   tmux session, Zed remote, or a cmux workspace.
+- **Interactive instance** — same box, no scripted task: `morph:cmux`
+  starts the opencode TUI in the agent tmux session and opens a cmux
+  workspace on it. You steer; nothing pushes unless you make it. Detach or
+  close cmux freely — the session survives, resume via
+  `morph:attach -- <id> --cmux`.
 
 ## Commands
 
@@ -35,7 +40,9 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
 npm run morph:warm                        # build/refresh the warm snapshot (manual, resumable)
 npm run morph:task -- "Implement X"       # fresh instance, opencode runs the task
 npm run morph:task -- --ttl 240 "Big X"   # longer TTL (minutes)
-npm run morph:attach                      # newest task instance: print connect info
+npm run morph:cmux                        # interactive: opencode TUI in a cmux workspace
+npm run morph:cmux -- --name experiments  # names the box and its sandbox/ branch
+npm run morph:attach                      # newest instance: print connect info
 npm run morph:attach -- <id> --zed        # open the repo in Zed over SSH
 npm run morph:attach -- <id> --cmux       # cmux workspace: agent session + preview pane
 npm run morph:status                      # what's running/burning money

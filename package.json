@@ -16,6 +16,7 @@
     "morph:warm": "node scripts/morph/warm.mjs",
     "morph:task": "node scripts/morph/task.mjs",
     "morph:attach": "node scripts/morph/attach.mjs",
+    "morph:cmux": "node scripts/morph/cmux.mjs",
     "morph:status": "node scripts/morph/status.mjs",
     "snapshots:list": "node scripts/morph/snapshots.mjs list",
     "snapshots:create": "node scripts/morph/snapshots.mjs create"

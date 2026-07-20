@@ -20,7 +20,8 @@ user to set it — never handle the values yourself.
 npm run morph:warm                        # build/refresh the warm snapshot (manual, resumable)
 npm run morph:task -- "task description"  # fresh instance, opencode runs the task
 npm run morph:task -- --ttl 240 "task"    # longer TTL (minutes)
-npm run morph:attach                      # newest task instance: connect info
+npm run morph:cmux                        # interactive opencode TUI in a cmux workspace
+npm run morph:attach                      # newest instance: connect info
 npm run morph:attach -- <id> --zed        # open repo in Zed over SSH
 npm run morph:attach -- <id> --cmux       # cmux workspace: agent session + preview
 npm run morph:status                      # list this project's instances
