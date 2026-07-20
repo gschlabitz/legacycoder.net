@@ -1,6 +1,6 @@
 // Snapshot management via the SDK.
 //
-//   npm run snapshots:list
+//   ./morph snapshots list
 //   npm run snapshots:create -- <instance-id> <name>
 //
 // Note: task instances are meant to stay unsnapshotted (their disks carry
@@ -22,7 +22,7 @@ if (command === "list" || command === undefined) {
 } else if (command === "create") {
   const [instanceId, name] = rest;
   if (!instanceId || !name) {
-    console.error("Usage: npm run snapshots:create -- <instance-id> <name>");
+    console.error("Usage: ./morph snapshots create <instance-id> <name>");
     process.exit(1);
   }
   console.warn("Heads up: task instances carry per-run secrets on disk - only snapshot boxes you provisioned clean.");

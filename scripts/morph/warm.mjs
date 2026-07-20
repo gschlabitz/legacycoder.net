@@ -2,8 +2,8 @@
 // nothing else. The dev server starts per task, not here, and no secret ever
 // enters a setup() layer - snapshots must stay shareable (issue #11).
 //
-//   npm run morph:warm
-//   npm run morph:warm -- --vcpus 4 --memory 8192 --disk 32768
+//   ./morph warm
+//   ./morph warm --vcpus 4 --memory 8192 --disk 32768
 //
 // Each setup() layer is cached by a chain hash: re-running after a failure
 // resumes from the last completed layer instead of rebuilding. Rebuilds are

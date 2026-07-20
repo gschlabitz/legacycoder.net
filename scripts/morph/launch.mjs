@@ -74,12 +74,12 @@ export function issuePrompt(issueNumber) {
 export async function resolveSnapshot(client, snapshotId) {
   const snapshot = snapshotId ? await client.snapshots.get({ snapshotId }) : await latestWarmSnapshot(client);
   if (!snapshot) {
-    console.error('No warm snapshot found - run "npm run morph:warm" first.');
+    console.error('No warm snapshot found - run "./morph warm" first.');
     process.exit(1);
   }
   const age = ageInDays(snapshot.created);
   console.log(
-    `Warm snapshot: ${snapshot.id}${age !== undefined ? ` (${age} days old${age > 30 ? " - consider npm run morph:warm" : ""})` : ""}`,
+    `Warm snapshot: ${snapshot.id}${age !== undefined ? ` (${age} days old${age > 30 ? " - consider ./morph warm" : ""})` : ""}`,
   );
   return snapshot;
 }
