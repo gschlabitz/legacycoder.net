@@ -6,6 +6,7 @@ import TimelineMap from "../components/TimelineMap.jsx";
 import TimelineOrder from "../components/TimelineOrder.jsx";
 import { pinSvg, tagColor, tagIcon } from "../lib/tag-pins.js";
 import { getTimelineEvents } from "../lib/timeline";
+import { getSkill, resolveLocale } from "../lib/skills";
 
 // Build-time: every blog post is a timeline event (ADR-0004). The loader
 // returns them chronologically with sphere/summary/url derived.
@@ -175,6 +176,18 @@ const showMap = places.length > 0 && (mapsApiKey || import.meta.env.DEV);
                   <div class="tl-body">
                     {event.summary !== null ? <p>{event.summary}</p> : Body && <Body />}
                   </div>
+                  {event.skills.length > 0 && (
+                    <ul class="tl-skills">
+                      {event.skills.map((skillId) => {
+                        const skill = getSkill(skillId);
+                        if (!skill) return null;
+                        const { title } = resolveLocale(skill, "en");
+                        return (
+                          <li><a href={`/skills/${skillId}`}>{title}</a></li>
+                        );
+                      })}
+                    </ul>
+                  )}
                 </article>
               );
             })}

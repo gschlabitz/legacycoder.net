@@ -1,7 +1,7 @@
 ---
 title: "Software Developer intern at multiSYStems Berlin"
 date: 1992-10-01
-tags: [skills, career]
+tags: [career]
 location:
   city: Berlin
   country: Germany

@@ -51,7 +51,10 @@ export const collections = {
   docs: defineCollection({
     loader: docsLoader(),
     schema: docsSchema({
-      extend: (context) => blogSchema(context).merge(z.object({ location: location.optional() })),
+      extend: (context) => blogSchema(context).merge(z.object({
+        location: location.optional(),
+        skills: z.array(z.string()).optional(),
+      })),
     }),
   }),
   credits: defineCollection({

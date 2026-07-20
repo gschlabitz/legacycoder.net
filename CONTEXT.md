@@ -81,7 +81,7 @@ _Avoid_: unpublished post, WIP post
 
 **Tag**:
 A subject label on a Blog post, drawn from the site's closed vocabulary
-(`career`, `skills`, `family`, `travel`, `hobby`). Tags are the timeline's
+(`career`, `family`, `travel`, `hobby`). Tags are the timeline's
 filter dimensions, derive the Sphere (`career` → work), and pick the Tag pin
 icon (first tag decides). The vocabulary grows only by deliberately adding a
 value — a build-time check rejects anything outside the list, because a
@@ -90,6 +90,16 @@ deliberate editorial act: untagged posts are legitimate (they read as life
 sphere, wear the plain teardrop pin, and simply don't appear under any tag
 filter) — tags are never blanket-stamped just to make everything filterable.
 _Avoid_: label, category, free-form tags
+
+**Skill**:
+A personal achievement stored in the YAML registry (`src/data/skills.yaml`),
+distinct from the retired `skills` tag. Each skill has an `id`, bilingual
+`title` and `note`, and a `years` array of when it was actively used. Skills
+are associated with blog posts via the optional `skills` frontmatter field
+(string[] of skill IDs) and rendered as chips on timeline events. The
+registry powers dedicated pages at `/skills/` (overview) and `/skills/{id}`
+(detail with year usage strip and related events).
+_Avoid_: tag, competency, ability
 
 **Schlabitz News era**:
 The 2005–2009 stretch of the archive, migrated one-time from Blogspot to get

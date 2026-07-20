@@ -8,7 +8,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 // derivation, pin icons), so anything outside this list fails the build —
 // a misspelled `career` would otherwise silently file a work post under
 // life. Grow the list deliberately; add a TAG_ICONS entry when you do.
-export const TIMELINE_TAGS = ['career', 'skills', 'family', 'travel', 'hobby'] as const;
+export const TIMELINE_TAGS = ['career', 'family', 'travel', 'hobby'] as const;
 
 export type Sphere = 'work' | 'life';
 
@@ -22,6 +22,8 @@ export interface TimelineEvent {
   location: NonNullable<CollectionEntry<'docs'>['data']['location']>;
   // Route of the post this event is a lens on.
   url: string;
+  // Skill IDs associated with this event (from frontmatter).
+  skills: string[];
   // The most deliberate summary available: excerpt ?? description. Null
   // means "nothing authored" — the caller renders the full post body.
   summary: string | null;
@@ -42,7 +44,7 @@ export async function getTimelineEvents(): Promise<TimelineEvent[]> {
 
   const events: TimelineEvent[] = [];
   for (const post of posts) {
-    const { title, date, draft, tags = [], location, excerpt, description } = post.data;
+    const { title, date, draft, tags = [], location, excerpt, description, skills = [] } = post.data;
 
     // Vocabulary is checked on every post, drafts included — typos should
     // die before they settle in.
@@ -87,6 +89,7 @@ export async function getTimelineEvents(): Promise<TimelineEvent[]> {
       sphere: tags.includes('career') ? 'work' : 'life',
       location,
       url: `/${post.id}/`,
+      skills,
       summary: summary ? stripInlineMarkdown(summary) : null,
     });
   }
