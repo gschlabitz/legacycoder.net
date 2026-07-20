@@ -7,26 +7,19 @@ username.
 
 ## One-time setup
 
-### 1. Create the phone's key
+### 1. Create the phone's key (Termius SSH ID)
 
-**Termius (preferred — SSH ID):** Settings → **SSH ID** → follow the
-guided setup and pick a handle. This creates a device-bound passkey:
-the private key is generated on the phone, can't be exported, and each
-use is gated by Face ID — no passphrase needed. Your public keys are
-published at `https://sshid.io/<handle>` (public keys are not secrets;
-that's the point of the page).
-
-**Termius (manual alternative):** Keychain → **+** → **Generate Key** →
-type **ED25519**, name it `morph-phone` → Generate → copy the public
-key.
-
-**Blink:** Settings → Keys → **+** → Generate New Key → ED25519, name
-`morph-phone` → Copy Public Key.
+In Termius: Settings → **SSH ID** → follow the guided setup and pick a
+handle. This creates a device-bound passkey: the private key is
+generated on the phone, can't be exported, and each use is gated by
+Face ID — no passphrase needed. Your public keys are published at
+`https://sshid.io/<handle>` (public keys are not secrets; that's the
+point of the page).
 
 ### 2. Put the public key in `~/.zshenv` (one command on the Mac)
 
-**With SSH ID:** fetch the key from your public key page and append the
-export line in one go:
+Fetch the key from your public key page and append the export line in
+one go:
 
 ```sh
 key="$(curl --fail --silent https://sshid.io/<handle>)" &&
@@ -42,27 +35,16 @@ baked into the file rather than curled at shell start on purpose —
 all of them down. (Enabled SSH ID on a new device later? Re-run the
 command and delete the old export line from `~/.zshenv`.)
 
-**Manual key (Blink or Termius keychain):** get the public key over any
-channel — AirDrop, iMessage to yourself, Universal Clipboard — and add
-the export line by hand:
+### 3. Create the host entry in Termius
 
-```sh
-export MORPH_PHONE_PUBKEY="ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... morph-phone"
-```
-
-### 3. Create the host entry in the SSH app
-
-**Termius:** Hosts → **+** → New Host:
+Hosts → **+** → New Host:
 
 - Label: `morph hot`
 - Hostname: `ssh.cloud.morph.so`, port `22`
 - Username: *(leave blank for now — it's per-box, see below)*
 - Auth: tap **"+ SSH ID, Key, Certificate, FIDO2"** and choose **SSH
   ID** (there's no key to pick — it automatically uses this device's
-  passkey, gated by Face ID). If you generated a key manually instead,
-  select `morph-phone` here. Don't leave both attached.
-
-**Blink:** Settings → Hosts → **+**, same values.
+  passkey, gated by Face ID).
 
 ## Per outing
 
