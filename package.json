@@ -14,6 +14,7 @@
     "astro": "astro",
     "geocode": "node scripts/geocode.mjs",
     "morph:warm": "node scripts/morph/warm.mjs",
+    "morph:hot": "node scripts/morph/hot.mjs",
     "morph:task": "node scripts/morph/task.mjs",
     "morph:attach": "node scripts/morph/attach.mjs",
     "morph:cmux": "node scripts/morph/cmux.mjs",

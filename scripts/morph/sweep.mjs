@@ -1,8 +1,10 @@
 // Delete stale snapshots (issue #16). Keeps the latest ready warm snapshot;
-// deletes superseded warm snapshots and all debris. Debris = any snapshot
-// with no `purpose` metadata field, account-wide: setup() layers and bases
-// never get metadata, so purpose-less means reproducible build leftovers
-// (single-operator account - anything worth keeping carries a purpose).
+// deletes superseded warm snapshots, ALL hot snapshots (secrets on board -
+// made when heading out, swept when back at the laptop), and all debris.
+// Debris = any snapshot with no `purpose` metadata field, account-wide:
+// setup() layers and bases never get metadata, so purpose-less means
+// reproducible build leftovers (single-operator account - anything worth
+// keeping carries a purpose).
 //
 //   ./morph sweep
 //   ./morph sweep --all        # delete the latest warm snapshot too
@@ -12,7 +14,7 @@
 // running - its unfinished layers look like debris.
 
 import { parseArgs } from "node:util";
-import { PROJECT, WARM_PURPOSE, ageInDays, createClient } from "./client.mjs";
+import { HOT_PURPOSE, PROJECT, WARM_PURPOSE, ageInDays, createClient } from "./client.mjs";
 
 const { values: flags } = parseArgs({
   options: {
@@ -42,6 +44,8 @@ for (const snapshot of snapshots) {
     continue;
   } else if (isProjectWarm(snapshot)) {
     reason = flags.all ? `${WARM_PURPOSE} (--all)` : `superseded ${WARM_PURPOSE}`;
+  } else if (purpose === HOT_PURPOSE && snapshot.metadata?.project === PROJECT) {
+    reason = `${HOT_PURPOSE} (secrets on board, always swept)`;
   } else if (!purpose) {
     reason = "debris (no purpose field)";
   } else {

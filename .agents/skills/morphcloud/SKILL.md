@@ -18,6 +18,7 @@ user to set it — never handle the values yourself.
 
 ```sh
 ./morph warm                              # build/refresh the warm snapshot (manual, resumable)
+./morph hot [--name <n>]         # hot snapshot: warm + secrets + open TUI, for phone devboxes
 ./morph task --name <name> "task description"   # fresh instance, opencode runs the task
 ./morph task --issue 42          # name issue-42 + generated work-this-issue prompt
 ./morph cmux --name <name>       # interactive opencode TUI in a cmux workspace
@@ -70,15 +71,19 @@ has the instance ID, preview URL, and attach commands.
   means the box is left alone for inspection; after post-mortem, finish
   it with `./morph reap --force <id>`.
 - `./morph sweep` keeps the latest ready warm snapshot and deletes
-  superseded warm snapshots plus all purpose-less snapshots (build
-  debris). Never sweep while a warm build is running.
+  superseded warm snapshots, ALL hot snapshots (they carry secrets),
+  and all purpose-less snapshots (build debris). Never sweep while a
+  warm build is running.
 - All three take `--dry-run`; reap's dry-run briefly resumes paused
   boxes to check the signal, then re-pauses them.
 
 ## Rules
 
 - Never put secrets in `morph:warm`'s snapshot layers or snapshot a task
-  instance — task disks carry per-run credentials.
+  instance — task disks carry per-run credentials. The one deliberate
+  exception is `./morph hot`: it bakes credentials into a snapshot so a
+  dashboard devbox works from a phone. Hot snapshots are never shared
+  and are all deleted by the next sweep.
 - Every instance start goes through the scripts (they set TTLs); don't
   start instances via the SDK ad hoc.
 - Reference: `docs/morphcloud-cheatsheet.md` (vocabulary, workflow),
