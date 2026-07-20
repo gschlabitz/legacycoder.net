@@ -51,7 +51,7 @@ In `~/.zshrc` (committed):
 
 In `~/.gitconfig` (committed):
 
-```gitconfig
+```ini
 [include]
     path = ~/.gitconfig.local
 ```
