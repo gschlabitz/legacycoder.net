@@ -74,12 +74,12 @@ export function issuePrompt(issueNumber) {
 export async function resolveSnapshot(client, snapshotId) {
   const snapshot = snapshotId ? await client.snapshots.get({ snapshotId }) : await latestWarmSnapshot(client);
   if (!snapshot) {
-    console.error('No warm snapshot found - run "npm run morph:warm" first.');
+    console.error('No warm snapshot found - run "./morph warm" first.');
     process.exit(1);
   }
   const age = ageInDays(snapshot.created);
   console.log(
-    `Warm snapshot: ${snapshot.id}${age !== undefined ? ` (${age} days old${age > 30 ? " - consider npm run morph:warm" : ""})` : ""}`,
+    `Warm snapshot: ${snapshot.id}${age !== undefined ? ` (${age} days old${age > 30 ? " - consider ./morph warm" : ""})` : ""}`,
   );
   return snapshot;
 }
@@ -104,10 +104,14 @@ export async function catchUp(instance, branch) {
     [
       `cd ${REPO_PATH}`,
       "git fetch origin main",
+      // The warm snapshot may carry npm-install churn in its working tree
+      // (the box's npm major differs from the lockfile author's); a dirty
+      // tree makes the branch switch abort. Nothing on the box is precious
+      // before the agent starts, so reset unconditionally.
+      "git reset --hard",
       `git checkout -B ${shellQuote(branch)} origin/main`,
       "npm install",
-      // The box's npm major may differ from the lockfile author's and churn
-      // it; discard that noise so it can't end up in the agent's commit.
+      // Same churn again, post-install; discard so it can't reach a commit.
       "git checkout -- package-lock.json",
     ].join(" && "),
   );

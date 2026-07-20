@@ -1,8 +1,8 @@
 // Run a coding task on a fresh Morph instance (issue #11):
 //
-//   npm run morph:task -- --name pin-overlap "Fix the timeline pin overlap"
-//   npm run morph:task -- --issue 42
-//   npm run morph:task -- --issue 42 "Prefer the SDK over the CLI throughout"
+//   ./morph task --name pin-overlap "Fix the timeline pin overlap"
+//   ./morph task --issue 42
+//   ./morph task --issue 42 "Prefer the SDK over the CLI throughout"
 //
 // The name is yours to pick (it becomes the sandbox/<name> branch and the
 // instance label); --issue N derives name issue-N and generates a prompt
@@ -55,8 +55,8 @@ const { values: flags, positionals } = parseArgs({
 });
 
 const usage =
-  'Usage: npm run morph:task -- --name <name> "task description"\n' +
-  "       npm run morph:task -- --issue <number> [\"extra guidance\"]\n" +
+  'Usage: ./morph task --name <name> "task description"\n' +
+  '       ./morph task --issue <number> ["extra guidance"]\n' +
   "Options: --ttl <minutes> --snapshot <id>";
 
 let task = positionals.join(" ").trim();
@@ -150,7 +150,7 @@ Task launched on ${instance.id}
   preview:  ${service?.url ?? "(exposing failed - check morph:status)"}
   ssh:      ssh ${alias}
   watch:    ssh -t ${alias} 'tmux attach -t ${AGENT_SESSION}'   (detach: Ctrl-b d)
-  attach:   npm run morph:attach -- ${instance.id} [--zed|--cmux]
+  attach:   ./morph attach ${instance.id} [--zed|--cmux]
   compare:  https://github.com/${REPO_SLUG}/compare/main...${encodeURIComponent(branch)}
 
 A draft PR opens automatically when the agent finishes and has commits.`);

@@ -1,6 +1,6 @@
 // List this project's Morph instances - the "what's burning money" view.
 //
-//   npm run morph:status
+//   ./morph status
 
 import { ageInDays, createClient, hostAlias, previewUrl, projectInstances } from "./client.mjs";
 
@@ -8,7 +8,7 @@ const client = createClient();
 const instances = (await projectInstances(client)).sort((a, b) => (b.created ?? 0) - (a.created ?? 0));
 
 if (!instances.length) {
-  console.log("No instances. Start one with: npm run morph:task -- \"...\"");
+  console.log("No instances. Start one with: ./morph task --issue <n>");
   process.exit(0);
 }
 
