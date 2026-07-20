@@ -7,7 +7,7 @@
 //
 // Always rewrites ~/.ssh/morph_config (aliases for all live project
 // instances, dead ones pruned) so Zed, cmux, ssh, and git all resolve the
-// same morph-<id> aliases. --zed opens the repo remotely in Zed; --cmux
+// same lc-<id> aliases. --zed opens the repo remotely in Zed; --cmux
 // opens a workspace with the agent tmux session beside the dev-server
 // preview.
 

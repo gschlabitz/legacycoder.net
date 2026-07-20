@@ -49,8 +49,10 @@ export async function projectInstances(client) {
   return instances.filter((i) => i.metadata?.project === PROJECT);
 }
 
+// "lc-" (legacycoder) rather than "morph-": shorter, can't collide with
+// other projects' morph aliases, and the redundant morphvm_ prefix goes.
 export function hostAlias(instance) {
-  return `morph-${instance.id}`.replace(/[^a-zA-Z0-9._-]+/g, "-");
+  return `lc-${instance.id.replace(/^morphvm_/, "")}`.replace(/[^a-zA-Z0-9._-]+/g, "-");
 }
 
 export function previewUrl(instance) {
@@ -104,7 +106,9 @@ export async function syncSshConfig(client) {
   const hasInclude =
     existsSync(mainConfig) && readFileSync(mainConfig, "utf8").split("\n").some((l) => l.trim() === includeLine);
   if (!hasInclude) {
-    console.error(`\nSSH aliases won't resolve yet - add this line to ${mainConfig} once:\n\n  ${includeLine}\n`);
+    console.error(
+      `\nSSH aliases won't resolve yet - add this line at the TOP of ${mainConfig} (above any Host block; an Include after a Host line only applies inside that block):\n\n  ${includeLine}\n`,
+    );
   }
   return hasInclude;
 }

@@ -12,8 +12,10 @@ Zed. Instance-native — no devbox service, no Python CLI (ADR-0006).
   box, so agents can run `gh` to read reviews and manage PRs/tickets.)
 - Local opencode logged in (`opencode auth login`) — its credentials are
   copied to the box per run.
-- One-time: `Include ~/.ssh/morph_config` in `~/.ssh/config` (the scripts
-  print the line if it's missing).
+- One-time: `Include ~/.ssh/morph_config` at the **top** of
+  `~/.ssh/config`, above any `Host` block — an Include after a Host line
+  only applies inside that block. (The scripts print the line if it's
+  missing.)
 
 ## Vocabulary
 
