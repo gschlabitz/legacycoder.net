@@ -41,11 +41,6 @@ export const TAG_ICONS = {
   career:
     '<rect x="2" y="7" width="20" height="14" rx="2"/>' +
     '<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>',
-  // graduation cap
-  skills:
-    '<path d="M22 10L12 5 2 10l10 5 10-5z"/>' +
-    '<path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"/>' +
-    '<path d="M22 10v6"/>',
   // users
   family:
     '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>' +
