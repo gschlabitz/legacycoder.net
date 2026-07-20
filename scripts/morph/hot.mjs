@@ -10,13 +10,12 @@
 //   ./morph hot --name errand  # branch sandbox/errand
 //
 // The box carries secrets on its paused disk - the same exposure as any
-// task box, just longer-lived. Set SSHID_HANDLE (a Termius SSH ID handle - see
-// docs/iphone-hot-box-runbook.md) and the public keys published at
-// https://sshid.io/<handle> are fetched fresh at build time and added to
-// the box's authorized_keys, so the phone never needs the per-instance
-// key; without it, the printed per-instance .pem must be installed on the
-// phone each build. No done signal ever appears here: reap skips hot
-// boxes; finish one with ./morph reap --force <id>.
+// task box, just longer-lived. Phone auth is a one-time ACCOUNT setting,
+// not per-box: Morph's ssh.cloud.morph.so terminates SSH itself and never
+// consults the VM's authorized_keys (verified 2026-07), so the phone key
+// must be registered as the account's user SSH key instead - see
+// docs/iphone-hot-box-runbook.md. No done signal ever appears here: reap
+// skips hot boxes; finish one with ./morph reap --force <id>.
 
 import { parseArgs } from "node:util";
 import {
@@ -52,23 +51,6 @@ const opencodeAuth = readOpencodeAuth();
 const slug = taskSlug(flags.name);
 const branch = `sandbox/${slug}`;
 
-// The phone's SSH ID public keys (not secrets) let the phone keep one
-// permanent identity instead of importing each box's per-instance key.
-// Fetched fresh each build, so newly enrolled SSH ID devices just work -
-// and fetched before any box gets billed, so a bad handle fails free.
-const sshid = process.env.SSHID_HANDLE?.trim();
-let phoneKeys;
-if (sshid) {
-  const response = await fetch(`https://sshid.io/${encodeURIComponent(sshid)}`);
-  phoneKeys = response.ok ? (await response.text()).trim() : "";
-  // Unknown handles answer 200 with an empty body - only a non-empty key
-  // list proves the handle is right.
-  if (!phoneKeys) {
-    console.error(`https://sshid.io/${sshid} has no published keys - check SSHID_HANDLE.`);
-    process.exit(1);
-  }
-}
-
 const client = createClient();
 const warm = await resolveSnapshot(client, flags.snapshot);
 const instance = await startInstance(client, {
@@ -92,19 +74,6 @@ await execStep(
   )}`,
 );
 
-if (phoneKeys) {
-  await execStep(
-    instance,
-    "install-phone-keys",
-    [
-      "mkdir -p /root/.ssh",
-      "chmod 700 /root/.ssh",
-      `printf '%s\\n' ${shellQuote(phoneKeys)} >> /root/.ssh/authorized_keys`,
-      "chmod 600 /root/.ssh/authorized_keys",
-    ].join(" && "),
-  );
-}
-
 await instance.setWakeOn(true, true); // SSH wakes it; so does hitting the preview URL
 const access = await sshAccess(instance);
 await syncSshConfig(client);
@@ -112,21 +81,12 @@ await syncSshConfig(client);
 console.log("Pausing (wake-on-SSH armed)...");
 await instance.pause();
 
-const phoneLines = phoneKeys
-  ? `Phone (SSH ID keys for "${sshid}" are on the box - just set the username in the SSH app):
-  host:     ssh.cloud.morph.so
-  user:     ${instance.id}
-  auth:     SSH ID`
-  : `Phone setup (no SSHID_HANDLE set - install the per-instance key):
-  host:     ssh.cloud.morph.so
-  user:     ${instance.id}
-  key:      ${access.keyPath}   (install this in the SSH app)
-  Tip: docs/iphone-hot-box-runbook.md sets up a permanent SSH ID instead.`;
-
 console.log(`
 Hot box ready (paused): ${instance.id}  branch ${branch}
 
-${phoneLines}
+Phone (auth is your account key - one-time setup in docs/iphone-hot-box-runbook.md):
+  host:     ssh.cloud.morph.so
+  user:     ${instance.id}   <- set this in the SSH app, it's the only per-outing step
 
 Connecting wakes the box; then: tmux attach -t ${AGENT_SESSION}
 Preview (also wakes it): ${service?.url ?? "(exposing failed)"}

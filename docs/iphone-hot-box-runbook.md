@@ -16,18 +16,28 @@ Face ID — no passphrase needed. Your public keys are published at
 `https://sshid.io/<handle>` (public keys are not secrets; that's the
 point of the page).
 
-### 2. Put the handle in `~/.zshenv` (one command on the Mac)
+### 2. Register the phone key as your Morph account key (one command on the Mac)
+
+Morph's `ssh.cloud.morph.so` terminates SSH itself and never consults a
+VM's `authorized_keys` — keys on the box do nothing. What it does honor
+is the **account-level user SSH key**, so the phone key is registered
+once with the account and every instance (hot, task, cmux) accepts it
+from then on:
 
 ```sh
-echo 'export SSHID_HANDLE="<handle>"' >> ~/.zshenv
-source ~/.zshenv
+curl --request PUT "https://cloud.morph.so/api/user/ssh-key" \
+  --header "Authorization: Bearer $MORPH_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data "{\"public_key\": \"$(curl --fail --silent https://sshid.io/<handle>)\"}"
 ```
 
-That's it — no key copying. `./morph hot` fetches the current public
-keys from `https://sshid.io/$SSHID_HANDLE` at build time and installs them on
-the box, so every device you've enabled SSH ID on (now or later) can
-open your hot boxes without touching this again. Other tools can reuse
-the same `SSHID_HANDLE` variable.
+Notes:
+
+- This **replaces** the account's current user key (the per-instance
+  keys the morph scripts use are unaffected).
+- The account holds a single key, so if you've enabled SSH ID on
+  several devices (sshid.io returns one line each), pick the phone's
+  line instead of the raw `curl`.
 
 ### 3. Create the host entry in Termius
 
@@ -96,9 +106,10 @@ targeted `--force` is the intended way to finish one.
 
 ## Troubleshooting
 
-- **Permission denied (publickey):** the box was built without `SSHID_HANDLE`
-  in the environment — rebuild with `./morph hot`, or fall back to
-  importing the per-instance key it printed
+- **Prompted for a password / permission denied:** the account key
+  doesn't match the phone — re-run the step-2 `curl` (did sshid.io
+  return several lines? only one key fits) — or fall back to importing
+  the per-instance key `./morph hot` printed
   (`~/.ssh/morph/<instance-id>.pem`).
 - **Connection times out:** paused boxes take a few seconds to wake;
   retry once. Check `./morph status` from a laptop if it persists.
