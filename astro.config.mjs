@@ -8,6 +8,13 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   site: "https://legacycoder.net",
+  vite: {
+    server: {
+      // Morph task instances expose the dev server as
+      // dev-<instance>.http.cloud.morph.so; Vite rejects unknown hosts.
+      allowedHosts: [".http.cloud.morph.so"],
+    },
+  },
   integrations: [
     starlight({
       title: "Guido Schlabitz",
