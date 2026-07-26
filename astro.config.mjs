@@ -14,6 +14,15 @@ const DOCS = "./src/content/docs";
 // links, not this); `de`, because that's the locale, not a section.
 const NOT_A_SECTION = new Set(["blog", "de"]);
 
+// A sidebar group has no page to take a title from, so Starlight falls back to
+// the directory name and the slug shows through. Name the sections as CONTEXT.md
+// does. (The index page is no help: `llm-notebook/index.md` is titled
+// "Overview".) Sections missing here keep showing their directory name.
+const SECTION_LABELS = {
+  "llm-notebook": "LLM Notebook",
+  workarounds: "Workarounds",
+};
+
 // Drafts are absent from the production build, so a sidebar entry pointing at
 // one fails `astro build` outright. They stay listed while developing, which
 // is the only place they exist at all.
@@ -40,7 +49,10 @@ const sidebar = readdirSync(DOCS, { withFileTypes: true })
   .sort((a, b) => (a.key === "index" ? "" : a.key).localeCompare(b.key === "index" ? "" : b.key))
   .map((entry) =>
     entry.directory
-      ? { label: entry.key, items: [{ autogenerate: { directory: entry.key } }] }
+      ? {
+          label: SECTION_LABELS[entry.key] ?? entry.key,
+          items: [{ autogenerate: { directory: entry.key } }],
+        }
       : { slug: entry.key === "index" ? "" : entry.key },
   );
 
