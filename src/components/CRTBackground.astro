@@ -8,8 +8,10 @@
 // tinted overlay keeps them legible in both color schemes.
 //
 // VT323 (OFL, self-hosted via Fontsource) supplies the bitmap-style glyphs;
-// the phosphor-mask pattern below turns their strokes into a dot grid.
-import '@fontsource/vt323';
+// the phosphor-mask pattern below turns their strokes into a dot grid. Only
+// the latin-400 subset is imported — the package index also pulls in the
+// latin-ext and vietnamese faces, which the ASCII snippets never touch.
+import '@fontsource/vt323/latin-400.css';
 ---
 
 <div class="crt-bg" data-crt aria-hidden="true">
