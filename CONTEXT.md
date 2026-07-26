@@ -17,6 +17,13 @@ A standalone route (like `/bio`) that keeps the Starlight shell and theme but
 owns its full markup instead of being a docs page.
 _Avoid_: standalone page, raw page
 
+**Workaround**:
+A Docs page in the `workarounds` collection: a trick of the trade for everyday
+life, on any subject — what people called a life hack before the term wore out.
+The word names this content type on the site, so "write a workaround" asks for
+one of these pages and never for a hacky code fix.
+_Avoid_: life hack, how-to, tutorial, code hack
+
 **Island**:
 An interactive React component hydrated in the browser. Anything that doesn't
 need interactivity is a static Astro component instead — the split is

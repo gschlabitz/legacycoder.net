@@ -1,5 +1,7 @@
 ---
-title: Garnt's Disease
+title: "Garnt's Disease"
+date: 2026-07-18
+description: "Compulsively watching every new isekai, however badly produced."
 draft: true
 ---
 
