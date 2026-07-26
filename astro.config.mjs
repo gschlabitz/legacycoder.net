@@ -22,6 +22,10 @@ const showDrafts = process.env.NODE_ENV === "development";
 // Derived rather than hand-listed so that adding a page, or flipping one to
 // `draft: true`, never needs a matching edit here — the hand-written version
 // of this list turns a forgotten draft flag into a broken build.
+//
+// This snapshot is taken once, when the config loads, so adding or renaming a
+// *top-level* page needs a dev server restart to show up. Everything inside a
+// section is a Starlight `autogenerate` group and still hot-reloads.
 const sidebar = readdirSync(DOCS, { withFileTypes: true })
   .flatMap((entry) => {
     if (NOT_A_SECTION.has(entry.name)) return [];
