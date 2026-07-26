@@ -152,7 +152,3 @@ Skin ingredients and font dependencies:
 - **Catppuccin** color palette (`catppuccin` skin) — © Catppuccin Org, [catppuccin/palette](https://github.com/catppuccin/palette)
 - **Catppuccin for Starlight** variable mapping (`catppuccin` skin) — © Catppuccin Org, [catppuccin/starlight](https://github.com/catppuccin/starlight)
 - **Inconsolata** typeface (`catppuccin` skin, loaded via `@fontsource/inconsolata`) — © The Inconsolata Project Authors, OFL-1.1, [cyrealtype/Inconsolata](https://github.com/cyrealtype/Inconsolata)
-
-Additional artwork:
-
-- **Chameleon glyph** (`components/chameleon-glyph.svg`, bundled but not currently rendered — the skin selector's `icon` variant uses an original palette glyph) — by [DarkZaitzev](https://darkzaitzev.deviantart.com) via [Game-icons.net](https://game-icons.net/1x1/darkzaitzev/chameleon-glyph.html), licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); adapted to inherit `currentColor`.
