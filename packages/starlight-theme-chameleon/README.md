@@ -56,6 +56,18 @@ export default defineConfig({
 })
 ```
 
+### Selector appearance
+
+Both `skinSelector` variants open the same popup — a list of skins, each row previewing the look in that skin's own palette, with arrow-key navigation and the current choice marked. They differ only in the trigger:
+
+| `skinSelector` | Trigger |
+| --- | --- |
+| `'select'` (default) | A Starlight-like select control showing the active skin's name and a caret. Widest, and the only variant with visible state at rest. |
+| `'icon'` | A square button holding a palette glyph. Compact enough to sit among the header's other icon actions; the active skin is visible only in the page itself and in the popup. |
+| `'hidden'` | No control. The first entry in `skins` is pinned site-wide. |
+
+`themeSelector: 'icon'` likewise replaces Starlight's light/dark/auto `<select>` with a single square button that cycles the three modes — sun for light, moon for dark, and a half-filled contrast circle for auto. Use it when the skin selector is also an icon, so the two controls match. `themeSelector: 'select'` (the default) leaves Starlight's own selector exactly as it ships.
+
 ### Composing with starlight-blog
 
 Chameleon claims exactly one component slot, `ThemeSelect`, for its selector controls. starlight-blog's default `navigation: 'header-end'` wants the same slot — point it at the other side of the header instead:
@@ -140,7 +152,3 @@ Skin ingredients and font dependencies:
 - **Catppuccin** color palette (`catppuccin` skin) — © Catppuccin Org, [catppuccin/palette](https://github.com/catppuccin/palette)
 - **Catppuccin for Starlight** variable mapping (`catppuccin` skin) — © Catppuccin Org, [catppuccin/starlight](https://github.com/catppuccin/starlight)
 - **Inconsolata** typeface (`catppuccin` skin, loaded via `@fontsource/inconsolata`) — © The Inconsolata Project Authors, OFL-1.1, [cyrealtype/Inconsolata](https://github.com/cyrealtype/Inconsolata)
-
-Additional artwork:
-
-- **Chameleon glyph** selector icon — by [DarkZaitzev](https://darkzaitzev.deviantart.com) via [Game-icons.net](https://game-icons.net/1x1/darkzaitzev/chameleon-glyph.html), licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); adapted to inherit `currentColor`.
