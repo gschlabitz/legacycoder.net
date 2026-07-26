@@ -23,17 +23,31 @@ Verified against the pinned `@strudel` 1.3 packages during design.
   itself as core's string parser (`mini.mjs:260` → `pattern.mjs:1290`), so
   `s("bd ~ sd")` and `note("<c a f e>")` parse inside an ordinary module.
   Tunes can be plain TypeScript with no `eval` and no code strings.
-- **The repl exposes what resume needs, but only to its caller.**
-  `initStrudel()` returns an object carrying `setPattern(pattern, autostart)`,
-  `scheduler.now()` (a cycle number), `stop`, and `setCps`, so a pattern can
-  be shifted and handed over directly without going through `evaluate`. The
-  plugin must **capture that return value** — probing a running player showed
-  `globalThis.repl` is a bare function, not the instance, and
-  `StrudelPlayer` currently discards what `initStrudel()` hands back.
+- **The repl exposes what resume needs, but only to its caller.** Confirmed
+  by running it: `initStrudel()` returns
+  `{ scheduler, evaluate, start, stop, pause, setCps, setPattern, setCode,
+  toggle, state }`, and `scheduler.now()` returns a cycle number that
+  advances (0 → 1.206 over 2.5 s at cps 0.5). The plugin must **capture that
+  return value** — `globalThis.repl` is a bare function, not the instance,
+  and `StrudelPlayer` currently discards what `initStrudel()` hands back.
+- **A master gain node can be passed straight in.** `initStrudel({...opts})`
+  forwards everything except `prebake` to the repl constructor, which accepts
+  `outputNode` (default `null`). So the fade ramp attaches by handing
+  `initStrudel` a `GainNode` wired to `getAudioContext().destination` — no
+  patching of Strudel's own output chain.
 - **Only events with an onset fire.** `Cyclist` triggers a hap only when
   `hasOnset()` is true (`cyclist.mjs:63`). Resuming mid-cycle therefore drops
   any note already sounding rather than splicing it — which is why bookmarks
   round forward to a cycle boundary instead of restoring an exact position.
+- **The resume chain checks out, verified by query rather than by ear.**
+  `pattern.early(4)` queried over cycles 0–4 returns exactly what the
+  unshifted pattern returns over cycles 4–8. A bookmark of `12.37` rounded up
+  to 13 produces a first hap beginning at `0` — a clean downbeat — carrying
+  the value the pattern has at cycle 13. Left unrounded, that same resume
+  yields a first hap beginning at `-0.37` with `hasOnset() === false`, and a
+  note spanning the resume point comes back as `onset=false` too: present in
+  the query, never triggered. That is the dropped-note failure the rounding
+  exists to avoid, reproduced.
 - **`@strudel/repl` and `@strudel/web` do not share module instances.** The
   repl ships a prebundled 2.2 MB `dist/index.js` with its own core, mini,
   transpiler, webaudio and soundfonts. Two on one page means two schedulers,
@@ -173,12 +187,14 @@ disabling itself.
 
 ## Phases
 
-1. **Spike the resume mechanics** against the `StrudelPlayer` island before
-   any packaging: confirm `scheduler.now()` → `Math.ceil` → `.early()` →
-   `setPattern()` produces a clean downbeat re-entry, and find where a master
-   gain node attaches for the ramp. Note that no page renders the island any
-   more, so the spike needs a throwaway host page — which is the point of
-   doing it first rather than discovering it inside a half-built plugin.
+1. ~~**Spike the resume mechanics.**~~ **Done** — results are in the findings
+   above. `scheduler.now()` → `Math.ceil` → `.early()` → `setPattern()` is
+   sound, and the ramp attaches through `initStrudel({ outputNode })`. The
+   `.early()` half needed no browser: patterns are queryable functions, so it
+   ran in Node against `pattern.mjs` directly. (Not through `@strudel/core`'s
+   entry point — its dist bundle imports browser-only `@kabelsalat/web`, and
+   `@strudel/mini` re-imports that bundle, so mini-notation is unavailable in
+   Node. `slowcat()` is what `<a b c>` desugars to anyway.)
 2. **Package skeleton** — config resolution, virtual module, schema
    fragment, no UI.
 3. **Control component** — ported from Chameleon's selector, with the four
