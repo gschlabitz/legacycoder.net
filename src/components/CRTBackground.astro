@@ -366,17 +366,148 @@ export async function notify(owner: Owner) {
         while (paused) await sleep(200);
       };
 
+      // --- typist ----------------------------------------------------------
+      // Nobody types code at a constant rate. Letters inside a familiar word
+      // come out as one burst from muscle memory; then the hands stall at
+      // everything that needs a modifier or a reach into the far corners of
+      // the keyboard — braces, brackets, quotes, arrows — and stall longer
+      // when the typist has to check what they are closing. So the cadence
+      // here is driven by character class instead of a flat interval, over a
+      // tempo that drifts from word to word, with the occasional mistyped
+      // key noticed a beat too late and backspaced away.
+      const rand = (lo: number, hi: number) => lo + Math.random() * (hi - lo);
+      const clamp = (n: number, lo: number, hi: number) =>
+        Math.min(hi, Math.max(lo, n));
+
+      // Overall pace, as a multiplier on every typing delay below — the
+      // figures that follow describe the shape of the cadence, this sets how
+      // fast the whole thing runs. (The hold between eras is deliberately
+      // outside this, so slowing the typing doesn't stretch the pause.)
+      const SPEED = 1.85;
+      const beat = (ms: number) => idle(ms * SPEED);
+
+      // Word characters ride the burst; everything else is priced per key.
+      // `_` and `$` count as word characters here — they read as part of an
+      // identifier (ipc_send, jQuery's $) rather than as punctuation.
+      const WORD = /[A-Za-z0-9_$]/;
+      // Needs shift or an outer-edge reach on a US layout.
+      const SHIFTED = new Set('{}()[]<>|&#@*+~^%"!?:');
+
+      const keyCost = (ch: string) => {
+        if ('([{'.includes(ch)) return rand(90, 210);
+        // Closers are the worst: the pause is the typist checking the nesting.
+        if (')]}'.includes(ch)) return rand(110, 280);
+        if (SHIFTED.has(ch)) return rand(70, 180);
+        if (ch === ',' || ch === '.' || ch === ';') return rand(55, 130);
+        return rand(40, 115);
+      };
+
+      // Neighbouring keys, for fumbles that look like fumbles rather than
+      // random noise.
+      const NEIGHBORS: Record<string, string> = {
+        a: 'sqw', b: 'vgn', c: 'xvd', d: 'sfe', e: 'wrd', f: 'dgr',
+        g: 'fhtv', h: 'gjy', i: 'uok', j: 'hkn', k: 'jli', l: 'kop',
+        m: 'nk', n: 'bmj', o: 'ipl', p: 'ol', q: 'wa', r: 'etf',
+        s: 'adw', t: 'ryg', u: 'yij', v: 'cbf', w: 'qes', x: 'zcs',
+        y: 'tuh', z: 'xa',
+      };
+      const fumbleFor = (ch: string) => {
+        const near = NEIGHBORS[ch.toLowerCase()];
+        if (!near) return ch;
+        const hit = near[Math.floor(Math.random() * near.length)];
+        return ch === ch.toUpperCase() ? hit.toUpperCase() : hit;
+      };
+
+      // The screen buffer is kept alongside the node so a backspace is a
+      // slice rather than a read-back of textContent.
+      let buf = '';
+      const put = (s: string) => {
+        buf += s;
+        textEl.textContent = buf;
+      };
+      const rub = () => {
+        buf = buf.slice(0, -1);
+        textEl.textContent = buf;
+      };
+
+      // Comment lines are prose, and prose flows faster than syntax — the
+      // `{ ` form catches the Pascal-era comments.
+      const isProse = (line: string) => /^\s*(\/\/|\/\*|\*|#|--|\{ )/.test(line);
+
+      // How often a word of four or more characters gets mistyped.
+      const FUMBLE_RATE = 0.2;
+
+      const typeWord = async (word: string, tempo: number) => {
+        const burst = rand(30, 48) * tempo;
+        const fumbleAt =
+          word.length >= 4 && Math.random() < FUMBLE_RATE
+            ? 1 + Math.floor(Math.random() * (word.length - 2))
+            : -1;
+        for (let k = 0; k < word.length; k++) {
+          const ch = word[k];
+          if (k === fumbleAt) {
+            put(fumbleFor(ch));
+            // Typed on, then caught it.
+            await beat(rand(1, 1.6) * burst);
+            await beat(rand(120, 340));
+            rub();
+            await beat(rand(90, 210));
+          }
+          put(ch);
+          // Shift for a capital costs an extra beat (camelCase, CONSTANTS).
+          await beat(burst * rand(0.7, 1.35) + (/[A-Z]/.test(ch) ? rand(25, 70) : 0));
+        }
+      };
+
+      const typeSnippet = async (text: string) => {
+        buf = '';
+        textEl.textContent = '';
+        // Tempo is a delay multiplier: it drifts between words, so some
+        // stretches rattle along and others drag.
+        let tempo = 1;
+        let bias = isProse(text) ? 0.8 : 1;
+        let i = 0;
+
+        while (i < text.length) {
+          const ch = text[i];
+
+          if (ch === '\n') {
+            // Return, then the editor's auto-indent: leading whitespace
+            // arrives with the line break instead of being typed out.
+            i += 1;
+            let indent = '';
+            while (text[i] === ' ' || text[i] === '\t') indent += text[i++];
+            const rest = text.slice(i, text.indexOf('\n', i) + 1 || undefined);
+            put('\n' + indent);
+            bias = isProse(indent + rest) ? 0.8 : 1;
+            // A blank line is a beat of thinking about the next block.
+            await beat(text[i] === '\n' ? rand(400, 950) : rand(190, 520) * tempo);
+            continue;
+          }
+
+          if (WORD.test(ch)) {
+            let word = '';
+            while (i < text.length && WORD.test(text[i])) word += text[i++];
+            await typeWord(word, tempo * bias);
+            tempo = clamp(tempo + rand(-0.3, 0.3), 0.5, 1.8);
+            // Now and then the next token needs looking up first.
+            if (Math.random() < 0.04) await beat(rand(350, 950));
+            continue;
+          }
+
+          put(ch);
+          await beat(
+            (ch === ' ' ? rand(45, 115) : keyCost(ch)) * tempo * bias
+          );
+          i += 1;
+        }
+      };
+
       (async () => {
         for (let i = 0; ; i = (i + 1) % SNIPPETS.length) {
           const { color, text } = SNIPPETS[i];
           screenEl.style.setProperty('--crt-color', color);
-          textEl.textContent = '';
-          for (const ch of text) {
-            textEl.textContent += ch;
-            // Human-ish cadence: newlines pause like a breath, spaces are
-            // quick, everything else jitters around ~45ms.
-            await idle(ch === '\n' ? 260 : ch === ' ' ? 18 : 20 + Math.random() * 55);
-          }
+          await typeSnippet(text);
           await idle(3200);
           // Power-blink between eras.
           root.style.opacity = '0';
