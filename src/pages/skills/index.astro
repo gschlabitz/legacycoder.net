@@ -1,0 +1,74 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { getSkills, resolveLocale } from "../../lib/skills";
+
+const skills = getSkills();
+---
+
+<StarlightPage
+  frontmatter={{
+    title: "Skills",
+    description: "Technologies, tools, and crafts I have worked with over the years.",
+    tableOfContents: false,
+  }}
+  hasSidebar={false}
+>
+  <style>
+    :global(h1:first-of-type) {
+      display: none;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+      gap: 1.5rem;
+      margin-top: var(--sl-spacing-lg, 1.5rem);
+    }
+    .skill-card {
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .skill-card:hover {
+      border-color: var(--sl-color-accent);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+    .skill-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .skill-note {
+      margin: 0 0 0.75rem;
+      color: var(--sl-color-gray-2);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .skill-years {
+      font-size: 0.8rem;
+      color: var(--sl-color-gray-1);
+      font-family: var(--sl-font-mono);
+    }
+  </style>
+  <div class="skills-grid">
+    {skills.map((skill) => {
+      const { title, note } = resolveLocale(skill, "en");
+      const first = skill.years[0];
+      const last = skill.years[skill.years.length - 1];
+      const span = skill.years.length === 0
+        ? "learning"
+        : first === last
+          ? `${first}`
+          : `${first}–${last}`;
+      return (
+        <a class="skill-card" href={`/skills/${skill.id}`}>
+          <h3 class="skill-title">{title}</h3>
+          <p class="skill-note">{note}</p>
+          <span class="skill-years">{span}</span>
+        </a>
+      );
+    })}
+  </div>
+</StarlightPage>

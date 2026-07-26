@@ -19,7 +19,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Guido Schlabitz",
-      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css"],
+      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css"],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
         { icon: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/guido-schlabitz/" },

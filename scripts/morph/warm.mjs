@@ -8,7 +8,9 @@
 // Each setup() layer is cached by a chain hash: re-running after a failure
 // resumes from the last completed layer instead of rebuilding. Rebuilds are
 // manual and create a new snapshot; morph:task always picks the latest ready
-// one (metadata purpose=warm-dev). Old ones linger until a future morph:sweep.
+// one (metadata purpose=warm-dev). ./morph sweep deletes superseded warm
+// snapshots and all purpose-less setup layers - so a swept account rebuilds
+// from scratch, and sweeping mid-build eats the unfinished layers.
 
 import { parseArgs } from "node:util";
 import { PROJECT, REPO_PATH, REPO_URL, WARM_PURPOSE, createClient } from "./client.mjs";

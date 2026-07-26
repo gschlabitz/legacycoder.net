@@ -1,0 +1,123 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { getSkill, getSkills, resolveLocale } from "../../lib/skills";
+import { getTimelineEvents } from "../../lib/timeline";
+
+export async function getStaticPaths() {
+  const skills = getSkills();
+  return skills.map((skill) => ({
+    params: { slug: skill.id },
+    props: { skill },
+  }));
+}
+
+const { skill } = Astro.props;
+const { title, note } = resolveLocale(skill, "en");
+
+// Year strip: range from the earliest to the latest year across all skills.
+const allSkills = getSkills();
+const allYears = allSkills.flatMap((s) => s.years);
+const minYear = allSkills.length > 0 ? Math.min(...allYears) : new Date().getFullYear();
+const maxYear = allSkills.length > 0 ? Math.max(...allYears) : new Date().getFullYear();
+const yearRange = Array.from({ length: maxYear - minYear + 1 }, (_, i) => minYear + i);
+
+// Related timeline events: blog posts whose skills field includes this skill's ID.
+const events = await getTimelineEvents();
+const related = events.filter((e) => e.skills.includes(skill.id));
+---
+
+<StarlightPage
+  frontmatter={{
+    title,
+    description: note,
+    tableOfContents: false,
+  }}
+  hasSidebar={false}
+>
+  <style>
+    :global(h1:first-of-type) {
+      display: none;
+    }
+    .skill-note {
+      color: var(--sl-color-gray-2);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .year-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin-bottom: 2rem;
+    }
+    .year-slot {
+      width: 2.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-family: var(--sl-font-mono);
+      border-radius: 0.25rem;
+      border: 1px solid var(--sl-color-gray-5);
+      color: var(--sl-color-gray-1);
+    }
+    .year-slot--active {
+      background: var(--sl-color-accent);
+      border-color: var(--sl-color-accent);
+      color: var(--sl-color-accent-high);
+      font-weight: 600;
+    }
+    .related-heading {
+      font-size: 1rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--sl-color-gray-3);
+      margin: 2rem 0 1rem;
+    }
+    .related-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .related-item {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--sl-color-gray-6);
+    }
+    .related-item a {
+      color: var(--sl-color-accent);
+      text-decoration: none;
+    }
+    .related-item a:hover {
+      text-decoration: underline;
+    }
+    .related-date {
+      font-size: 0.8rem;
+      color: var(--sl-color-gray-1);
+      font-family: var(--sl-font-mono);
+      margin-right: 0.5rem;
+    }
+  </style>
+  <p class="skill-note">{note}</p>
+
+  <div class="year-strip">
+    {yearRange.map((year) => (
+      <span class:list={["year-slot", skill.years.includes(year) && "year-slot--active"]}>
+        {year}
+      </span>
+    ))}
+  </div>
+
+  {related.length > 0 && (
+    <h2 class="related-heading">Related events</h2>
+    <ul class="related-list">
+      {related.map((event) => (
+        <li class="related-item">
+          <span class="related-date">{event.date.getUTCFullYear()}</span>
+          <a href={event.url}>{event.title}</a>
+        </li>
+      ))}
+    </ul>
+  )}
+</StarlightPage>

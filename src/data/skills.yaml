@@ -1,0 +1,56 @@
+# Skill registry — manually curated, bilingual.
+# Populate after implementation is verified (issue #3).
+
+- id: c
+  title:
+    en: C
+    de: C
+  years: [1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000]
+  note:
+    en: "Systems programming, OS development, and printer drivers."
+    de: "Systemprogrammierung, Betriebssystementwicklung und Druckertreiber."
+
+- id: javascript
+  title:
+    en: JavaScript
+    de: JavaScript
+  years: [1998, 1999, 2000, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+  note:
+    en: "From DOM scripting to React and beyond."
+    de: "Vom DOM-Scripting bis React und darüber hinaus."
+
+- id: project-management
+  title:
+    en: Project Management
+    de: Projektmanagement
+  years: [2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+  note:
+    en: "Leading cross-functional teams and shipping products on time."
+    de: "Leitung funktionsübergreifender Teams und termingerechtes Shipping von Produkten."
+
+- id: woodwork
+  title:
+    en: Woodworking
+    de: Tischlerei
+  years: [2018, 2020, 2022, 2024]
+  note:
+    en: "Furniture and home projects, mostly weekends."
+    de: "Möbel und Heimprojekte, meistens am Wochenende."
+
+- id: rust
+  title:
+    en: Rust
+    de: Rust
+  years: []
+  note:
+    en: "Learning — still in the tutorial phase."
+    de: "In Arbeit — noch im Tutorial-Stadium."
+
+- id: teaching
+  title:
+    en: Teaching
+    de: Lehre
+  years: [1993, 1994, 2015, 2016, 2017]
+  note:
+    en: "Computer courses and mentoring at various stages."
+    de: "Computerkurse und Mentoring in verschiedenen Phasen."
