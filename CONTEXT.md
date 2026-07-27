@@ -206,15 +206,9 @@ _Avoid_: Farkle
 
 ### Strudel
 
-**Strudel lab**:
-The docs page (`/strudel`) holding the full Strudel live-coding REPL for
-experimenting with music as code. The heavy editor island is confined to this
-page (ADR-0005).
-_Avoid_: playground, sandbox
-
 **Player island**:
 The click-to-play toggle (`StrudelPlayer.jsx`) that puts a fixed Strudel
-pattern behind any content page as background music. It downloads its engine
-on first click, never with the page, and never autoplays — browsers require
-the gesture anyway.
+pattern on a page as background music. It downloads its engine on first
+click, never with the page, and never autoplays — browsers require the
+gesture anyway.
 _Avoid_: autoplay, embed

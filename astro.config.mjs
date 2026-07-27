@@ -3,6 +3,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightBlog from "starlight-blog";
 import starlightThemeChameleon from "starlight-theme-chameleon";
+import starlightPulsar from "starlight-pulsar";
 import starlightSidebarSections from "./src/plugins/sidebar-sections.ts";
 import react from "@astrojs/react";
 
@@ -61,6 +62,11 @@ export default defineConfig({
           skinSelector: "icon",
           themeSelector: "icon",
         }),
+        // Page-scoped background music (ADR 0008). `control: "manual"` is the
+        // default and the deliberate choice: Chameleon already owns
+        // `ThemeSelect`, so Pulsar claims no slot and the site renders the tune
+        // selector itself from SocialIcons.astro, a slot it already overrides.
+        starlightPulsar({ tunes: ["drift", "grid"] }),
       ],
     }),
     react(),
