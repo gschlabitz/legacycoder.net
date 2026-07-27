@@ -60,10 +60,25 @@ re-enters on its own downbeat.
 _Avoid_: position, offset, timestamp, seek point
 
 **Tune selector**:
-The header control listing Off, Auto, and the site's tunes. Choosing from it
-is itself the gesture that starts playback, so it is a transport as much as a
-picker.
+The header control: a Transport and an Eject button side by side, plus the
+list Eject opens — Off, Auto, and the site's tunes. Choosing from that list is
+itself the gesture that starts playback, so picking and playing are one
+interaction.
 _Avoid_: player, dropdown, music picker
+
+**Transport**:
+The play/pause half of the Tune selector, and the one click that starts an
+Armed tune. Play/pause rather than play/stop because stopping writes a
+Bookmark and the next play resumes from it — the tune is paused, not reset.
+It shows pause only while sounding, and breathes in time with the tune's
+`cps`.
+_Avoid_: play button, toggle, speaker
+
+**Eject**:
+The half of the Tune selector that opens the tune list. Named for what the
+button has meant since tape decks: not "stop", but "show me what else goes in
+here". Separate from the Transport so resuming an Armed tune stays one click.
+_Avoid_: caret, chevron, menu button
 
 **Site author**:
 The developer who installs Pulsar, writes or chooses its tunes, and decides

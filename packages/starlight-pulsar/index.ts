@@ -22,59 +22,82 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
     name: 'starlight-pulsar',
     hooks: {
       'i18n:setup'({ injectTranslations }) {
-        // Three strings, in the ten languages Chameleon ships. Tune labels are
+        // Five strings, in the ten languages Chameleon ships. Tune labels are
         // deliberately absent: they are proper nouns chosen by the site author,
         // like skin names, and are never translated.
+        //
+        // `play` and `pause` label the transport, which swaps between them: a
+        // button that starts music must not announce itself as a picker.
         injectTranslations({
           en: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Select background music',
             'starlightPulsar.tuneSelect.off': 'Off',
             'starlightPulsar.tuneSelect.auto': 'Auto',
+            'starlightPulsar.tuneSelect.play': 'Play background music',
+            'starlightPulsar.tuneSelect.pause': 'Pause background music',
           },
           de: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Hintergrundmusik auswählen',
             'starlightPulsar.tuneSelect.off': 'Aus',
             'starlightPulsar.tuneSelect.auto': 'Automatisch',
+            'starlightPulsar.tuneSelect.play': 'Hintergrundmusik abspielen',
+            'starlightPulsar.tuneSelect.pause': 'Hintergrundmusik pausieren',
           },
           'zh-CN': {
             'starlightPulsar.tuneSelect.accessibleLabel': '选择背景音乐',
             'starlightPulsar.tuneSelect.off': '关闭',
             'starlightPulsar.tuneSelect.auto': '自动',
+            'starlightPulsar.tuneSelect.play': '播放背景音乐',
+            'starlightPulsar.tuneSelect.pause': '暂停背景音乐',
           },
           es: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Seleccionar música de fondo',
             'starlightPulsar.tuneSelect.off': 'Apagado',
             'starlightPulsar.tuneSelect.auto': 'Automático',
+            'starlightPulsar.tuneSelect.play': 'Reproducir música de fondo',
+            'starlightPulsar.tuneSelect.pause': 'Pausar música de fondo',
           },
           fr: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Sélectionner la musique de fond',
             'starlightPulsar.tuneSelect.off': 'Désactivé',
             'starlightPulsar.tuneSelect.auto': 'Automatique',
+            'starlightPulsar.tuneSelect.play': 'Lire la musique de fond',
+            'starlightPulsar.tuneSelect.pause': 'Mettre en pause la musique de fond',
           },
           ja: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'バックグラウンド音楽を選択',
             'starlightPulsar.tuneSelect.off': 'オフ',
             'starlightPulsar.tuneSelect.auto': '自動',
+            'starlightPulsar.tuneSelect.play': 'バックグラウンド音楽を再生',
+            'starlightPulsar.tuneSelect.pause': 'バックグラウンド音楽を一時停止',
           },
           ko: {
             'starlightPulsar.tuneSelect.accessibleLabel': '배경 음악 선택',
             'starlightPulsar.tuneSelect.off': '끄기',
             'starlightPulsar.tuneSelect.auto': '자동',
+            'starlightPulsar.tuneSelect.play': '배경 음악 재생',
+            'starlightPulsar.tuneSelect.pause': '배경 음악 일시정지',
           },
           pt: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Selecionar música de fundo',
             'starlightPulsar.tuneSelect.off': 'Desligado',
             'starlightPulsar.tuneSelect.auto': 'Automático',
+            'starlightPulsar.tuneSelect.play': 'Reproduzir música de fundo',
+            'starlightPulsar.tuneSelect.pause': 'Pausar música de fundo',
           },
           ru: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Выбрать фоновую музыку',
             'starlightPulsar.tuneSelect.off': 'Выключено',
             'starlightPulsar.tuneSelect.auto': 'Авто',
+            'starlightPulsar.tuneSelect.play': 'Воспроизвести фоновую музыку',
+            'starlightPulsar.tuneSelect.pause': 'Приостановить фоновую музыку',
           },
           it: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Seleziona musica di sottofondo',
             'starlightPulsar.tuneSelect.off': 'Spento',
             'starlightPulsar.tuneSelect.auto': 'Automatico',
+            'starlightPulsar.tuneSelect.play': 'Riproduci musica di sottofondo',
+            'starlightPulsar.tuneSelect.pause': 'Metti in pausa la musica di sottofondo',
           },
         })
       },

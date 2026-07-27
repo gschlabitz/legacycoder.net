@@ -8,9 +8,13 @@ const t = Astro.locals.t
 const labelKey = 'starlightPulsar.tuneSelect.accessibleLabel'
 const offKey = 'starlightPulsar.tuneSelect.off'
 const autoKey = 'starlightPulsar.tuneSelect.auto'
+const playKey = 'starlightPulsar.tuneSelect.play'
+const pauseKey = 'starlightPulsar.tuneSelect.pause'
 const accessibleLabel = t.exists(labelKey) ? t(labelKey) : 'Select background music'
 const offLabel = t.exists(offKey) ? t(offKey) : 'Off'
 const autoLabel = t.exists(autoKey) ? t(autoKey) : 'Auto'
+const playLabel = t.exists(playKey) ? t(playKey) : 'Play background music'
+const pauseLabel = t.exists(pauseKey) ? t(pauseKey) : 'Pause background music'
 
 // What this page contributes: a Declared tune, a Silent page, or nothing.
 const music = Astro.locals.starlightRoute?.entry?.data?.music as string | false | undefined
@@ -39,32 +43,38 @@ const options = [
 <pulsar-tune-select
   data-page-tune={pageTune ?? ''}
   data-silent={silent ? 'true' : 'false'}
+  data-play-label={playLabel}
+  data-pause-label={pauseLabel}
 >
   {/* Transport. One click resumes an armed tune — that is the whole point of
-      the armed state, so the menu must not stand between the reader and it. */}
-  <button class="pulsar-trigger" type="button" data-state="nothing" aria-pressed="false" aria-label={accessibleLabel}>
-    <span class="sr-only">{accessibleLabel}</span>
-    <svg class="pulsar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
-      {/* Speaker cone, always drawn. */}
-      <path d="M11 5 6 9H3v6h3l5 4V5z" />
-      {/* Waves, hidden when off. */}
-      <path class="pulsar-wave pulsar-wave-1" d="M15.5 8.5a5 5 0 0 1 0 7" />
-      <path class="pulsar-wave pulsar-wave-2" d="M18.5 5.5a9 9 0 0 1 0 13" />
+      the armed state, so the menu must not stand between the reader and it.
+      Play/pause rather than a speaker, because stopping writes a bookmark and
+      the next play resumes from it: that is a pause, not a stop. The label
+      swaps with the icon, so no `aria-pressed` — it would double-announce. */}
+  <button class="pulsar-trigger" type="button" data-state="nothing" aria-label={playLabel}>
+    <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="15" height="15">
+      {/* Play triangle — shown in every state except playing. */}
+      <path class="pulsar-glyph-play" d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
+      {/* Pause bars — shown only while sounding. */}
+      <path class="pulsar-glyph-pause" d="M6.5 4.5h3.6v15H6.5zM13.9 4.5h3.6v15h-3.6z" />
       {/* Slash, shown only when the reader has opted out. */}
-      <path class="pulsar-slash" d="M3 3l18 18" />
+      <path class="pulsar-slash" d="M3.8 2.4 21.6 20.2l-1.4 1.4L2.4 3.8z" />
     </svg>
   </button>
 
-  {/* Menu opener, kept separate so the transport stays a single click. */}
+  {/* Eject opens the tune list — swapping what is loaded, the way the button
+      has meant since tape decks. Kept separate so the transport stays one
+      click. */}
   <button
-    class="pulsar-caret"
+    class="pulsar-eject"
     type="button"
     aria-haspopup="listbox"
     aria-expanded="false"
     aria-label={accessibleLabel}
   >
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
-      <path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1 1 0 0 0 1.42 0L17 10.59a1 1 0 0 0 0-1.42Z" />
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13">
+      <path d="M12.72 4.7a1 1 0 0 0-1.44 0l-7.2 8.6A1 1 0 0 0 4.8 15h14.4a1 1 0 0 0 .72-1.7Z" />
+      <rect x="4" y="17.2" width="16" height="2.8" rx="0.7" />
     </svg>
   </button>
 
@@ -286,7 +296,10 @@ const options = [
 			const trigger = control.querySelector<HTMLButtonElement>('.pulsar-trigger')
 			if (trigger) {
 				trigger.dataset.state = state
-				trigger.setAttribute('aria-pressed', state === 'playing' ? 'true' : 'false')
+				/* The glyph swaps play↔pause, so the label has to swap with it —
+				   a button showing pause must not still announce "Play". */
+				const label = state === 'playing' ? control.dataset.pauseLabel : control.dataset.playLabel
+				if (label) trigger.setAttribute('aria-label', label)
 			}
 
 			/* Pulse in time with the tune, so a playing control reads as playing
@@ -326,19 +339,19 @@ const options = [
 			selection = loadSelection()
 
 			const trigger = this.querySelector<HTMLButtonElement>('.pulsar-trigger')
-			const caret = this.querySelector<HTMLButtonElement>('.pulsar-caret')
+			const eject = this.querySelector<HTMLButtonElement>('.pulsar-eject')
 			const menu = this.querySelector<HTMLElement>('.pulsar-menu')
-			if (!trigger || !caret || !menu) return
+			if (!trigger || !eject || !menu) return
 
 			trigger.addEventListener('click', () => {
 				void this.#toggle()
 			})
 
-			caret.addEventListener('click', () => {
+			eject.addEventListener('click', () => {
 				this.#isOpen() ? this.#close() : this.#open()
 			})
 
-			caret.addEventListener('keydown', (event) => {
+			eject.addEventListener('keydown', (event) => {
 				if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
 					event.preventDefault()
 					this.#open()
@@ -362,7 +375,7 @@ const options = [
 				if (event.key === 'Escape') {
 					event.preventDefault()
 					this.#close()
-					caret.focus()
+					eject.focus()
 				}
 				if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
 					event.preventDefault()
@@ -421,12 +434,12 @@ const options = [
 
 		#open() {
 			this.querySelector('.pulsar-menu')?.removeAttribute('hidden')
-			this.querySelector('.pulsar-caret')?.setAttribute('aria-expanded', 'true')
+			this.querySelector('.pulsar-eject')?.setAttribute('aria-expanded', 'true')
 		}
 
 		#close() {
 			this.querySelector('.pulsar-menu')?.setAttribute('hidden', '')
-			this.querySelector('.pulsar-caret')?.setAttribute('aria-expanded', 'false')
+			this.querySelector('.pulsar-eject')?.setAttribute('aria-expanded', 'false')
 		}
 
 		#options() {
@@ -454,7 +467,7 @@ const options = [
 	}
 
 	.pulsar-trigger,
-	.pulsar-caret {
+	.pulsar-eject {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -471,31 +484,35 @@ const options = [
 		block-size: 2rem;
 	}
 
-	.pulsar-caret {
-		inline-size: 1rem;
+	/* Narrower than the transport and tucked in close, so the pair reads as one
+	   control rather than two neighbouring icons. */
+	.pulsar-eject {
+		inline-size: 1.35rem;
 		block-size: 2rem;
-		margin-inline-start: -0.35rem;
+		margin-inline-start: -0.4rem;
 		color: var(--sl-color-gray-3);
 	}
 
 	.pulsar-trigger:hover,
-	.pulsar-caret:hover {
+	.pulsar-eject:hover {
 		color: var(--sl-color-white);
 	}
 
 	.pulsar-trigger:focus,
-	.pulsar-caret:focus {
+	.pulsar-eject:focus {
 		outline: none;
 	}
 
 	.pulsar-trigger:focus-visible,
-	.pulsar-caret:focus-visible {
+	.pulsar-eject:focus-visible {
 		outline: 2px solid var(--sl-color-accent);
 		outline-offset: 0.125rem;
 		border-radius: 0.25rem;
 	}
 
-	/* Four states, distinguishable without a label. */
+	/* Four states, distinguishable without a label. Play is the resting glyph;
+	   pause replaces it only while sounding. */
+	.pulsar-glyph-pause,
 	.pulsar-slash {
 		display: none;
 	}
@@ -507,17 +524,9 @@ const options = [
 		color: var(--sl-color-gray-4);
 	}
 
-	.pulsar-trigger[data-state='nothing'] .pulsar-wave-2 {
-		opacity: 0.35;
-	}
-
-	/* Opted out: waves off, slash on. */
+	/* Opted out: play glyph struck through. */
 	.pulsar-trigger[data-state='off'] {
 		color: var(--sl-color-gray-4);
-	}
-
-	.pulsar-trigger[data-state='off'] .pulsar-wave {
-		display: none;
 	}
 
 	.pulsar-trigger[data-state='off'] .pulsar-slash {
@@ -529,20 +538,26 @@ const options = [
 		color: var(--sl-color-text-accent);
 	}
 
-	/* Playing: the outer wave breathes in time with the tune. */
+	/* Playing: pause is offered, and it breathes in time with the tune. */
 	.pulsar-trigger[data-state='playing'] {
 		color: var(--sl-color-white);
 	}
 
-	.pulsar-trigger[data-state='playing'] .pulsar-wave-2 {
-		animation: pulsar-breathe var(--pulsar-cycle, 2s) ease-in-out infinite;
-		transform-origin: 25% 50%;
+	.pulsar-trigger[data-state='playing'] .pulsar-glyph-play {
+		display: none;
 	}
 
+	.pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {
+		display: inline;
+		animation: pulsar-breathe var(--pulsar-cycle, 2s) ease-in-out infinite;
+	}
+
+	/* Shallow on purpose: this sits in the header of a page someone is reading,
+	   so it should register in peripheral vision without pulling the eye. */
 	@keyframes pulsar-breathe {
 		0%,
 		100% {
-			opacity: 0.3;
+			opacity: 0.55;
 		}
 		50% {
 			opacity: 1;
@@ -550,7 +565,7 @@ const options = [
 	}
 
 	@media (prefers-reduced-motion: reduce) {
-		.pulsar-trigger[data-state='playing'] .pulsar-wave-2 {
+		.pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {
 			animation: none;
 			opacity: 1;
 		}
