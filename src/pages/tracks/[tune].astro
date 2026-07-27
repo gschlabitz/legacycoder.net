@@ -7,13 +7,12 @@
 // as text and adds a scope; it introduces no eval, no play-synced highlighting,
 // and no new dependency, so it stays valid whichever way that fork is settled.
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-// Astro's Shiki `Code`, not Starlight's Expressive Code one. Chameleon composes
-// per-skin syntax themes by handing Starlight a `themeCssSelector` *function*
-// (`packages/starlight-theme-chameleon/lib/expressive-code.ts`), and EC's
-// `<Code>` component requires its options to be JSON-serializable — so on this
-// site that component throws mid-render, truncating the page. Shiki's dual-theme
-// output follows light/dark but not the skin; see #30.
-import { Code } from "astro:components";
+// Starlight's Expressive Code `Code`, so the source follows the active skin the
+// same way every other code block on the site does. That needs Chameleon's
+// `themeCssSelector` callback to reach EC through the root `ec.config.mjs`
+// (#33) — without that file this component throws mid-render and truncates the
+// page.
+import { Code } from "@astrojs/starlight/components";
 import config, { tuneLoaders } from "virtual:starlight-pulsar/config";
 
 export async function getStaticPaths() {
@@ -112,35 +111,6 @@ const secondsPerCycle = 1 / cps;
       color: var(--sl-color-gray-3);
       margin: 2rem 0 1rem;
     }
-    .track-source-path {
-      margin: -0.5rem 0 1rem;
-      font-size: 0.8rem;
-      color: var(--sl-color-gray-3);
-    }
-    /* `defaultColor={false}` makes Shiki emit both palettes as custom
-       properties and commit to neither, so the switch is ours to make from
-       Starlight's own `data-theme`. */
-    .track-source :global(.astro-code) {
-      padding: 1rem;
-      border-radius: 0.5rem;
-      overflow-x: auto;
-      font-size: 0.85rem;
-      line-height: 1.6;
-    }
-    :root[data-theme="light"] .track-source :global(.astro-code) {
-      background-color: var(--shiki-light-bg);
-    }
-    :root[data-theme="light"] .track-source :global(.astro-code),
-    :root[data-theme="light"] .track-source :global(.astro-code span) {
-      color: var(--shiki-light);
-    }
-    :root[data-theme="dark"] .track-source :global(.astro-code) {
-      background-color: var(--shiki-dark-bg);
-    }
-    :root[data-theme="dark"] .track-source :global(.astro-code),
-    :root[data-theme="dark"] .track-source :global(.astro-code span) {
-      color: var(--shiki-dark);
-    }
     .track-back {
       display: inline-block;
       margin-top: 2rem;
@@ -174,16 +144,13 @@ const secondsPerCycle = 1 / cps;
   </p>
 
   <h2 class="track-source-heading">Source</h2>
-  <p class="track-source-path"><code>packages/starlight-pulsar/tunes/{name}.ts</code></p>
-  <div class="track-source">
-    {
-      source ? (
-        <Code code={source} lang="ts" themes={{ light: "github-light", dark: "github-dark" }} defaultColor={false} />
-      ) : (
-        <p>No source available for this tune.</p>
-      )
-    }
-  </div>
+  {
+    source ? (
+      <Code code={source} lang="ts" title={`packages/starlight-pulsar/tunes/${name}.ts`} />
+    ) : (
+      <p>No source available for this tune.</p>
+    )
+  }
 
   <a class="track-back" href="/tracks">← All tracks</a>
 </StarlightPage>
