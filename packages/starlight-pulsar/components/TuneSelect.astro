@@ -116,30 +116,6 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
   </div>
 
   <div class="pulsar-panel" hidden>
-    {/* Everything the header had to give up when it ran out of room. Shown
-        only under the narrow breakpoints, so the controls relocate rather than
-        disappear. */}
-    <div class="pulsar-panel-head">
-      <span class="pulsar-title" data-title>{nothingLabel}</span>
-      <div class="pulsar-transport" role="group" aria-label={accessibleLabel}>
-        <button class="pulsar-btn" type="button" data-action="prev" aria-label={previousLabel}>
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
-            <path d="M7 5.5h2.4v13H7zM20 5.9v12.2a.8.8 0 0 1-1.24.67l-9.1-6.1a.8.8 0 0 1 0-1.34l9.1-6.1A.8.8 0 0 1 20 5.9Z" />
-          </svg>
-        </button>
-        <button class="pulsar-btn" type="button" data-action="stop" aria-label={stopLabel}>
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
-            <rect x="5" y="5" width="14" height="14" rx="1.2" />
-          </svg>
-        </button>
-        <button class="pulsar-btn" type="button" data-action="next" aria-label={nextLabel}>
-          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
-            <path d="M14.6 5.5H17v13h-2.4zM4 5.9v12.2a.8.8 0 0 0 1.24.67l9.1-6.1a.8.8 0 0 0 0-1.34l-9.1-6.1A.8.8 0 0 0 4 5.9Z" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
     <div class="pulsar-list" role="listbox" aria-label={accessibleLabel}>
       {entries.map(({ value, label }, index) => (
         <button class="pulsar-option" type="button" role="option" data-tune-value={value} aria-selected={value === 'auto' ? 'true' : 'false'}>
@@ -900,20 +876,6 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		display: none;
 	}
 
-	/* Only rendered once the header is too narrow to carry these itself. */
-	.pulsar-panel-head {
-		display: none;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.5rem;
-		margin-block-end: 0.35rem;
-		border-block-end: 1px solid var(--sl-color-gray-5);
-		padding: 0.15rem 0.15rem 0.35rem;
-	}
-
-	.pulsar-panel-head .pulsar-title {
-		max-inline-size: 6rem;
-	}
 
 	.pulsar-option {
 		display: flex;
@@ -978,51 +940,20 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 	/* Narrowing                                                         */
 	/* ---------------------------------------------------------------- */
 
-	/* Parts drop out as the header runs out of room, and the order is the
-	   argument for putting any of this in the header: the scope is decoration,
-	   skipping is a convenience, but seeing what is playing and being able to
-	   stop it are the whole point. Last in the file so these beat the base
-	   `display` declarations without a specificity fight.
+	/* The scope is the one decorative part, so it is the first thing to go when
+	   room runs short. Everything else the deck carries — what is playing, and
+	   the means to stop it — is why it is in the header at all, and stays.
 
-	   Below Starlight's own 50rem the entire right-hand group is hidden and the
-	   strip reappears in the mobile menu, where this compact form also fits. */
+	   Last in the file so this beats the base `display` declaration without a
+	   specificity fight. Adopters that need the deck to shrink further can say
+	   so from their own stylesheet; how a header spends its width is the host's
+	   decision, not the plugin's. */
 	@media (max-width: 82rem) {
 		.pulsar-scope {
 			display: none;
 		}
 	}
 
-	@media (max-width: 72rem) {
-		.pulsar-strip .pulsar-btn--skip {
-			display: none;
-		}
-	}
-
-	/* Tablet widths. The header here is already over its budget before Pulsar
-	   adds anything — measured 16px of overflow at 820px with the control
-	   removed from the DOM entirely — so the strip stops being a strip: chrome
-	   off, and everything but play/pause and eject moves into the panel. The
-	   controls relocate rather than disappear, because Starlight's own mobile
-	   menu does not take over until 50rem and a dead band between the two would
-	   leave no way to stop the music. */
-	@media (max-width: 62rem) {
-		.pulsar-strip {
-			gap: 0;
-			block-size: auto;
-			padding-inline: 0;
-			border: 0;
-			background: none;
-		}
-
-		.pulsar-strip .pulsar-title,
-		.pulsar-strip [data-action='stop'] {
-			display: none;
-		}
-
-		.pulsar-panel-head {
-			display: flex;
-		}
-	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {

@@ -226,16 +226,19 @@ disabling itself.
    comes from rendering classic `.wsz` bitmap skins that could never track the
    site's theme.
 
-   **Header budget is the hard constraint.** Measured: at 1440px the strip is
-   204px and fits; at 1000px the header overflows unless the scope and the skip
-   buttons drop out; at 820px the header overflows by 16px *with Pulsar removed
-   from the DOM entirely*, so that band was already over budget before any of
-   this. Parts therefore shed in a deliberate order — scope at 82rem, skip at
-   72rem — and below 62rem the strip stops being a strip: chrome off, and
-   everything but play/pause and eject relocates into the panel. They move
-   rather than vanish, because Starlight's mobile menu does not take over until
-   50rem and a dead band would leave no way to stop the music. The site's own
-   16px header overflow at 820px is untouched and worth its own issue.
+   **Header budget is the hard constraint,** and the plugin owns only part of
+   the answer. Pulsar itself sheds one thing: the scope, at 82rem, because it
+   is the only decorative part. How a header spends the rest of its width is
+   the host's decision, so the ladder below 64rem lives in the site's
+   `src/styles/header.css`, not here — an adopter with a sparser header would
+   want different widths entirely.
+
+   The site's ladder, for reference: at 64rem the social links and language
+   flags leave the header for the sidebar copy Starlight already renders
+   (`.mobile-preferences`), which frees about 240px — more than the whole deck,
+   so the deck itself does not degrade. Below Starlight's own 50rem the sidebar
+   becomes the hamburger and carries everything, while the header keeps only
+   play/pause and the light/dark toggle beside search and the menu button.
 
    Two notes on the mapping:
 

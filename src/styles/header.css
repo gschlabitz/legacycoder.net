@@ -30,3 +30,102 @@
 .header .language-flags .flag-link {
   font-size: var(--lc-header-icon-size);
 }
+
+/* Put the site's own header controls on the social icons' rhythm.
+
+   Starlight spaces social links by padding each one and pulling it back with an
+   equal negative margin, so the boxes overlap and the glyphs land on a 40px
+   pitch. Our controls were plain 40px boxes on the group's 16px gap — a 56px
+   pitch — which read as a second, more loosely spaced group sitting next to the
+   first. Same trick here, so every icon in the header shares one rhythm. */
+.header .language-flags .flag-link,
+.header chameleon-skin-select[data-variant="icon"] .skin-trigger,
+.header starlight-theme-select .mode-button {
+  margin-inline: calc(var(--lc-header-action-size) / -5);
+}
+
+/* The flags carried their own tighter gap to compensate for the wide pitch;
+   with the negative margins above they need the group's spacing instead. */
+.header .language-flags {
+  gap: 1rem;
+}
+
+/* Starlight divides the social links from the site's controls with a rule.
+   The player sits between them now — a bordered strip that is visibly its own
+   unit — so the line is a second separator inside one group. */
+.header .social-icons::after {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* What the header carries, by width                                    */
+/* ------------------------------------------------------------------ */
+
+/* Starlight renders these controls twice: once in the header's `.right-group`,
+   and once in `.mobile-preferences` inside the sidebar pane, which becomes the
+   hamburger panel below Starlight's own 50em. Rather than shrink everything as
+   the header narrows, hand controls over from the first copy to the second. */
+
+/* Tablet. The social links and the language flags leave the header — they are
+   the least likely thing a reader wants mid-page, and between them they free
+   about 240px, which is more than the whole player. The sidebar is still a
+   visible column at this width (Starlight's hamburger does not appear until
+   50em), so its copy is revealed there instead: not a menu, but in view and
+   out of the header. The duplicated player, skin and theme stay hidden, since
+   the header still carries those. */
+@media (max-width: 64rem) {
+  .header .right-group .social-icons a,
+  .header .right-group .language-flags {
+    display: none;
+  }
+}
+
+/* Bounded below by Starlight's own breakpoint: past it the sidebar becomes the
+   hamburger panel and has to carry everything, so these duplicates are only
+   redundant while the header still shows them. */
+@media (min-width: 50.0625em) and (max-width: 64rem) {
+  .sidebar-content > .md\:sl-hidden {
+    display: block;
+  }
+
+  .mobile-preferences pulsar-tune-select,
+  .mobile-preferences chameleon-skin-select,
+  .mobile-preferences starlight-theme-select {
+    display: none;
+  }
+}
+
+/* Mobile. Starlight hides `.right-group` outright and moves everything into the
+   hamburger. Keep just enough in the header to be useful without opening it:
+   play/pause, and the light/dark toggle. Search and the hamburger are
+   Starlight's own and already there. Everything else — the track list, skip,
+   stop, the skin picker, the social links, the flags — lives one tap away in
+   the menu, where the second copy of the deck is full-size. */
+@media (max-width: 50em) {
+  .header .right-group {
+    display: flex;
+    gap: 0;
+  }
+
+  .header .right-group .social-icons a,
+  .header .right-group .language-flags,
+  .header .right-group chameleon-skin-select {
+    display: none;
+  }
+
+  /* The deck collapses to its transport: no chrome, no readout, no eject. */
+  .header .right-group .pulsar-strip {
+    gap: 0;
+    block-size: auto;
+    padding-inline: 0;
+    border: 0;
+    background: none;
+  }
+
+  .header .right-group pulsar-tune-select .pulsar-title,
+  .header .right-group pulsar-tune-select .pulsar-btn--skip,
+  .header .right-group pulsar-tune-select [data-action="stop"],
+  .header .right-group pulsar-tune-select .pulsar-eject {
+    display: none;
+  }
+}
