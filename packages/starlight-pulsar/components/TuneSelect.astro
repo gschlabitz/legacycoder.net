@@ -791,8 +791,12 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		color: var(--sl-color-text-accent);
 	}
 
+	/* Sounding, but not shouting about it. The transport is one set of keys, so
+	   the pause glyph takes the same colour as prev/stop/next — the breathing
+	   and the readout already say it is playing, and a brighter key here just
+	   made the row look misaligned. */
 	.pulsar-trigger[data-state='playing'] {
-		color: var(--sl-color-white);
+		color: var(--sl-color-gray-2);
 	}
 
 	.pulsar-trigger[data-state='playing'] .pulsar-glyph-play {
@@ -937,15 +941,15 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 	/* Narrowing                                                         */
 	/* ---------------------------------------------------------------- */
 
-	/* The scope is the one decorative part, so it is the first thing to go when
-	   room runs short. Everything else the deck carries — what is playing, and
-	   the means to stop it — is why it is in the header at all, and stays.
+	/* The deck stays whole wherever it is shown as a deck. The scope goes only
+	   at phone widths, where there is no room for a strip at all and the host
+	   is showing a bare transport instead.
 
 	   Last in the file so this beats the base `display` declaration without a
-	   specificity fight. Adopters that need the deck to shrink further can say
-	   so from their own stylesheet; how a header spends its width is the host's
+	   specificity fight. Adopters that need the deck to shed more can say so
+	   from their own stylesheet; how a header spends its width is the host's
 	   decision, not the plugin's. */
-	@media (max-width: 82rem) {
+	@media (max-width: 50em) {
 		.pulsar-scope {
 			display: none;
 		}

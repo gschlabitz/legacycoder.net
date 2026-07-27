@@ -66,14 +66,17 @@
    hamburger panel below Starlight's own 50em. Rather than shrink everything as
    the header narrows, hand controls over from the first copy to the second. */
 
-/* Tablet. The social links and the language flags leave the header — they are
-   the least likely thing a reader wants mid-page, and between them they free
-   about 240px, which is more than the whole player. The sidebar is still a
-   visible column at this width (Starlight's hamburger does not appear until
-   50em), so its copy is revealed there instead: not a menu, but in view and
-   out of the header. The duplicated player, skin and theme stay hidden, since
-   the header still carries those. */
-@media (max-width: 64rem) {
+/* The social links and the language flags leave the header early — as soon as
+   it stops being roomy, rather than once it is already tight. They are the
+   least likely thing a reader wants mid-page, and between them they free about
+   240px: more than the whole deck, which is what lets the deck stay intact
+   (scope included) all the way down to phone widths.
+
+   The sidebar is still a visible column here — Starlight's hamburger does not
+   appear until 50em — so its copy is revealed there instead: not a menu, but
+   in view and out of the header. The duplicated deck, skin and theme stay
+   hidden, since the header still carries those. */
+@media (max-width: 82rem) {
   .header .right-group .social-icons a,
   .header .right-group .language-flags {
     display: none;
@@ -83,7 +86,7 @@
 /* Bounded below by Starlight's own breakpoint: past it the sidebar becomes the
    hamburger panel and has to carry everything, so these duplicates are only
    redundant while the header still shows them. */
-@media (min-width: 50.0625em) and (max-width: 64rem) {
+@media (min-width: 50.0625em) and (max-width: 82rem) {
   .sidebar-content > .md\:sl-hidden {
     display: block;
   }

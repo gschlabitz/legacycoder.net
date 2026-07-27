@@ -227,18 +227,25 @@ disabling itself.
    site's theme.
 
    **Header budget is the hard constraint,** and the plugin owns only part of
-   the answer. Pulsar itself sheds one thing: the scope, at 82rem, because it
-   is the only decorative part. How a header spends the rest of its width is
-   the host's decision, so the ladder below 64rem lives in the site's
-   `src/styles/header.css`, not here — an adopter with a sparser header would
-   want different widths entirely.
+   the answer. Pulsar sheds nothing while it is shown as a deck; the scope goes
+   only below 50em, where the host is showing a bare transport rather than a
+   strip. How a header spends the rest of its width is the host's decision, so
+   the ladder lives in the site's `src/styles/header.css`, not here — an
+   adopter with a sparser header would want different widths entirely.
 
-   The site's ladder, for reference: at 64rem the social links and language
+   The site's ladder, for reference: at 82rem the social links and language
    flags leave the header for the sidebar copy Starlight already renders
-   (`.mobile-preferences`), which frees about 240px — more than the whole deck,
-   so the deck itself does not degrade. Below Starlight's own 50rem the sidebar
-   becomes the hamburger and carries everything, while the header keeps only
-   play/pause and the light/dark toggle beside search and the menu button.
+   (`.mobile-preferences`). They go early, while the header is merely less
+   roomy rather than actually tight, and the ~240px they free is more than the
+   whole deck — which is what lets the deck stay intact, scope included, all
+   the way down to phone widths. Measured with everything on screen: zero
+   overflow at 1320px (social, flags and scope together) and still zero at
+   810px, just above Starlight's breakpoint, with the full 204px deck.
+
+   Below 50em the sidebar becomes the hamburger and carries everything, while
+   the header keeps only play/pause — at full header-icon size, since it is
+   standing alone — and the light/dark toggle, beside search and the menu
+   button.
 
    Two notes on the mapping:
 
