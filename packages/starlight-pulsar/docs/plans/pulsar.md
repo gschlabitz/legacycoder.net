@@ -218,12 +218,24 @@ disabling itself.
    state and selection are module-scoped, not per-element, because Starlight
    renders `SocialIcons` twice (header and mobile menu) and two controls on one
    page must not contradict each other.
-6. **Player panel** — added after the fact, on the Winamp analogy. Eject opens
-   a readout (tune name, `cps`, seconds per cycle), an oscilloscope, the full
-   transport row, and the playlist; the header pair is windowshade mode. All of
-   it is `--sl-color-*`, so Chameleon skins flow straight through — which is
-   the reason not to reach for Webamp, whose fidelity comes from rendering
-   classic `.wsz` bitmap skins that could never track the site's theme.
+6. **The deck** — added after the fact, on the Winamp analogy. The player lives
+   *in the header*: scope, track name, transport row and eject in one strip, so
+   a reader can see what is playing and stop it without opening anything. Eject
+   opens the track list alone. All of it is `--sl-color-*`, so Chameleon skins
+   flow straight through — the reason not to reach for Webamp, whose fidelity
+   comes from rendering classic `.wsz` bitmap skins that could never track the
+   site's theme.
+
+   **Header budget is the hard constraint.** Measured: at 1440px the strip is
+   204px and fits; at 1000px the header overflows unless the scope and the skip
+   buttons drop out; at 820px the header overflows by 16px *with Pulsar removed
+   from the DOM entirely*, so that band was already over budget before any of
+   this. Parts therefore shed in a deliberate order — scope at 82rem, skip at
+   72rem — and below 62rem the strip stops being a strip: chrome off, and
+   everything but play/pause and eject relocates into the panel. They move
+   rather than vanish, because Starlight's mobile menu does not take over until
+   50rem and a dead band would leave no way to stop the music. The site's own
+   16px header overflow at 820px is untouched and worth its own issue.
 
    Two notes on the mapping:
 

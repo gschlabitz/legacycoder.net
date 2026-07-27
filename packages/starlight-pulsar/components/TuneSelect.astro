@@ -61,69 +61,86 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
   data-label-off={offLabel}
   data-label-nothing={nothingLabel}
 >
-  {/* Windowshade mode: the whole player collapsed to the two controls that
-      matter in a header. One click resumes an Armed tune — that is the point
-      of the Armed state, so the panel must not stand between the reader and
-      it. Play/pause rather than play/stop because stopping writes a Bookmark
-      and the next play resumes from it: the tune is paused, not reset. */}
-  <button class="pulsar-trigger" type="button" data-state="nothing" aria-label={playLabel}>
-    <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="15" height="15">
-      <path class="pulsar-glyph-play" d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
-      <path class="pulsar-glyph-pause" d="M6.5 4.5h3.6v15H6.5zM13.9 4.5h3.6v15h-3.6z" />
-      <path class="pulsar-slash" d="M3.8 2.4 21.6 20.2l-1.4 1.4L2.4 3.8z" />
-    </svg>
-  </button>
+  {/* The whole player, in the header. A reader should be able to see what is
+      playing and stop it without opening anything — so the scope, the track
+      name and the transport all live out here, and Eject is only for changing
+      the track. Parts drop out as the header narrows (see the media queries):
+      the scope goes first, then previous/next, because knowing what is playing
+      and being able to stop it outrank both. */}
+  <div class="pulsar-strip">
+    <canvas class="pulsar-scope" data-scope width="80" height="36" aria-hidden="true"></canvas>
 
-  {/* Eject opens the player — what the button has meant since tape decks:
-      not "stop", but "show me what else goes in here". */}
-  <button class="pulsar-eject" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label={accessibleLabel}>
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13">
-      <path d="M12.72 4.7a1 1 0 0 0-1.44 0l-7.2 8.6A1 1 0 0 0 4.8 15h14.4a1 1 0 0 0 .72-1.7Z" />
-      <rect x="4" y="17.2" width="16" height="2.8" rx="0.7" />
-    </svg>
-  </button>
-
-  <div class="pulsar-panel" role="dialog" aria-label={accessibleLabel} hidden>
-    {/* Readout. Winamp's marquee and its kbps/kHz lamps, except the numbers
-        are real: a tune's tempo and the length of one cycle. */}
-    <div class="pulsar-readout">
-      <div class="pulsar-title-window">
-        <span class="pulsar-title" data-title>{nothingLabel}</span>
-      </div>
-      <span class="pulsar-meta" data-meta></span>
-    </div>
-
-    <canvas class="pulsar-scope" data-scope width="480" height="72" aria-hidden="true"></canvas>
+    {/* Marquee. The tempo rides along as a tooltip rather than more pixels. */}
+    <span class="pulsar-title" data-title>{nothingLabel}</span>
 
     <div class="pulsar-transport" role="group" aria-label={accessibleLabel}>
-      <button class="pulsar-btn" type="button" data-action="prev" aria-label={previousLabel}>
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13">
+      <button class="pulsar-btn pulsar-btn--skip" type="button" data-action="prev" aria-label={previousLabel}>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
           <path d="M7 5.5h2.4v13H7zM20 5.9v12.2a.8.8 0 0 1-1.24.67l-9.1-6.1a.8.8 0 0 1 0-1.34l9.1-6.1A.8.8 0 0 1 20 5.9Z" />
         </svg>
       </button>
-      <button class="pulsar-btn" type="button" data-action="play" aria-label={playLabel}>
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13">
-          <path d="M6.5 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L8.04 4.3A1 1 0 0 0 6.5 5.14Z" />
+
+      {/* Play and pause share a button here rather than taking two slots of a
+          header that has none to spare. It is also the honest control: stopping
+          writes a Bookmark and the next play resumes from it, so the tune is
+          paused, not reset. */}
+      <button class="pulsar-btn pulsar-trigger" type="button" data-action="playpause" data-state="nothing" aria-label={playLabel}>
+        <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
+          <path class="pulsar-glyph-play" d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
+          <path class="pulsar-glyph-pause" d="M6.5 4.5h3.6v15H6.5zM13.9 4.5h3.6v15h-3.6z" />
+          <path class="pulsar-slash" d="M3.8 2.4 21.6 20.2l-1.4 1.4L2.4 3.8z" />
         </svg>
       </button>
-      <button class="pulsar-btn" type="button" data-action="pause" aria-label={pauseLabel}>
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13">
-          <path d="M6.5 4.5h3.6v15H6.5zM13.9 4.5h3.6v15h-3.6z" />
-        </svg>
-      </button>
+
       <button class="pulsar-btn" type="button" data-action="stop" aria-label={stopLabel}>
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
           <rect x="5" y="5" width="14" height="14" rx="1.2" />
         </svg>
       </button>
-      <button class="pulsar-btn" type="button" data-action="next" aria-label={nextLabel}>
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="13" height="13">
+
+      <button class="pulsar-btn pulsar-btn--skip" type="button" data-action="next" aria-label={nextLabel}>
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
           <path d="M14.6 5.5H17v13h-2.4zM4 5.9v12.2a.8.8 0 0 0 1.24.67l9.1-6.1a.8.8 0 0 0 0-1.34l-9.1-6.1A.8.8 0 0 0 4 5.9Z" />
         </svg>
       </button>
     </div>
 
-    <div class="pulsar-playlist" role="listbox" aria-label={accessibleLabel}>
+    {/* Eject is now only the track list — what the button has meant since tape
+        decks: not "stop", but "show me what else goes in here". */}
+    <button class="pulsar-eject" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label={accessibleLabel}>
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
+        <path d="M12.72 4.7a1 1 0 0 0-1.44 0l-7.2 8.6A1 1 0 0 0 4.8 15h14.4a1 1 0 0 0 .72-1.7Z" />
+        <rect x="4" y="17.2" width="16" height="2.8" rx="0.7" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="pulsar-panel" hidden>
+    {/* Everything the header had to give up when it ran out of room. Shown
+        only under the narrow breakpoints, so the controls relocate rather than
+        disappear. */}
+    <div class="pulsar-panel-head">
+      <span class="pulsar-title" data-title>{nothingLabel}</span>
+      <div class="pulsar-transport" role="group" aria-label={accessibleLabel}>
+        <button class="pulsar-btn" type="button" data-action="prev" aria-label={previousLabel}>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
+            <path d="M7 5.5h2.4v13H7zM20 5.9v12.2a.8.8 0 0 1-1.24.67l-9.1-6.1a.8.8 0 0 1 0-1.34l9.1-6.1A.8.8 0 0 1 20 5.9Z" />
+          </svg>
+        </button>
+        <button class="pulsar-btn" type="button" data-action="stop" aria-label={stopLabel}>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
+            <rect x="5" y="5" width="14" height="14" rx="1.2" />
+          </svg>
+        </button>
+        <button class="pulsar-btn" type="button" data-action="next" aria-label={nextLabel}>
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
+            <path d="M14.6 5.5H17v13h-2.4zM4 5.9v12.2a.8.8 0 0 0 1.24.67l9.1-6.1a.8.8 0 0 0 0-1.34l-9.1-6.1A.8.8 0 0 0 4 5.9Z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="pulsar-list" role="listbox" aria-label={accessibleLabel}>
       {entries.map(({ value, label }, index) => (
         <button class="pulsar-option" type="button" role="option" data-tune-value={value} aria-selected={value === 'auto' ? 'true' : 'false'}>
           <span class="pulsar-option-index">{value === 'auto' ? '—' : String(index).padStart(2, '0')}</span>
@@ -258,6 +275,11 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 			audioContext = strudel.getAudioContext()
 			return repl
 		})()
+		/* Don't let one failed load poison every later attempt: a cached rejected
+		   promise would make the transport permanently dead until a reload. */
+		enginePromise.catch(() => {
+			enginePromise = null
+		})
 		return enginePromise
 	}
 
@@ -379,15 +401,22 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 			ctx.strokeStyle = getComputedStyle(canvas).color
 			ctx.beginPath()
 
-			if (!samples || samples.length === 0) {
+			/* Normalise to the buffer's own peak. Background music is quiet by
+			   design and this canvas is under twenty pixels tall, so a fixed scale
+			   draws something indistinguishable from silence. The cap stops near-
+			   silence being amplified into noise, and the floor keeps a genuinely
+			   silent buffer flat. */
+			let peak = 0
+			if (samples) for (let i = 0; i < samples.length; i++) peak = Math.max(peak, Math.abs(samples[i]!))
+			const scale = peak > 0.002 ? Math.min(1 / peak, 14) : 0
+
+			if (!samples || samples.length === 0 || scale === 0) {
 				ctx.moveTo(0, middle)
 				ctx.lineTo(width, middle)
 			} else {
 				const step = width / (samples.length - 1)
 				for (let i = 0; i < samples.length; i++) {
-					/* Samples are roughly -1..1; the tunes are quiet by design, so
-					   lift the trace or it reads as a flat line at this height. */
-					const value = Math.max(-1, Math.min(1, samples[i]! * 2.6))
+					const value = Math.max(-1, Math.min(1, samples[i]! * scale * 0.9))
 					const y = middle - value * (middle - 1)
 					i === 0 ? ctx.moveTo(0, y) : ctx.lineTo(i * step, y)
 				}
@@ -456,40 +485,39 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 				control.style.removeProperty('--pulsar-cycle')
 			}
 
-			/* Readout: what is loaded, and at what tempo. */
+			/* Readout: what is loaded. The tempo rides along as a tooltip — real
+			   numbers, but not worth header pixels. */
 			const shown = playing?.name || effective
 			const tune = shown ? config.tunes.find((entry) => entry.name === shown) : undefined
-			const title = control.querySelector<HTMLElement>('[data-title]')
-			if (title) {
-				title.textContent =
-					state === 'off'
-						? control.dataset.labelOff || 'Off'
-						: tune
-							? tune.label
-							: control.dataset.labelNothing || 'Nothing here'
-				/* Scroll the title only when it actually overflows, the way a
-				   marquee should — a name that fits should sit still. */
-				const window_ = title.parentElement
-				if (window_) title.classList.toggle('is-scrolling', title.scrollWidth > window_.clientWidth + 1)
-			}
+			/* Two copies: the strip's, and the panel's for when the header is too
+			   narrow to carry it. Both are always in the DOM; CSS decides which
+			   one the reader sees. */
+			const text =
+				state === 'off'
+					? control.dataset.labelOff || 'Off'
+					: tune
+						? tune.label
+						: control.dataset.labelNothing || 'Nothing here'
+			const cps = playing?.cps ?? (shown ? tuneCache.get(shown)?.cps : undefined)
+			control.querySelectorAll<HTMLElement>('[data-title]').forEach((title) => {
+				title.textContent = text
+				if (tune && cps) title.title = `${tune.label} — ${cps.toFixed(2)} cps · ${(1 / cps).toFixed(1)}s`
+				else title.removeAttribute('title')
+			})
 
-			const meta = control.querySelector<HTMLElement>('[data-meta]')
-			if (meta) {
-				const cps = playing?.cps ?? (shown ? tuneCache.get(shown)?.cps : undefined)
-				meta.textContent = cps ? `${cps.toFixed(2)} cps · ${(1 / cps).toFixed(1)}s` : ''
-			}
-
-			/* Transport availability. Stop is Off, so it is spent once Off. */
+			/* Transport availability. Stop is Off, so it is spent once Off, and
+			   a Silent page leaves nothing for the transport to do at all. */
 			const hasTunes = config.tunes.length > 0
+			const silentHere = control.dataset.silent === 'true'
 			const set = (action: string, disabled: boolean) => {
-				const button = control.querySelector<HTMLButtonElement>(`[data-action="${action}"]`)
-				if (button) button.disabled = disabled
+				control.querySelectorAll<HTMLButtonElement>(`[data-action="${action}"]`).forEach((button) => {
+					button.disabled = disabled
+				})
 			}
-			set('prev', !hasTunes)
-			set('next', !hasTunes)
-			set('play', !hasTunes || state === 'playing')
-			set('pause', state !== 'playing')
-			set('stop', state === 'off')
+			set('prev', !hasTunes || silentHere)
+			set('next', !hasTunes || silentHere)
+			set('playpause', !hasTunes || silentHere)
+			set('stop', state === 'off' || silentHere)
 
 			control.querySelectorAll<HTMLElement>('[data-tune-value]').forEach((option) => {
 				option.setAttribute('aria-selected', option.dataset.tuneValue === selection ? 'true' : 'false')
@@ -499,6 +527,11 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 				option.toggleAttribute('data-loaded', Boolean(shown) && option.dataset.tuneValue === shown)
 			})
 		})
+
+		/* The scope lives in the header now, so it is on screen even at rest and
+		   needs its flat baseline drawn rather than left blank. While playing the
+		   animation frame owns it and this is just a harmless extra frame. */
+		drawScopes()
 	}
 
 	/* ------------------------------------------------------------------ */
@@ -519,10 +552,8 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 			const panel = this.querySelector<HTMLElement>('.pulsar-panel')
 			if (!trigger || !eject || !panel) return
 
-			trigger.addEventListener('click', () => {
-				void this.#toggle()
-			})
-
+			/* The transport button is itself a `[data-action]`, so the generic
+			   handler below owns its click — binding here too would fire twice. */
 			eject.addEventListener('click', () => {
 				this.#isOpen() ? this.#close() : this.#open()
 			})
@@ -548,7 +579,7 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 				eject.focus()
 			})
 
-			this.querySelector('.pulsar-playlist')?.addEventListener('keydown', (event) => {
+			this.querySelector('.pulsar-panel')?.addEventListener('keydown', (event) => {
 				const options = this.#options()
 				const index = options.indexOf(document.activeElement as HTMLButtonElement)
 				const key = (event as KeyboardEvent).key
@@ -583,9 +614,8 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		async #transport(action: string) {
 			const count = config.tunes.length
 
-			if (action === 'pause') {
-				await pause()
-				renderAll()
+			if (action === 'playpause') {
+				await this.#toggle()
 				return
 			}
 
@@ -596,25 +626,6 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 				await pause()
 				selection = 'off'
 				storeSelection(selection)
-				renderAll()
-				return
-			}
-
-			if (action === 'play') {
-				/* Pressing play while Off is an explicit request for sound, so it
-				   lifts Off rather than doing nothing. */
-				if (selection === 'off') {
-					selection = 'auto'
-					storeSelection(selection)
-				}
-				const tune = effectiveFor(this) || config.tunes[0]?.name
-				if (tune) {
-					if (!effectiveFor(this)) {
-						selection = tune
-						storeSelection(selection)
-					}
-					await play(tune)
-				}
 				renderAll()
 				return
 			}
@@ -633,12 +644,37 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 				renderAll()
 				return
 			}
-			const tune = effectiveFor(this)
-			if (!tune) {
-				/* Nothing to play here — offer the player rather than doing nothing. */
+
+			/* A Silent page overrides the reader, so play cannot mean play here.
+			   Offer the track list instead of doing nothing at all. */
+			if (this.dataset.silent === 'true') {
 				this.#open()
 				return
 			}
+
+			/* Pressing play while Off is an explicit request for sound, so it
+			   lifts Off rather than refusing. */
+			if (selection === 'off') {
+				selection = 'auto'
+				storeSelection(selection)
+			}
+
+			let tune = effectiveFor(this)
+			if (!tune) {
+				/* This page declares nothing and the reader is on Auto. Pressing
+				   play should still produce sound, so cue the first registered tune
+				   and record it as a deliberate pick — Auto would silently do
+				   nothing again on the next page. */
+				const first = config.tunes[0]?.name
+				if (!first) {
+					this.#open()
+					return
+				}
+				selection = first
+				storeSelection(selection)
+				tune = first
+			}
+
 			await play(tune)
 			renderAll()
 		}
@@ -691,49 +727,73 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		align-items: center;
 	}
 
-	.pulsar-trigger,
+	/* The deck: one recessed strip holding scope, track name and transport, so
+	   the group reads as a single instrument rather than loose header icons. */
+	.pulsar-strip {
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		block-size: 1.9rem;
+		padding-inline: 0.3rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.3rem;
+		background: var(--sl-color-black);
+	}
+
+	.pulsar-scope {
+		flex: 0 0 auto;
+		inline-size: 2.5rem;
+		block-size: 1.1rem;
+		/* The trace reads this, so the scope tracks the active skin. */
+		color: var(--sl-color-text-accent);
+	}
+
+	.pulsar-title {
+		flex: 0 1 auto;
+		max-inline-size: 5rem;
+		overflow: hidden;
+		color: var(--sl-color-text-accent);
+		font-family: var(--sl-font-mono, ui-monospace, monospace);
+		font-size: var(--sl-text-xs);
+		line-height: 1;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.pulsar-transport {
+		display: flex;
+		align-items: center;
+		gap: 0.05rem;
+	}
+
 	.pulsar-eject {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
+		inline-size: 1.4rem;
+		block-size: 1.4rem;
 		border: 0;
+		border-radius: 0.2rem;
 		padding: 0;
 		background: transparent;
-		color: var(--sl-color-text-accent);
+		color: var(--sl-color-gray-3);
 		font: inherit;
 		cursor: pointer;
 	}
 
-	.pulsar-trigger {
-		inline-size: 2rem;
-		block-size: 2rem;
-	}
-
-	/* Narrower than the transport and tucked in close, so the pair reads as one
-	   control rather than two neighbouring icons. */
-	.pulsar-eject {
-		inline-size: 1.35rem;
-		block-size: 2rem;
-		margin-inline-start: -0.4rem;
-		color: var(--sl-color-gray-3);
-	}
-
-	.pulsar-trigger:hover,
 	.pulsar-eject:hover {
 		color: var(--sl-color-white);
 	}
 
-	.pulsar-trigger:focus,
 	.pulsar-eject:focus {
 		outline: none;
 	}
 
-	.pulsar-trigger:focus-visible,
 	.pulsar-eject:focus-visible {
 		outline: 2px solid var(--sl-color-accent);
-		outline-offset: 0.125rem;
-		border-radius: 0.25rem;
+		outline-offset: 0.0625rem;
 	}
+
 
 	/* Four states, distinguishable without a label. Play is the resting glyph;
 	   pause replaces it only while sounding. */
@@ -783,113 +843,30 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		}
 	}
 
-	/* ---------------------------------------------------------------- */
-	/* Player panel                                                      */
-	/* ---------------------------------------------------------------- */
-
-	.pulsar-panel {
-		position: absolute;
-		z-index: 10;
-		inset-block-start: calc(100% + 0.375rem);
-		inset-inline-end: 0;
-		inline-size: 15rem;
-		padding: 0.5rem;
-		border: 1px solid var(--sl-color-gray-5);
-		border-radius: 0.375rem;
-		background-color: var(--sl-color-bg-nav);
-		box-shadow: var(--sl-shadow-md);
-	}
-
-	.pulsar-panel[hidden] {
-		display: none;
-	}
-
-	/* The readout: a recessed strip, the way every hardware deck has one. */
-	.pulsar-readout {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 0.5rem;
-		padding: 0.3rem 0.45rem;
-		border: 1px solid var(--sl-color-gray-5);
-		border-radius: 0.25rem;
-		background: var(--sl-color-black);
-		font-family: var(--sl-font-mono, ui-monospace, monospace);
-		font-size: var(--sl-text-xs);
-		line-height: 1.4;
-	}
-
-	.pulsar-title-window {
-		flex: 1 1 auto;
-		overflow: hidden;
-		white-space: nowrap;
-	}
-
-	.pulsar-title {
-		display: inline-block;
-		color: var(--sl-color-text-accent);
-	}
-
-	.pulsar-title.is-scrolling {
-		animation: pulsar-marquee 9s linear infinite;
-	}
-
-	@keyframes pulsar-marquee {
-		0%,
-		12% {
-			transform: translateX(0);
-		}
-		88%,
-		100% {
-			transform: translateX(calc(-100% + 6rem));
-		}
-	}
-
-	.pulsar-meta {
-		flex: 0 0 auto;
-		color: var(--sl-color-gray-3);
-		font-variant-numeric: tabular-nums;
-	}
-
-	.pulsar-scope {
-		display: block;
-		inline-size: 100%;
-		block-size: 2.6rem;
-		margin-block-start: 0.35rem;
-		border: 1px solid var(--sl-color-gray-5);
-		border-radius: 0.25rem;
-		background: var(--sl-color-black);
-		/* The trace reads this, so the scope tracks the active skin. */
-		color: var(--sl-color-text-accent);
-	}
-
-	.pulsar-transport {
-		display: flex;
-		justify-content: space-between;
-		gap: 0.2rem;
-		margin-block-start: 0.45rem;
-	}
-
+	/* Transport buttons. Flat inside the strip — the strip's own border already
+	   groups them, so per-button chrome would only add noise at this size. */
 	.pulsar-btn {
 		display: inline-flex;
-		flex: 1 1 0;
 		align-items: center;
 		justify-content: center;
-		block-size: 1.75rem;
-		border: 1px solid var(--sl-color-gray-5);
+		inline-size: 1.4rem;
+		block-size: 1.4rem;
+		border: 0;
 		border-radius: 0.2rem;
-		background: var(--sl-color-gray-6);
-		color: var(--sl-color-text);
+		padding: 0;
+		background: transparent;
+		color: var(--sl-color-gray-2);
+		font: inherit;
 		cursor: pointer;
 	}
 
 	.pulsar-btn:hover:not(:disabled) {
-		border-color: var(--sl-color-accent);
+		background: var(--sl-color-gray-6);
 		color: var(--sl-color-white);
 	}
 
 	.pulsar-btn:disabled {
-		opacity: 0.35;
+		opacity: 0.3;
 		cursor: default;
 	}
 
@@ -902,10 +879,40 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		outline-offset: 0.0625rem;
 	}
 
-	.pulsar-playlist {
-		margin-block-start: 0.45rem;
-		border-block-start: 1px solid var(--sl-color-gray-5);
-		padding-block-start: 0.35rem;
+	/* ---------------------------------------------------------------- */
+	/* Track list                                                        */
+	/* ---------------------------------------------------------------- */
+
+	.pulsar-panel {
+		position: absolute;
+		z-index: 10;
+		inset-block-start: calc(100% + 0.375rem);
+		inset-inline-end: 0;
+		min-inline-size: 11rem;
+		padding: 0.35rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.375rem;
+		background-color: var(--sl-color-bg-nav);
+		box-shadow: var(--sl-shadow-md);
+	}
+
+	.pulsar-panel[hidden] {
+		display: none;
+	}
+
+	/* Only rendered once the header is too narrow to carry these itself. */
+	.pulsar-panel-head {
+		display: none;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-block-end: 0.35rem;
+		border-block-end: 1px solid var(--sl-color-gray-5);
+		padding: 0.15rem 0.15rem 0.35rem;
+	}
+
+	.pulsar-panel-head .pulsar-title {
+		max-inline-size: 6rem;
 	}
 
 	.pulsar-option {
@@ -967,9 +974,58 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		outline-offset: -2px;
 	}
 
+	/* ---------------------------------------------------------------- */
+	/* Narrowing                                                         */
+	/* ---------------------------------------------------------------- */
+
+	/* Parts drop out as the header runs out of room, and the order is the
+	   argument for putting any of this in the header: the scope is decoration,
+	   skipping is a convenience, but seeing what is playing and being able to
+	   stop it are the whole point. Last in the file so these beat the base
+	   `display` declarations without a specificity fight.
+
+	   Below Starlight's own 50rem the entire right-hand group is hidden and the
+	   strip reappears in the mobile menu, where this compact form also fits. */
+	@media (max-width: 82rem) {
+		.pulsar-scope {
+			display: none;
+		}
+	}
+
+	@media (max-width: 72rem) {
+		.pulsar-strip .pulsar-btn--skip {
+			display: none;
+		}
+	}
+
+	/* Tablet widths. The header here is already over its budget before Pulsar
+	   adds anything — measured 16px of overflow at 820px with the control
+	   removed from the DOM entirely — so the strip stops being a strip: chrome
+	   off, and everything but play/pause and eject moves into the panel. The
+	   controls relocate rather than disappear, because Starlight's own mobile
+	   menu does not take over until 50rem and a dead band between the two would
+	   leave no way to stop the music. */
+	@media (max-width: 62rem) {
+		.pulsar-strip {
+			gap: 0;
+			block-size: auto;
+			padding-inline: 0;
+			border: 0;
+			background: none;
+		}
+
+		.pulsar-strip .pulsar-title,
+		.pulsar-strip [data-action='stop'] {
+			display: none;
+		}
+
+		.pulsar-panel-head {
+			display: flex;
+		}
+	}
+
 	@media (prefers-reduced-motion: reduce) {
-		.pulsar-trigger[data-state='playing'] .pulsar-glyph-pause,
-		.pulsar-title.is-scrolling {
+		.pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {
 			animation: none;
 			opacity: 1;
 		}

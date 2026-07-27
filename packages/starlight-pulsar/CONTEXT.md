@@ -60,35 +60,45 @@ re-enters on its own downbeat.
 _Avoid_: position, offset, timestamp, seek point
 
 **Tune selector**:
-Everything the reader touches: the two header buttons — a Transport and an
-Eject — and the Player that Eject opens.
+Everything the reader touches: the Deck in the header, and the Track list that
+Eject opens.
 _Avoid_: dropdown, music picker
 
-**Windowshade**:
-The header pair on its own, which is all a reader sees until they press Eject.
-Named after Winamp's collapsed mode, and the same idea: the whole player
-reduced to the controls worth keeping in three inches of header.
-_Avoid_: compact mode, mini control
-
-**Player**:
-The panel Eject opens: Readout, Scope, the full transport row, and the
-Playlist. Styled entirely from Starlight's own custom properties, so it wears
+**Deck**:
+The player itself, living in the site header: Scope, Readout, the transport
+row, and Eject, in one bordered strip. It is in the header rather than behind
+a menu so a reader can see what is playing and stop it without opening
+anything. Styled entirely from Starlight's own custom properties, so it wears
 whatever skin the site has active — the reason it is built here rather than
 borrowed from Webamp, which renders bitmap skins of its own.
-_Avoid_: popup, modal, dialog
+_Avoid_: player, widget, bar
+
+**Windowshade**:
+What the Deck becomes when the header runs out of room: chrome off, and
+everything but Transport and Eject moved into the Track list. Named after
+Winamp's collapsed mode. Controls relocate, never disappear — Starlight's own
+mobile menu does not take over until 50rem, and a gap between the two would
+leave a reader no way to stop the music.
+_Avoid_: compact mode, mobile mode
+
+**Track list**:
+The panel Eject opens: Auto and the site's tunes, plus whatever the
+Windowshade has pushed down from the Deck. The selected row is the reader's
+choice; the loaded row is what is actually cued — on Auto those differ, and
+both are marked.
+_Avoid_: playlist (that is the per-page idea, not yet built), menu, dropdown
 
 **Transport**:
-The play/pause button, in the header and again in the Player's button row, and
-the one click that starts an Armed tune. Play/pause rather than play/stop
-because stopping writes a Bookmark and the next play resumes from it — the
-tune is paused, not reset. It shows pause only while sounding, and breathes in
-time with the tune's `cps`.
+The Deck's play/pause button, and the one click that starts an Armed tune.
+Play/pause rather than play/stop because stopping writes a Bookmark and the
+next play resumes from it — the tune is paused, not reset. It shows pause only
+while sounding, and breathes in time with the tune's `cps`.
 _Avoid_: play button, toggle, speaker
 
 **Eject**:
-The header button that opens the Player. Named for what the button has meant
-since tape decks: not "stop", but "show me what else goes in here". Separate
-from the Transport so resuming an Armed tune stays one click.
+The Deck's button that opens the Track list. Named for what the button has
+meant since tape decks: not "stop", but "show me what else goes in here".
+Separate from the Transport so resuming an Armed tune stays one click.
 _Avoid_: caret, chevron, menu button
 
 **Stop**:
@@ -98,23 +108,19 @@ Silent page, because Off means "stop offering" rather than "start over".
 _Avoid_: mute, reset
 
 **Readout**:
-The Player's top strip: which tune is loaded, and its tempo as `cps` and
-seconds per cycle. The place a hardware deck would put a track name and its
-bitrate, showing numbers that are actually true of the tune.
+The Deck's track name. Its tempo — `cps` and seconds per cycle — rides along
+as a tooltip rather than more header pixels. The place a hardware deck would
+put a track name and its bitrate, showing numbers actually true of the tune.
 _Avoid_: display, LCD, status bar
 
 **Scope**:
-The Player's oscilloscope, drawn from a named Strudel analyser the pattern is
+The Deck's oscilloscope, drawn from a named Strudel analyser the pattern is
 routed through. It draws into Pulsar's own canvas rather than Strudel's
-full-page one, so it fits the panel and takes its colour from the active skin.
-Still and flat when nothing is sounding.
+full-page one, so it fits the header and takes its colour from the active
+skin, and normalises to the buffer's own peak — background music is quiet by
+design, and a fixed scale in a twenty-pixel canvas draws something
+indistinguishable from silence. Flat and still when nothing is sounding.
 _Avoid_: visualizer, spectrum, waveform
-
-**Playlist**:
-The Player's list of Auto and the site's tunes. The selected row is the
-reader's choice; the loaded row is what is actually cued — on Auto those are
-different, and both are marked.
-_Avoid_: menu, track list, options
 
 **Site author**:
 The developer who installs Pulsar, writes or chooses its tunes, and decides
