@@ -38,8 +38,21 @@ Verified against the pinned `@strudel` 1.3 packages during design.
   destination`), which exposes no accessor, so there is no master node to ramp.
   The exported `setGain()` only sets a module-level scalar. **Pulsar ships no
   master fade**: entries are clean because every built-in tune has a non-zero
-  attack, and `repl.stop()` halts scheduling while letting sounding notes
-  finish their own release — a gentler exit than a ramped cut.
+  attack.
+- **Stopping needs more than `repl.stop()`.** It halts *scheduling* only, and
+  voices already triggered run out their own release. An earlier note here
+  called that "a gentler exit than a ramped cut"; it is not, it is a bug.
+  Drift's pad releases over six seconds — measured RMS 0.047 while playing and
+  still 0.0085 more than a second after stop, reaching silence at ~2.4s.
+  `resetGlobalEffects()` is the fix and the only lever available: it calls
+  `disconnect()` on `channelMerger` and `destinationGain`, severing the only
+  path to `ctx.destination`, then rebuilds the graph for the next play.
+  `hush()` is an alias for `repl.stop()` and does not help; suspending the
+  AudioContext would freeze the tail rather than end it, so it would resume on
+  top of the next pattern. The cut is abrupt because nothing reachable can be
+  ramped first. It also clears the analyser registry, which is harmless —
+  `.analyze()` re-registers on the next play, verified by playing, stopping and
+  playing again.
 - **Only events with an onset fire.** `Cyclist` triggers a hap only when
   `hasOnset()` is true (`cyclist.mjs:63`). Resuming mid-cycle therefore drops
   any note already sounding rather than splicing it — which is why bookmarks

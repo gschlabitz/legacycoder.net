@@ -223,6 +223,7 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		getAudioContext(): AudioContext
 		getAnalyserById(id: string, fftSize?: number, smoothing?: number): AnalyserNode
 		getAnalyzerData(type: 'time' | 'frequency', id?: string): Float32Array
+		resetGlobalEffects(): void
 		samples(map: unknown, base: string): unknown
 	}
 
@@ -318,11 +319,28 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		if (!playing || !enginePromise) return
 		const repl = await enginePromise
 		bookmarkNow()
-		/* No master fade: `outputNode` reaches only Strudel's ugen path, not
-		   superdough's `s()`/`note()` output, so there is no master node to ramp.
-		   `stop()` halts scheduling and lets sounding notes finish their own
-		   release, which is a cleaner exit than a cut anyway. */
+
+		/* `repl.stop()` only halts *scheduling*. Voices already triggered run out
+		   their own release, and Drift's pad releases over six seconds — measured
+		   RMS 0.047 while playing and still 0.0085 more than a second after the
+		   reader pressed stop. A transport that keeps sounding is just broken.
+
+		   `resetGlobalEffects()` tears down superdough's output graph
+		   (channelMerger → destinationGain → destination) and rebuilds it, which
+		   orphans those voices at once. It is the only lever available: the
+		   destination gain node is module-private, `hush()` is an alias for
+		   `repl.stop()`, and `initStrudel({ outputNode })` reaches only the ugen
+		   path behind `.out()`, never `s()`/`note()`. Suspending the AudioContext
+		   would freeze the tail rather than end it — it would resume on the next
+		   play, on top of the new pattern.
+
+		   The cut is abrupt by construction, since there is no reachable node to
+		   ramp first. At these levels it is inaudible as a click, and far better
+		   than two seconds of pad after a stop. It also clears the analyser
+		   registry, which is harmless: `.analyze()` re-registers on next play. */
 		repl.stop()
+		strudelModule?.resetGlobalEffects()
+
 		playing = null
 		stopScope()
 	}
@@ -851,7 +869,7 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		border-radius: 0.2rem;
 		padding: 0.3rem 0.4rem;
 		background: transparent;
-		color: var(--sl-color-gray-2);
+		color: var(--sl-color-text-accent);
 		font: inherit;
 		font-size: var(--sl-text-sm);
 		text-align: start;
@@ -859,8 +877,9 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		cursor: pointer;
 	}
 
+	/* Same colour as the row it labels — the index reads as secondary through
+	   size and the mono face, which is enough without a second tint. */
 	.pulsar-option-index {
-		color: var(--sl-color-gray-4);
 		font-family: var(--sl-font-mono, ui-monospace, monospace);
 		font-size: var(--sl-text-xs);
 	}
@@ -869,27 +888,18 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		background-color: var(--sl-color-gray-6);
 	}
 
-	/* Selected row gets the accent bar and colour, not just a background —
-	   `--sl-color-gray-6` and `--sl-color-bg-nav` are the same value in some
-	   skins, which left the old highlight invisible. */
+	/* Selection is the accent bar, not a colour change — `--sl-color-gray-6`
+	   and `--sl-color-bg-nav` are the same value in some skins, so a background
+	   alone can be invisible. */
 	.pulsar-option[aria-selected='true'] {
 		background-color: var(--sl-color-gray-6);
 		box-shadow: inset 0.15rem 0 0 var(--sl-color-accent);
-		color: var(--sl-color-white);
 	}
 
-	.pulsar-option[aria-selected='true'] .pulsar-option-index {
-		color: var(--sl-color-text-accent);
-	}
-
-	/* The loaded tune, which on Auto is not the selected row. */
+	/* The loaded tune, which on Auto is not the selected row. Weight rather
+	   than colour, so the list stays one hue. */
 	.pulsar-option[data-loaded] .pulsar-option-name {
-		color: var(--sl-color-white);
-		font-weight: 600;
-	}
-
-	.pulsar-option[data-loaded] .pulsar-option-index {
-		color: var(--sl-color-text-accent);
+		font-weight: 700;
 	}
 
 	.pulsar-option:focus {
