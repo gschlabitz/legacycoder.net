@@ -151,12 +151,21 @@ One trigger plus one menu, modelled directly on Chameleon's skin selector
 same `aria-selected` bookkeeping, same inline pre-hydration script to avoid a
 flash of the wrong value.
 
-Trigger states, which the icon should distinguish at a glance:
+Four states — **playing**, **armed** (one click resumes), **nothing here** (the
+page declares no tune and the reader is on Auto), and **off**.
 
-- **playing** — pulsing in time with the tune's `cps`
-- **armed** — lit but still; one click resumes
-- **nothing here** — the page declares no tune and the reader is on Auto
-- **off** — the reader has opted out; the menu still opens
+The plan wanted the trigger icon to distinguish all four at a glance, and that
+turned out to be one job too many for one icon. Built as specified — pulsing
+while playing, lit when armed, dimmed otherwise, struck through when off — it
+read badly: `armed` ended up brighter than `playing`, so the row appeared to
+dim when the music started; the pulse was tied to `cps`, which is legible for
+Grid at 2.5s and meaningless for Drift at 16.7s; and a crossed-out play button
+reads as "broken" rather than "you turned this off".
+
+So the signal is split across the parts that each carry it best. The glyph says
+what a press will do (play or pause). The scope says whether anything is
+sounding. The readout says the mode in words. The keys themselves are one
+colour in every state, and disabled when there is nothing to press.
 
 The control renders on every page, including pages with nothing to play. It
 is never hidden — a control that appears and disappears as the reader moves

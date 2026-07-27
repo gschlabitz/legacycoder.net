@@ -452,14 +452,6 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 				if (label) trigger.setAttribute('aria-label', label)
 			}
 
-			/* Pulse in time with the tune, so a playing control reads as playing
-			   without needing a label. */
-			if (state === 'playing' && playing) {
-				control.style.setProperty('--pulsar-cycle', `${1 / playing.cps}s`)
-			} else {
-				control.style.removeProperty('--pulsar-cycle')
-			}
-
 			/* Readout: what is loaded. The tempo rides along as a tooltip — real
 			   numbers, but not worth header pixels. */
 			const shown = playing?.name || effective
@@ -751,12 +743,13 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		border-radius: 0.2rem;
 		padding: 0;
 		background: transparent;
-		color: var(--sl-color-gray-3);
+		color: var(--sl-color-text-accent);
 		font: inherit;
 		cursor: pointer;
 	}
 
 	.pulsar-eject:hover {
+		background: var(--sl-color-gray-6);
 		color: var(--sl-color-white);
 	}
 
@@ -770,54 +763,25 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 	}
 
 
-	/* Play is the resting glyph; pause replaces it only while sounding.
-	   Off carries no struck-through variant: the Readout already says "Off" in
+	/* Play is the resting glyph; pause replaces it only while sounding. Off
+	   carries no struck-through variant: the Readout already says "Off" in
 	   words wherever it is rendered, and a crossed-out play button reads as
-	   "broken" rather than "you turned this off". Where the Readout is not
-	   shown, the dimmed colour still separates idle from ready. */
+	   "broken" rather than "you turned this off". */
 	.pulsar-glyph-pause {
 		display: none;
 	}
 
-	/* Nothing declared here and the reader is on Auto: present but idle. The
-	   control is never hidden — one that comes and goes as the reader moves
-	   around the site is worse than one visibly doing nothing. */
-	.pulsar-trigger[data-state='nothing'],
-	.pulsar-trigger[data-state='off'] {
-		color: var(--sl-color-gray-4);
-	}
-
-	.pulsar-trigger[data-state='armed'] {
-		color: var(--sl-color-text-accent);
-	}
-
-	/* Sounding, but not shouting about it. The transport is one set of keys, so
-	   the pause glyph takes the same colour as prev/stop/next — the breathing
-	   and the readout already say it is playing, and a brighter key here just
-	   made the row look misaligned. */
-	.pulsar-trigger[data-state='playing'] {
-		color: var(--sl-color-gray-2);
-	}
-
+	/* State is carried by the glyph and by whether the key is enabled — the
+	   colour never changes. An earlier version tinted the trigger per state,
+	   which put `armed` brighter than `playing` and made the row look like it
+	   dimmed when the music started. The scope says what is sounding; the keys
+	   just have to look like keys. */
 	.pulsar-trigger[data-state='playing'] .pulsar-glyph-play {
 		display: none;
 	}
 
 	.pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {
 		display: inline;
-		animation: pulsar-breathe var(--pulsar-cycle, 2s) ease-in-out infinite;
-	}
-
-	/* Shallow on purpose: this sits in the header of a page someone is reading,
-	   so it should register in peripheral vision without pulling the eye. */
-	@keyframes pulsar-breathe {
-		0%,
-		100% {
-			opacity: 0.55;
-		}
-		50% {
-			opacity: 1;
-		}
 	}
 
 	/* Transport buttons. Flat inside the strip — the strip's own border already
@@ -832,7 +796,7 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 		border-radius: 0.2rem;
 		padding: 0;
 		background: transparent;
-		color: var(--sl-color-gray-2);
+		color: var(--sl-color-text-accent);
 		font: inherit;
 		cursor: pointer;
 	}
@@ -956,10 +920,4 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 	}
 
 
-	@media (prefers-reduced-motion: reduce) {
-		.pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {
-			animation: none;
-			opacity: 1;
-		}
-	}
 </style>

@@ -92,7 +92,10 @@ _Avoid_: playlist (that is the per-page idea, not yet built), menu, dropdown
 The Deck's play/pause button, and the one click that starts an Armed tune.
 Play/pause rather than play/stop because stopping writes a Bookmark and the
 next play resumes from it — the tune is paused, not reset. It shows pause only
-while sounding, and breathes in time with the tune's `cps`.
+while sounding. Every key in the Deck is one colour in every state: the glyph
+says what a press does, the Scope says whether anything is sounding, and the
+Readout says the mode in words, so tinting the keys as well only made the row
+look inconsistent with itself.
 _Avoid_: play button, toggle, speaker
 
 **Eject**:
