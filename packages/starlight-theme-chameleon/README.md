@@ -49,6 +49,10 @@ export default defineConfig({
           // How Starlight's light/dark/auto theme selector renders in the same slot.
           // Defaults to 'select', which preserves Starlight's stock selector.
           themeSelector: 'select', // 'select' | 'icon'
+          // Whether a root `ec.config.mjs` carries the per-skin syntax themes,
+          // which Expressive Code's `<Code>` component requires. Auto-detected
+          // when unset. See "Using Expressive Code's <Code> component" below.
+          ecConfigFile: undefined, // true | false
         }),
       ],
     }),
@@ -67,6 +71,54 @@ Both `skinSelector` variants open the same popup — a list of skins, each row p
 | `'hidden'` | No control. The first entry in `skins` is pinned site-wide. |
 
 `themeSelector: 'icon'` likewise replaces Starlight's light/dark/auto `<select>` with a single square button that cycles the three modes — sun for light, moon for dark, and a half-filled contrast circle for auto. Use it when the skin selector is also an icon, so the two controls match. `themeSelector: 'select'` (the default) leaves Starlight's own selector exactly as it ships.
+
+### Using Expressive Code's `<Code>` component
+
+If your site imports `<Code>` from `@astrojs/starlight/components`, add an `ec.config.mjs` next to your Astro config:
+
+```js
+// ec.config.mjs
+import { chameleonExpressiveCode } from 'starlight-theme-chameleon/ec-config'
+
+export default chameleonExpressiveCode()
+```
+
+That is the whole change. No skin list is needed — Chameleon defaults to every built-in skin, and selectors for skins your site doesn't register are never consulted, so this file can't drift out of step with `astro.config.mjs`. If your site sets its own `expressiveCode.themes`, or supplies `customSkins`, pass them here too:
+
+```js
+export default chameleonExpressiveCode({
+  customSkins: [/* the same objects you pass to the plugin */],
+  themes: [/* the same themes you pass to Starlight's expressiveCode */],
+})
+```
+
+Already have an `ec.config.mjs`? Spread the result into it:
+
+```js
+export default { ...chameleonExpressiveCode(), styleOverrides: { borderRadius: '0.5rem' } }
+```
+
+**Why this is necessary.** Chameleon pairs each skin with its own syntax themes through Expressive Code's `themeCssSelector` option, which EC accepts only as a callback — its type is `((theme, context) => string | false) | false`, with no serializable form. The options Starlight forwards to the EC integration are serialized into a virtual module, so a callback sent that way arrives as the string `"[Function]"`, and `<Code>` refuses to render. A root `ec.config.mjs` is EC's supported channel for exactly this, and EC merges it over the integration options in both the Markdown and `<Code>` paths, so Chameleon hands the callback over and stops forwarding it itself.
+
+Without the file, `<Code>` throws *while rendering* — after the response headers are sent, so the page is silently truncated at that point, with no error in the browser and only the dev-server log naming the cause. Markdown and MDX code fences are unaffected either way, as is everything else Chameleon does; only the `<Code>` component needs this.
+
+> **The full story — and a to-do.** [docs/expressive-code.md](./docs/expressive-code.md) records the whole root-cause chain, the alternatives that don't work and why, and the verification evidence.
+>
+> **TODO (Guido) — [#32](https://github.com/gschlabitz/legacycoder.net/issues/32):** examine this fix in depth before relying on it long-term. It works and is verified, but it leans on two *undocumented* upstream implementation details — EC merging the config file over the integration options, and Starlight's EC preprocessor spreading user options last (`...rest`). Neither is a public guarantee, there is no test asserting the composed selector reaches the rendered CSS, and the whole mechanism should be deleted rather than maintained if EC ever accepts a serializable selector form. See "Open questions" in that document.
+
+### Controlling the handover: `ecConfigFile`
+
+Chameleon auto-detects the file by default. Because it cannot see what EC merged, it can't tell a file that carries its options from one that exists for unrelated reasons — so the behavior is adjustable:
+
+| `ecConfigFile` | Behavior |
+| --- | --- |
+| unset (default) | Auto-detect. Defers to the file when present; warns that `<Code>` is unusable when absent. |
+| `true` | The file supplies the callback. **Fails the build** if it's missing, instead of silently dropping per-skin syntax themes. |
+| `false` | Chameleon supplies the callback itself and stays quiet. Use this when your site never imports `<Code>`. |
+
+Every state that falls short reports itself at startup, since each failure is otherwise invisible: a missing file warns (or errors under `ecConfigFile: true`), and a file that never mentions `chameleonExpressiveCode` warns that code blocks will keep your base syntax themes instead of following the skin.
+
+If you would rather not add the file at all, set `ecConfigFile: false` and import Astro's own `<Code>` from `astro:components`. It renders through Shiki rather than Expressive Code, so it follows light/dark but not the active skin.
 
 ### Composing with starlight-blog
 
@@ -136,6 +188,7 @@ Contributions of further languages are welcome.
 
 - **Skins restyle; they never restructure.** Starlight's interface icons are inline SVGs baked in at build time, so skins recolor them but cannot swap their shapes (see [docs/adr](./docs/adr)).
 - **Switching needs JavaScript.** Without it, readers get the Starlight look — the site's own styling — fully usable. That applies to pinned skins too.
+- **Per-skin syntax themes need a one-line `ec.config.mjs`** before Expressive Code's `<Code>` component can be used. EC's `themeCssSelector` option is callback-only, and the options Starlight forwards to the EC integration are serialized — see [Using Expressive Code's `<Code>` component](#using-expressive-codes-code-component) and [docs/expressive-code.md](./docs/expressive-code.md). Code fences never need it.
 - **Every offered skin's CSS ships to every reader.** Font package dependencies are installed with Chameleon, but browsers only download a font file when the active skin references that face. Keep the curated list small.
 
 ## Why not just install a community theme?
