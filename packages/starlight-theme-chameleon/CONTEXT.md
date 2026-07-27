@@ -72,3 +72,48 @@ mode), compiled into the build and switched with the skin, so code blocks
 change alongside the rest of the site. Optional per skin; without one, code
 blocks keep the site's base syntax themes.
 _Avoid_: EC integration, syntax theme switching
+
+## Constraints
+
+### Code pairings and the `<Code>` component
+
+A code pairing needs Expressive Code's `themeCssSelector` option to map each
+skin's themes onto `[data-skin][data-theme]`. EC accepts that option only as a
+**callback** — `((theme, context) => string | false) | false`, no serializable
+form — and the options Starlight forwards to the EC integration are serialized
+into a virtual module with `stableStringify`, which rewrites functions to the
+string `"[Function]"`. EC's `<Code>` component checks for that marker and
+throws.
+
+The failure mode is what makes this worth writing down: the throw happens
+*while rendering*, after the response headers are sent, so the HTML stream is
+truncated at the component. No error page — the page just stops, everything
+after the `<Code>` disappears, and only the dev-server log names the cause.
+Markdown and MDX code fences never go through this path and are unaffected.
+
+The callback's one channel that reaches both paths is a root `ec.config.mjs`.
+Chameleon therefore splits the two halves — `composeExpressiveCodeConfig`
+returns the serializable options separately from the callback — and forwards
+the callback through Starlight's config only when the site isn't handing that
+job to `ec.config.mjs`. `lib/ec-config.ts` is the adopter-facing helper for
+that file; the `ecConfigFile` option controls the handover.
+
+Two rules follow for everything reachable from `lib/ec-config.ts`, because
+`ec.config.mjs` is loaded by Node's own `import()` during config setup rather
+than through Vite:
+
+- Relative imports carry explicit `.ts` extensions — Node's ESM resolver does
+  no extension guessing. Astro's base `tsconfig.json` already sets
+  `allowImportingTsExtensions`, so TypeScript accepts them too.
+- No Astro, Starlight, or Node-only imports, and the TypeScript must stay
+  type-strippable (no `enum`, namespaces, or parameter properties), because
+  Node erases types rather than compiling them.
+
+**Full reasoning, alternatives rejected, verification evidence, and open
+questions: [docs/expressive-code.md](./docs/expressive-code.md).** The mechanism
+depends on two *undocumented* upstream details (EC merging the config file over
+the integration options; Starlight's preprocessor spreading user options last),
+so re-read it on the next Starlight or EC major — tracked in
+[#32](https://github.com/gschlabitz/legacycoder.net/issues/32). Verified against
+`@astrojs/starlight` 0.41.1 and `astro-expressive-code` as resolved by
+`astro` 7.0.9.

@@ -49,7 +49,7 @@ export default function starlightThemeChameleon(
         })
       },
       'config:setup'({ config, logger, updateConfig, addIntegration, astroConfig }) {
-        const { skins, skinSelector, themeSelector } = resolveConfig(userConfig)
+        const { skins, skinSelector, themeSelector, ecConfigFile } = resolveConfig(userConfig)
         const skinNames = skins.map((skin) => skin.name)
 
         warnOnUnscopedSkinCss(skins, astroConfig.root, logger)
@@ -91,13 +91,30 @@ export default function starlightThemeChameleon(
           : `document.documentElement.dataset.skin=${JSON.stringify(skinNames[0])};`
         const head = [...(config.head ?? []), { tag: 'script' as const, content: headScript }]
 
-        const expressiveCode = composeExpressiveCodeConfig(skins, config.expressiveCode)
+        // Per-skin syntax themes need EC's `themeCssSelector`, which EC only
+        // accepts as a callback. Starlight serializes the options it forwards
+        // to the EC integration, so a callback sent that way reaches EC's
+        // `<Code>` component as `"[Function]"` and makes it throw mid-render —
+        // truncating the response instead of showing an error. The callback's
+        // one channel that also serves `<Code>` is a root `ec.config.mjs`, so
+        // when that file carries Chameleon's options (see `lib/ec-config.ts`)
+        // we keep the callback out of Starlight's config. Full reasoning in
+        // `docs/expressive-code.md`.
+        const composed = composeExpressiveCodeConfig(skins, config.expressiveCode)
+        const deferToEcConfigFile = composed !== undefined && resolveEcConfigFileHandover(ecConfigFile, astroConfig.root, logger)
 
         updateConfig({
           customCss,
           components,
           head,
-          ...(expressiveCode ? { expressiveCode: expressiveCode as never } : {}),
+          ...(composed
+            ? {
+                expressiveCode: {
+                  ...composed.options,
+                  ...(deferToEcConfigFile ? {} : { themeCssSelector: composed.themeCssSelector }),
+                } as never,
+              }
+            : {}),
         })
 
         // The selector component reads the skin list at render time through a
@@ -139,6 +156,88 @@ export default function starlightThemeChameleon(
       },
     },
   }
+}
+
+/** The snippet that makes an `ec.config.mjs` carry Chameleon's options. */
+const EC_CONFIG_SNIPPET =
+  "  import { chameleonExpressiveCode } from 'starlight-theme-chameleon/ec-config'\n" +
+  '  export default chameleonExpressiveCode()'
+
+/**
+ * Decide whether to hand Chameleon's `themeCssSelector` over to the site's
+ * `ec.config.mjs` instead of forwarding it through Starlight's config, and
+ * report whichever way the site's setup falls short.
+ *
+ * `ec.config.mjs` is the only name Expressive Code looks for, resolved against
+ * the Astro project root.
+ */
+function resolveEcConfigFileHandover(
+  ecConfigFile: boolean | undefined,
+  root: URL,
+  logger: { warn(message: string): void }
+): boolean {
+  // Opted out: the site accepts that `<Code>` is unusable, so say nothing.
+  if (ecConfigFile === false) return false
+
+  let path: string | undefined
+  try {
+    path = fileURLToPath(new URL('./ec.config.mjs', root))
+  } catch {
+    path = undefined
+  }
+  const exists = path !== undefined && fs.existsSync(path)
+
+  if (!exists) {
+    // Opted in but nothing to hand over to. Stepping aside here would drop
+    // per-skin syntax themes silently, so refuse the contradiction outright.
+    if (ecConfigFile === true) {
+      fail(
+        'The `ecConfigFile` option is `true`, but no `ec.config.mjs` was found next to your Astro config. ' +
+          'Chameleon stops supplying its per-skin syntax themes when that file is meant to carry them. ' +
+          'Either create it:\n' +
+          EC_CONFIG_SNIPPET +
+          '\nor set `ecConfigFile: false` to have Chameleon keep supplying them ' +
+          '(which leaves Expressive Code’s `<Code>` component unusable).'
+      )
+    }
+    logger.warn(
+      'Per-skin syntax themes are configured, which makes Expressive Code’s `<Code>` component unusable site-wide: ' +
+        'it throws while rendering and silently truncates the page. ' +
+        'To use `<Code>`, create an `ec.config.mjs` next to your Astro config containing:\n' +
+        EC_CONFIG_SNIPPET +
+        '\nMarkdown and MDX code fences are unaffected either way. ' +
+        'Set `ecConfigFile: false` to silence this if the site never imports `<Code>`.'
+    )
+    return false
+  }
+
+  // The file exists, so Chameleon steps aside — but it can only step aside
+  // usefully if the file actually calls the helper. Chameleon cannot see what
+  // Expressive Code merged, so check the source the same way custom skin CSS
+  // is checked. A false negative is possible (the call may be re-exported from
+  // another module), hence a warning rather than a hard failure.
+  let source: string | undefined
+  try {
+    source = fs.readFileSync(path!, 'utf-8')
+  } catch {
+    source = undefined
+  }
+  if (source !== undefined && !source.includes('chameleonExpressiveCode')) {
+    logger.warn(
+      '`ec.config.mjs` does not appear to call `chameleonExpressiveCode()`. ' +
+        'Code blocks will keep the base syntax themes instead of following the active skin. Add:\n' +
+        EC_CONFIG_SNIPPET +
+        '\nor spread it into the existing default export. If the call is supplied indirectly, ignore this.'
+    )
+  }
+  return true
+}
+
+/**
+ * Fail the build with the plugin's own prefix, matching `lib/skins.ts`.
+ */
+function fail(message: string): never {
+  throw new Error(`starlight-theme-chameleon: ${message}`)
 }
 
 /**

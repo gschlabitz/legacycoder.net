@@ -16,6 +16,7 @@
   ],
   "exports": {
     ".": "./index.ts",
+    "./ec-config": "./lib/ec-config.ts",
     "./components/*": "./components/*",
     "./skins/*": "./skins/*",
     "./styles/*": "./styles/*",
