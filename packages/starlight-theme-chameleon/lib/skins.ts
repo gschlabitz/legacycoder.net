@@ -57,12 +57,30 @@ export interface StarlightThemeChameleonUserConfig {
    * @default 'select'
    */
   themeSelector?: ChameleonThemeSelector
+  /**
+   * Whether a root `ec.config.mjs` carries Chameleon's per-skin syntax themes.
+   *
+   * Expressive Code's `themeCssSelector` option is callback-only, and the
+   * options Starlight forwards to the EC integration are serialized — so the
+   * callback must travel through `ec.config.mjs` for EC's `<Code>` component
+   * to work. See `docs/expressive-code.md`.
+   *
+   * - `undefined` (default) — auto-detect. Chameleon defers to the file when it
+   *   exists, and otherwise warns that `<Code>` is unusable.
+   * - `true` — the file supplies them. Chameleon fails at startup if it is
+   *   missing, rather than silently dropping per-skin syntax themes.
+   * - `false` — it does not. Chameleon supplies them itself and stays quiet;
+   *   choose this when the site never imports `<Code>`.
+   */
+  ecConfigFile?: boolean
 }
 
 export interface ResolvedChameleonConfig {
   skins: ChameleonSkin[]
   skinSelector: ChameleonSkinSelector
   themeSelector: ChameleonThemeSelector
+  /** `undefined` keeps auto-detection; see the user-config option. */
+  ecConfigFile: boolean | undefined
 }
 
 /* -------------------------------------------------------------------------- */
@@ -208,12 +226,15 @@ export function resolveConfig(userConfig: StarlightThemeChameleonUserConfig): Re
     customSkins = [],
     skinSelector = 'select',
     themeSelector = 'select',
+    ecConfigFile,
   } = userConfig
 
   if (skinSelector !== 'hidden' && skinSelector !== 'select' && skinSelector !== 'icon')
     fail('The `skinSelector` option must be one of: `hidden`, `select`, or `icon`.')
   if (themeSelector !== 'select' && themeSelector !== 'icon')
     fail('The `themeSelector` option must be one of: `select` or `icon`.')
+  if (ecConfigFile !== undefined && typeof ecConfigFile !== 'boolean')
+    fail('The `ecConfigFile` option must be a boolean.')
 
   const builtinNames = builtinSkins.map((skin) => skin.name)
   let requested: ChameleonSkin[]
@@ -246,5 +267,5 @@ export function resolveConfig(userConfig: StarlightThemeChameleonUserConfig): Re
       fail(`Custom skin \`${skin.name}\` shadows a built-in skin name. Pick a different name.`)
   }
 
-  return { skins, skinSelector, themeSelector }
+  return { skins, skinSelector, themeSelector, ecConfigFile }
 }

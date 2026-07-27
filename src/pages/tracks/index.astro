@@ -1,0 +1,80 @@
+---
+// PROTOTYPE — issue #30. The index over the per-tune pages.
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import config, { tuneLoaders } from "virtual:starlight-pulsar/config";
+
+const tracks = await Promise.all(
+  config.tunes.map(async ({ name, label }) => {
+    const { default: tune } = await tuneLoaders[name]!();
+    return { name, label, secondsPerCycle: 1 / tune.cps };
+  }),
+);
+---
+
+<StarlightPage
+  frontmatter={{
+    title: "Tracks",
+    description: "The tunes this site plays, and the JavaScript that describes them.",
+    tableOfContents: false,
+  }}
+  hasSidebar={false}
+>
+  <style>
+    .track-intro {
+      color: var(--sl-color-gray-2);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .track-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+      gap: 1rem;
+    }
+    .track-card {
+      display: block;
+      border: 1px solid var(--sl-color-gray-5);
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s;
+    }
+    .track-card:hover {
+      border-color: var(--sl-color-accent);
+    }
+    .track-card-title {
+      margin: 0 0 0.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    .track-card-meta {
+      font-family: var(--sl-font-mono);
+      font-size: 0.8rem;
+      color: var(--sl-color-gray-1);
+    }
+  </style>
+
+  <p class="track-intro">
+    Nothing here is a recording. Each track is a few dozen lines of JavaScript
+    describing oscillators and filters, evaluated in your browser by
+    <a href="https://strudel.cc">Strudel</a> when you press play. Each page shows
+    the code that makes it.
+  </p>
+
+  <ul class="track-list">
+    {
+      tracks.map(({ name, label, secondsPerCycle }) => (
+        <li>
+          <a class="track-card" href={`/tracks/${name}`}>
+            <h2 class="track-card-title">{label}</h2>
+            <span class="track-card-meta">{secondsPerCycle.toFixed(2)}s per cycle</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</StarlightPage>
