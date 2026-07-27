@@ -30,11 +30,16 @@ Verified against the pinned `@strudel` 1.3 packages during design.
   advances (0 → 1.206 over 2.5 s at cps 0.5). The plugin must **capture that
   return value** — `globalThis.repl` is a bare function, not the instance,
   and `StrudelPlayer` currently discards what `initStrudel()` hands back.
-- **A master gain node can be passed straight in.** `initStrudel({...opts})`
-  forwards everything except `prebake` to the repl constructor, which accepts
-  `outputNode` (default `null`). So the fade ramp attaches by handing
-  `initStrudel` a `GainNode` wired to `getAudioContext().destination` — no
-  patching of Strudel's own output chain.
+- ~~**A master gain node can be passed straight in.**~~ **Wrong — corrected
+  during implementation.** `initStrudel` does forward `outputNode` to the repl
+  constructor, but the repl passes it only to `this.audio = new yA(outputNode)`
+  — the kabelsalat ugen path used by `.out()`. Ordinary `s()` / `note()` output
+  goes through superdough's own chain (`channelMerger → destinationGain →
+  destination`), which exposes no accessor, so there is no master node to ramp.
+  The exported `setGain()` only sets a module-level scalar. **Pulsar ships no
+  master fade**: entries are clean because every built-in tune has a non-zero
+  attack, and `repl.stop()` halts scheduling while letting sounding notes
+  finish their own release — a gentler exit than a ramped cut.
 - **Only events with an onset fire.** `Cyclist` triggers a hap only when
   `hasOnset()` is true (`cyclist.mjs:63`). Resuming mid-cycle therefore drops
   any note already sounding rather than splicing it — which is why bookmarks
@@ -123,6 +128,15 @@ A bookmark is written when a tune stops: on the reader's stop, and on
 On the next play the tune resumes at `Math.ceil(bookmark)` via `.early()`,
 so it re-enters on a downbeat.
 
+Position is measured as `offset + (audioContext.currentTime - startedAt) * cps`,
+**not** from `scheduler.now()`. The spike read `now()` as a cycle clock
+advancing at `cps`, and across a fresh start that holds — but after a
+stop/start it does not: measured 0.147 cycles/s while `getCps()` read 0.06, so
+a bookmark taken from it lands in the wrong place. Audio time times the tune's
+own `cps` uses only values Pulsar sets, and is what the reader actually heard.
+Verified in the browser: over 6.095 s of Drift at cps 0.06 the stored bookmark
+was 0.3657 against an expected 0.3657 — exact — resuming at whole cycle 1.
+
 Bookmarks are per tune, not global — switching between two tunes and back
 picks each up where it was. Passing through a silent page does not clear
 them, so opting a page out reads as a pause rather than a reset.
@@ -195,13 +209,23 @@ disabling itself.
    entry point — its dist bundle imports browser-only `@kabelsalat/web`, and
    `@strudel/mini` re-imports that bundle, so mini-notation is unavailable in
    Node. `slowcat()` is what `<a b c>` desugars to anyway.)
-2. **Package skeleton** — config resolution, virtual module, schema
-   fragment, no UI.
-3. **Control component** — ported from Chameleon's selector, with the four
-   trigger states.
-4. **Site wiring** — schema, placement, and the first declared tunes on a
-   handful of pages.
-5. **Built-in synth-only tunes**, levelled against each other.
+2. ~~**Package skeleton**~~ **Done** — `index.ts` (plugin, i18n, virtual
+   module), `lib/config.ts` (resolution, duplicate/unknown-tune guards),
+   `schema.ts`, `tune.ts`, `virtual.d.ts`.
+3. ~~**Control component**~~ **Done** — `components/TuneSelect.astro`.
+   Transport and menu are separate buttons: the plan called for one click to
+   resume an armed tune, which a menu-opening trigger cannot give, so the
+   caret opens the listbox and the speaker is the transport. Playback state
+   and selection are module-scoped, not per-element, because Starlight renders
+   `SocialIcons` twice (header and mobile menu) and two controls on one page
+   must not contradict each other.
+4. ~~**Site wiring**~~ **Done** — schema merged in `src/content.config.ts`,
+   control placed in `src/components/SocialIcons.astro`, plugin registered in
+   `astro.config.mjs`. Declared tunes: `drift` on both index pages, `grid` on
+   both Pfeffer pages, `music: false` on `workarounds/index.md`.
+5. ~~**Built-in synth-only tunes**~~ **Done** — `tunes/drift.ts` (ambient pad,
+   cps 0.06) and `tunes/grid.ts` (96 bpm pulse). Verified: no off-origin
+   requests during playback.
 
 ## Deferred
 

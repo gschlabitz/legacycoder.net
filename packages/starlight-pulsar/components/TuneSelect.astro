@@ -1,0 +1,615 @@
+---
+import config from 'virtual:starlight-pulsar/config'
+
+const t = Astro.locals.t
+
+// Three localized strings. Tune labels are not among them — they are proper
+// nouns chosen by the site author, like skin names.
+const labelKey = 'starlightPulsar.tuneSelect.accessibleLabel'
+const offKey = 'starlightPulsar.tuneSelect.off'
+const autoKey = 'starlightPulsar.tuneSelect.auto'
+const accessibleLabel = t.exists(labelKey) ? t(labelKey) : 'Select background music'
+const offLabel = t.exists(offKey) ? t(offKey) : 'Off'
+const autoLabel = t.exists(autoKey) ? t(autoKey) : 'Auto'
+
+// What this page contributes: a Declared tune, a Silent page, or nothing.
+const music = Astro.locals.starlightRoute?.entry?.data?.music as string | false | undefined
+const silent = music === false
+const pageTune = typeof music === 'string' ? music : null
+
+// A page naming a tune that was never registered would go quietly silent —
+// and because `music` is a mirrored fact, a typo in one locale's file would
+// leave that locale's readers with nothing while the other plays. Cheaper to
+// fail the build.
+if (pageTune && !config.tunes.some((tune) => tune.name === pageTune)) {
+  const known = config.tunes.map((tune) => tune.name).join(', ') || '(none registered)'
+  throw new Error(
+    `starlight-pulsar: page "${Astro.locals.starlightRoute?.id ?? Astro.url.pathname}" declares ` +
+      `\`music: ${pageTune}\`, which is not a registered tune. Registered tunes: ${known}.`
+  )
+}
+
+const options = [
+  { value: 'off', label: offLabel },
+  { value: 'auto', label: autoLabel },
+  ...config.tunes.map((tune) => ({ value: tune.name, label: tune.label })),
+]
+---
+
+<pulsar-tune-select
+  data-page-tune={pageTune ?? ''}
+  data-silent={silent ? 'true' : 'false'}
+>
+  {/* Transport. One click resumes an armed tune — that is the whole point of
+      the armed state, so the menu must not stand between the reader and it. */}
+  <button class="pulsar-trigger" type="button" data-state="nothing" aria-pressed="false" aria-label={accessibleLabel}>
+    <span class="sr-only">{accessibleLabel}</span>
+    <svg class="pulsar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" width="16" height="16">
+      {/* Speaker cone, always drawn. */}
+      <path d="M11 5 6 9H3v6h3l5 4V5z" />
+      {/* Waves, hidden when off. */}
+      <path class="pulsar-wave pulsar-wave-1" d="M15.5 8.5a5 5 0 0 1 0 7" />
+      <path class="pulsar-wave pulsar-wave-2" d="M18.5 5.5a9 9 0 0 1 0 13" />
+      {/* Slash, shown only when the reader has opted out. */}
+      <path class="pulsar-slash" d="M3 3l18 18" />
+    </svg>
+  </button>
+
+  {/* Menu opener, kept separate so the transport stays a single click. */}
+  <button
+    class="pulsar-caret"
+    type="button"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-label={accessibleLabel}
+  >
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
+      <path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1 1 0 0 0 1.42 0L17 10.59a1 1 0 0 0 0-1.42Z" />
+    </svg>
+  </button>
+
+  <div class="pulsar-menu" role="listbox" aria-label={accessibleLabel} hidden>
+    <div class="pulsar-menu-heading" aria-hidden="true">{accessibleLabel}</div>
+    {options.map(({ value, label }) => (
+      <button
+        class="pulsar-option"
+        type="button"
+        role="option"
+        data-tune-value={value}
+        aria-selected={value === 'auto' ? 'true' : 'false'}
+      >
+        <span class="pulsar-option-name">{label}</span>
+      </button>
+    ))}
+  </div>
+</pulsar-tune-select>
+
+{/* Inlined so the control never paints a state the reader did not choose. */}
+<script is:inline>
+	(() => {
+		var selection = 'auto';
+		try {
+			selection = localStorage.getItem('pulsar-selection') || 'auto';
+		} catch (e) {}
+		document.querySelectorAll('pulsar-tune-select').forEach((control) => {
+			var known = Array.from(control.querySelectorAll('[data-tune-value]')).map((o) => o.getAttribute('data-tune-value'));
+			if (known.indexOf(selection) === -1) selection = 'auto';
+			control.querySelectorAll('[data-tune-value]').forEach((option) => {
+				option.setAttribute('aria-selected', option.getAttribute('data-tune-value') === selection ? 'true' : 'false');
+			});
+			var pageTune = control.getAttribute('data-page-tune') || '';
+			var silent = control.getAttribute('data-silent') === 'true';
+			var effective = selection === 'off' || silent ? '' : selection === 'auto' ? pageTune : selection;
+			var state = selection === 'off' ? 'off' : effective ? 'armed' : 'nothing';
+			control.querySelectorAll('.pulsar-trigger').forEach((node) => {
+				node.setAttribute('data-state', state);
+			});
+		});
+	})();
+</script>
+
+<script>
+	import config, { tuneLoaders } from 'virtual:starlight-pulsar/config'
+	import type { Tune } from 'starlight-pulsar/tune'
+
+	const SELECTION_KEY = 'pulsar-selection'
+	const BOOKMARKS_KEY = 'pulsar-bookmarks'
+
+	type Selection = 'auto' | 'off' | (string & {})
+
+	const tuneNames = config.tunes.map((tune) => tune.name)
+
+	/* Storage is best-effort throughout: a reader with storage blocked gets a
+	   working control that simply forgets between pages. */
+	const loadSelection = (): Selection => {
+		try {
+			const stored = localStorage.getItem(SELECTION_KEY)
+			if (stored === 'off' || stored === 'auto') return stored
+			if (stored && tuneNames.includes(stored)) return stored
+		} catch {
+			/* ignore */
+		}
+		return 'auto'
+	}
+
+	const storeSelection = (selection: Selection): void => {
+		try {
+			localStorage.setItem(SELECTION_KEY, selection)
+		} catch {
+			/* ignore */
+		}
+	}
+
+	const loadBookmarks = (): Record<string, number> => {
+		try {
+			const raw = localStorage.getItem(BOOKMARKS_KEY)
+			const parsed: unknown = raw ? JSON.parse(raw) : null
+			if (parsed && typeof parsed === 'object') return parsed as Record<string, number>
+		} catch {
+			/* ignore */
+		}
+		return {}
+	}
+
+	const storeBookmark = (name: string, cycle: number): void => {
+		if (!Number.isFinite(cycle) || cycle < 0) return
+		try {
+			const bookmarks = loadBookmarks()
+			bookmarks[name] = cycle
+			localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks))
+		} catch {
+			/* ignore */
+		}
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Engine                                                              */
+	/* ------------------------------------------------------------------ */
+
+	interface Repl {
+		setCps(cps: number): void
+		setPattern(pattern: unknown, autostart?: boolean): Promise<unknown>
+		stop(): void
+	}
+
+	/** Strudel's AudioContext, which is also our clock for bookmarks. */
+	let audioContext: AudioContext | null = null
+
+	/* Module scope, shared by every control instance on the page: the first
+	   play downloads the engine, later plays reuse the same promise. Nothing
+	   is imported until a reader actually asks for sound (ADR 0005). */
+	let enginePromise: Promise<Repl> | null = null
+
+	const loadEngine = (): Promise<Repl> => {
+		enginePromise ??= (async () => {
+			const strudel = await import('@strudel/web')
+			const options: Record<string, unknown> = {}
+			/* `initStrudel` registers synth sounds on its own and fetches nothing.
+			   A prebake is added only when the site brought its own samples —
+			   which is what keeps built-in tunes network-free. */
+			if (config.samples) {
+				const { base, map } = config.samples
+				options.prebake = () => (strudel as { samples: (m: unknown, b: string) => unknown }).samples(map, base)
+			}
+			const repl = (await strudel.initStrudel(options)) as unknown as Repl
+			audioContext = (strudel as { getAudioContext: () => AudioContext }).getAudioContext()
+			return repl
+		})()
+		return enginePromise
+	}
+
+	/* What is sounding right now, if anything.
+
+	   Position is derived from audio time rather than `scheduler.now()`. The
+	   scheduler's cycle clock does not advance at `cps` across a stop/start —
+	   measured 0.147 cycles/s while `getCps()` read 0.06 — so a bookmark taken
+	   from it lands in the wrong place. Audio time times the tune's own cps
+	   uses only values we set, and is what the reader actually heard. */
+	let playing: { name: string; startedAt: number; offset: number; cps: number } | null = null
+
+	/* Seconds per cycle of whatever is playing, for the trigger's pulse. */
+	let cycleSeconds = 0
+
+	/* Playback and selection are page-wide, not per-control: Starlight renders
+	   SocialIcons twice — desktop header and mobile menu — so both instances
+	   must show the same state or they contradict each other. */
+	let selection: Selection = 'auto'
+
+	const play = async (name: string): Promise<boolean> => {
+		const loader = tuneLoaders[name]
+		if (!loader) return false
+
+		const [repl, module] = await Promise.all([loadEngine(), loader()])
+		const tune: Tune = module.default
+
+		/* Resume on a downbeat. Strudel's Cyclist only fires haps that have an
+		   onset, so resuming mid-cycle drops any note spanning the resume point
+		   instead of splicing it — rounding forward is what avoids that. */
+		const offset = Math.ceil(loadBookmarks()[name] ?? 0)
+		let pattern = tune.pattern()
+		if (offset > 0) pattern = pattern.early(offset)
+		if (typeof tune.gain === 'number') {
+			/* `.mul(gain(x))` scales; a bare `.gain(x)` would overwrite the
+			   per-voice levels the tune set for its own balance. `gain` is one of
+			   the controls `initStrudel` puts on `globalThis`. */
+			const gainControl = (globalThis as unknown as { gain: (value: number) => unknown }).gain
+			pattern = pattern.mul(gainControl(tune.gain))
+		}
+
+		repl.setCps(tune.cps)
+		await repl.setPattern(pattern, true)
+		playing = { name, startedAt: audioContext?.currentTime ?? 0, offset, cps: tune.cps }
+		cycleSeconds = 1 / tune.cps
+		return true
+	}
+
+	const bookmarkNow = (): void => {
+		if (!playing) return
+		const elapsed = (audioContext?.currentTime ?? playing.startedAt) - playing.startedAt
+		storeBookmark(playing.name, playing.offset + elapsed * playing.cps)
+	}
+
+	const stop = async (): Promise<void> => {
+		if (!playing || !enginePromise) return
+		const repl = await enginePromise
+		bookmarkNow()
+		/* No master fade: `outputNode` reaches only Strudel's ugen path, not
+		   superdough's `s()`/`note()` output, so there is no master node to ramp.
+		   `stop()` halts scheduling and lets sounding notes finish their own
+		   release, which is a cleaner exit than a cut anyway. */
+		repl.stop()
+		playing = null
+		cycleSeconds = 0
+	}
+
+	/* ------------------------------------------------------------------ */
+	/* Shared state → every control on the page                            */
+	/* ------------------------------------------------------------------ */
+
+	/**
+	 * What should sound on this control's page, given page and reader. A silent
+	 * page overrides the reader; Off suppresses everything; Auto defers to the
+	 * page; an explicit pick plays anywhere that permits music.
+	 */
+	const effectiveFor = (control: HTMLElement): string => {
+		const pageTune = control.dataset.pageTune || ''
+		if (selection === 'off' || control.dataset.silent === 'true') return ''
+		if (selection === 'auto') return pageTune
+		return tuneNames.includes(selection) ? selection : ''
+	}
+
+	const renderAll = (): void => {
+		document.querySelectorAll<HTMLElement>('pulsar-tune-select').forEach((control) => {
+			const effective = effectiveFor(control)
+			const state = selection === 'off' ? 'off' : playing ? 'playing' : effective ? 'armed' : 'nothing'
+
+			const trigger = control.querySelector<HTMLButtonElement>('.pulsar-trigger')
+			if (trigger) {
+				trigger.dataset.state = state
+				trigger.setAttribute('aria-pressed', state === 'playing' ? 'true' : 'false')
+			}
+
+			/* Pulse in time with the tune, so a playing control reads as playing
+			   without needing a label. */
+			if (state === 'playing' && cycleSeconds > 0) {
+				control.style.setProperty('--pulsar-cycle', `${cycleSeconds}s`)
+			} else {
+				control.style.removeProperty('--pulsar-cycle')
+			}
+
+			control.querySelectorAll<HTMLElement>('[data-tune-value]').forEach((option) => {
+				option.setAttribute('aria-selected', option.dataset.tuneValue === selection ? 'true' : 'false')
+			})
+		})
+	}
+
+	/* A tune that is sounding when the document goes away still deserves its
+	   bookmark. `pagehide` rather than `beforeunload`, which disqualifies the
+	   page from the back/forward cache. */
+	window.addEventListener('pagehide', () => {
+		/* Fully synchronous: audio time and `localStorage` are both available
+		   without awaiting, so the write completes inside the handler. */
+		bookmarkNow()
+	})
+
+	/* ------------------------------------------------------------------ */
+	/* Control                                                             */
+	/* ------------------------------------------------------------------ */
+
+	class PulsarTuneSelect extends HTMLElement {
+		#initialized = false
+
+		connectedCallback() {
+			if (this.#initialized) return
+			this.#initialized = true
+
+			selection = loadSelection()
+
+			const trigger = this.querySelector<HTMLButtonElement>('.pulsar-trigger')
+			const caret = this.querySelector<HTMLButtonElement>('.pulsar-caret')
+			const menu = this.querySelector<HTMLElement>('.pulsar-menu')
+			if (!trigger || !caret || !menu) return
+
+			trigger.addEventListener('click', () => {
+				void this.#toggle()
+			})
+
+			caret.addEventListener('click', () => {
+				this.#isOpen() ? this.#close() : this.#open()
+			})
+
+			caret.addEventListener('keydown', (event) => {
+				if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault()
+					this.#open()
+					this.#selectedOption()?.focus()
+				}
+			})
+
+			this.querySelectorAll<HTMLButtonElement>('.pulsar-option').forEach((option) => {
+				option.addEventListener('click', () => {
+					/* Choosing an entry is itself the gesture browsers require, so
+					   selection and playback are one interaction rather than two. */
+					void this.#select(option.dataset.tuneValue || 'auto')
+					this.#close()
+					trigger.focus()
+				})
+			})
+
+			menu.addEventListener('keydown', (event) => {
+				const options = this.#options()
+				const currentIndex = options.indexOf(document.activeElement as HTMLButtonElement)
+				if (event.key === 'Escape') {
+					event.preventDefault()
+					this.#close()
+					caret.focus()
+				}
+				if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+					event.preventDefault()
+					const direction = event.key === 'ArrowDown' ? 1 : -1
+					options.at((currentIndex + direction + options.length) % options.length)?.focus()
+				}
+				if (event.key === 'Home') {
+					event.preventDefault()
+					options[0]?.focus()
+				}
+				if (event.key === 'End') {
+					event.preventDefault()
+					options.at(-1)?.focus()
+				}
+			})
+
+			document.addEventListener('click', (event) => {
+				if (!this.contains(event.target as Node)) this.#close()
+			})
+
+			renderAll()
+		}
+
+		async #toggle() {
+			if (playing) {
+				await stop()
+				renderAll()
+				return
+			}
+			const tune = effectiveFor(this)
+			if (!tune) {
+				/* Nothing to play here — offer the menu rather than doing nothing. */
+				this.#open()
+				return
+			}
+			await play(tune)
+			renderAll()
+		}
+
+		async #select(value: Selection) {
+			const changed = value !== selection
+			selection = value
+			storeSelection(value)
+
+			/* Switching away from a sounding tune bookmarks it first. */
+			if (playing && (value === 'off' || changed)) await stop()
+
+			const tune = effectiveFor(this)
+			if (tune && value !== 'off') await play(tune)
+			renderAll()
+		}
+
+		#isOpen() {
+			return this.querySelector('.pulsar-menu')?.hasAttribute('hidden') === false
+		}
+
+		#open() {
+			this.querySelector('.pulsar-menu')?.removeAttribute('hidden')
+			this.querySelector('.pulsar-caret')?.setAttribute('aria-expanded', 'true')
+		}
+
+		#close() {
+			this.querySelector('.pulsar-menu')?.setAttribute('hidden', '')
+			this.querySelector('.pulsar-caret')?.setAttribute('aria-expanded', 'false')
+		}
+
+		#options() {
+			return Array.from(this.querySelectorAll<HTMLButtonElement>('.pulsar-option'))
+		}
+
+		#selectedOption() {
+			return (
+				this.querySelector<HTMLButtonElement>('.pulsar-option[aria-selected="true"]') ||
+				this.querySelector<HTMLButtonElement>('.pulsar-option')
+			)
+		}
+	}
+
+	if (!customElements.get('pulsar-tune-select')) {
+		customElements.define('pulsar-tune-select', PulsarTuneSelect)
+	}
+</script>
+
+<style>
+	pulsar-tune-select {
+		position: relative;
+		display: flex;
+		align-items: center;
+	}
+
+	.pulsar-trigger,
+	.pulsar-caret {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 0;
+		padding: 0;
+		background: transparent;
+		color: var(--sl-color-text-accent);
+		font: inherit;
+		cursor: pointer;
+	}
+
+	.pulsar-trigger {
+		inline-size: 2rem;
+		block-size: 2rem;
+	}
+
+	.pulsar-caret {
+		inline-size: 1rem;
+		block-size: 2rem;
+		margin-inline-start: -0.35rem;
+		color: var(--sl-color-gray-3);
+	}
+
+	.pulsar-trigger:hover,
+	.pulsar-caret:hover {
+		color: var(--sl-color-white);
+	}
+
+	.pulsar-trigger:focus,
+	.pulsar-caret:focus {
+		outline: none;
+	}
+
+	.pulsar-trigger:focus-visible,
+	.pulsar-caret:focus-visible {
+		outline: 2px solid var(--sl-color-accent);
+		outline-offset: 0.125rem;
+		border-radius: 0.25rem;
+	}
+
+	/* Four states, distinguishable without a label. */
+	.pulsar-slash {
+		display: none;
+	}
+
+	/* Nothing declared here and the reader is on Auto: present but idle. The
+	   control is never hidden — one that comes and goes as the reader moves
+	   around the site is worse than one visibly doing nothing. */
+	.pulsar-trigger[data-state='nothing'] {
+		color: var(--sl-color-gray-4);
+	}
+
+	.pulsar-trigger[data-state='nothing'] .pulsar-wave-2 {
+		opacity: 0.35;
+	}
+
+	/* Opted out: waves off, slash on. */
+	.pulsar-trigger[data-state='off'] {
+		color: var(--sl-color-gray-4);
+	}
+
+	.pulsar-trigger[data-state='off'] .pulsar-wave {
+		display: none;
+	}
+
+	.pulsar-trigger[data-state='off'] .pulsar-slash {
+		display: inline;
+	}
+
+	/* Armed: lit and still. One click from sounding. */
+	.pulsar-trigger[data-state='armed'] {
+		color: var(--sl-color-text-accent);
+	}
+
+	/* Playing: the outer wave breathes in time with the tune. */
+	.pulsar-trigger[data-state='playing'] {
+		color: var(--sl-color-white);
+	}
+
+	.pulsar-trigger[data-state='playing'] .pulsar-wave-2 {
+		animation: pulsar-breathe var(--pulsar-cycle, 2s) ease-in-out infinite;
+		transform-origin: 25% 50%;
+	}
+
+	@keyframes pulsar-breathe {
+		0%,
+		100% {
+			opacity: 0.3;
+		}
+		50% {
+			opacity: 1;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.pulsar-trigger[data-state='playing'] .pulsar-wave-2 {
+			animation: none;
+			opacity: 1;
+		}
+	}
+
+	.pulsar-menu {
+		position: absolute;
+		z-index: 10;
+		inset-block-start: calc(100% + 0.375rem);
+		inset-inline-end: 0;
+		min-inline-size: 11rem;
+		padding: 0.35rem;
+		border: 1px solid var(--sl-color-gray-5);
+		border-radius: 0.375rem;
+		background-color: var(--sl-color-bg-nav);
+		box-shadow: var(--sl-shadow-md);
+	}
+
+	.pulsar-menu[hidden] {
+		display: none;
+	}
+
+	.pulsar-menu-heading {
+		padding: 0.25rem 0.4rem 0.35rem;
+		border-block-end: 1px solid var(--sl-color-gray-5);
+		margin-block-end: 0.35rem;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-xs);
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+	}
+
+	.pulsar-option {
+		display: flex;
+		align-items: center;
+		inline-size: 100%;
+		border: 0;
+		border-radius: 0.25rem;
+		padding: 0.4rem;
+		background: var(--sl-color-bg-nav);
+		color: var(--sl-color-gray-1);
+		font: inherit;
+		font-size: var(--sl-text-sm);
+		text-align: start;
+		white-space: nowrap;
+		cursor: pointer;
+	}
+
+	.pulsar-option:focus,
+	.pulsar-option[aria-selected='true'] {
+		outline: none;
+		background-color: var(--sl-color-gray-6);
+		color: var(--sl-color-white);
+	}
+
+	.pulsar-option-name {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		color: var(--sl-color-text);
+	}
+</style>
