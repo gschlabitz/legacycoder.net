@@ -88,7 +88,6 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
         <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" width="12" height="12">
           <path class="pulsar-glyph-play" d="M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z" />
           <path class="pulsar-glyph-pause" d="M6.5 4.5h3.6v15H6.5zM13.9 4.5h3.6v15h-3.6z" />
-          <path class="pulsar-slash" d="M3.8 2.4 21.6 20.2l-1.4 1.4L2.4 3.8z" />
         </svg>
       </button>
 
@@ -771,10 +770,12 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 	}
 
 
-	/* Four states, distinguishable without a label. Play is the resting glyph;
-	   pause replaces it only while sounding. */
-	.pulsar-glyph-pause,
-	.pulsar-slash {
+	/* Play is the resting glyph; pause replaces it only while sounding.
+	   Off carries no struck-through variant: the Readout already says "Off" in
+	   words wherever it is rendered, and a crossed-out play button reads as
+	   "broken" rather than "you turned this off". Where the Readout is not
+	   shown, the dimmed colour still separates idle from ready. */
+	.pulsar-glyph-pause {
 		display: none;
 	}
 
@@ -784,10 +785,6 @@ const entries = [{ value: 'auto', label: autoLabel }, ...config.tunes.map((tune)
 	.pulsar-trigger[data-state='nothing'],
 	.pulsar-trigger[data-state='off'] {
 		color: var(--sl-color-gray-4);
-	}
-
-	.pulsar-trigger[data-state='off'] .pulsar-slash {
-		display: inline;
 	}
 
 	.pulsar-trigger[data-state='armed'] {

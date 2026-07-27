@@ -385,7 +385,7 @@ export async function notify(owner: Owner) {
       // figures that follow describe the shape of the cadence, this sets how
       // fast the whole thing runs. (The hold between eras is deliberately
       // outside this, so slowing the typing doesn't stretch the pause.)
-      const SPEED = 1.85;
+      const SPEED = 1.67;
       const beat = (ms: number) => idle(ms * SPEED);
 
       // Word characters ride the burst; everything else is priced per key.
@@ -437,7 +437,7 @@ export async function notify(owner: Owner) {
       const isProse = (line: string) => /^\s*(\/\/|\/\*|\*|#|--|\{ )/.test(line);
 
       // How often a word of four or more characters gets mistyped.
-      const FUMBLE_RATE = 0.2;
+      const FUMBLE_RATE = 0.11;
 
       const typeWord = async (word: string, tempo: number) => {
         const burst = rand(30, 48) * tempo;

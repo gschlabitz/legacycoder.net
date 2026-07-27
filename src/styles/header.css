@@ -128,4 +128,39 @@
   .header .right-group pulsar-tune-select .pulsar-eject {
     display: none;
   }
+
+  /* Standing alone, it should be read as an icon rather than as one key of a
+     transport, so it takes the same size as every other header icon. */
+  .header .right-group pulsar-tune-select [data-action="playpause"] {
+    inline-size: var(--lc-header-action-size);
+    block-size: var(--lc-header-action-size);
+  }
+
+  .header .right-group pulsar-tune-select [data-action="playpause"] svg {
+    inline-size: var(--lc-header-icon-size);
+    block-size: var(--lc-header-icon-size);
+  }
+}
+
+/* Starlight styles the menu button as a floating action button — white fill,
+   full radius, drop shadow — which made sense when it was the only control
+   floating over the page. Beside a row of flat, transparent header icons it
+   reads as a different kind of thing. Match the rest.
+
+   Its own rule is `button:where(.astro-…)`, and `:where()` contributes no
+   specificity, so a plain descendant selector is enough to win. */
+starlight-menu-button button {
+  --sl-menu-button-size: var(--lc-header-action-size);
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--sl-color-text-accent);
+}
+
+starlight-menu-button button:hover {
+  color: var(--sl-color-white);
+}
+
+starlight-menu-button button svg {
+  inline-size: var(--lc-header-icon-size);
+  block-size: var(--lc-header-icon-size);
 }
