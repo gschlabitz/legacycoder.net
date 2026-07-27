@@ -6,6 +6,10 @@ declare namespace StarlightApp {
     'starlightPulsar.tuneSelect.auto': string
     'starlightPulsar.tuneSelect.play': string
     'starlightPulsar.tuneSelect.pause': string
+    'starlightPulsar.tuneSelect.previous': string
+    'starlightPulsar.tuneSelect.next': string
+    'starlightPulsar.tuneSelect.stop': string
+    'starlightPulsar.tuneSelect.nothing': string
   }
 }
 

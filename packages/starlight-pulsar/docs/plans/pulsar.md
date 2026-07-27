@@ -213,12 +213,34 @@ disabling itself.
    module), `lib/config.ts` (resolution, duplicate/unknown-tune guards),
    `schema.ts`, `tune.ts`, `virtual.d.ts`.
 3. ~~**Control component**~~ **Done** — `components/TuneSelect.astro`.
-   Transport and menu are separate buttons: the plan called for one click to
-   resume an armed tune, which a menu-opening trigger cannot give, so the
-   caret opens the listbox and the speaker is the transport. Playback state
-   and selection are module-scoped, not per-element, because Starlight renders
-   `SocialIcons` twice (header and mobile menu) and two controls on one page
-   must not contradict each other.
+   Transport and eject are separate buttons: the plan called for one click to
+   resume an armed tune, which a menu-opening trigger cannot give. Playback
+   state and selection are module-scoped, not per-element, because Starlight
+   renders `SocialIcons` twice (header and mobile menu) and two controls on one
+   page must not contradict each other.
+6. **Player panel** — added after the fact, on the Winamp analogy. Eject opens
+   a readout (tune name, `cps`, seconds per cycle), an oscilloscope, the full
+   transport row, and the playlist; the header pair is windowshade mode. All of
+   it is `--sl-color-*`, so Chameleon skins flow straight through — which is
+   the reason not to reach for Webamp, whose fidelity comes from rendering
+   classic `.wsz` bitmap skins that could never track the site's theme.
+
+   Two notes on the mapping:
+
+   - **Stop is Off**, and deliberately *not* Winamp's rewind-to-zero. Off is a
+     preference meaning "stop offering"; bookmarks survive it exactly as they
+     survive a silent page. Pressing play while Off lifts it, since that is an
+     explicit request for sound.
+   - **Selected and loaded are different rows.** On Auto the reader has chosen
+     "whatever this page declares" while a specific tune is cued, so the
+     playlist marks both.
+
+   The scope is fed by routing the pattern through `.analyze('pulsar')` and
+   reading `getAnalyzerData('time', 'pulsar')`. Drawing into Pulsar's own
+   canvas rather than Strudel's `getDrawContext()` full-page one is what makes
+   it fit the panel and take `getComputedStyle(canvas).color` as its stroke.
+   Verified live: 566 lit pixels across 9 distinct rows while Grid played,
+   against 1–2 rows for the flat baseline.
 4. ~~**Site wiring**~~ **Done** — schema merged in `src/content.config.ts`,
    control placed in `src/components/SocialIcons.astro`, plugin registered in
    `astro.config.mjs`. Declared tunes: `drift` on both index pages, `grid` on

@@ -22,7 +22,7 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
     name: 'starlight-pulsar',
     hooks: {
       'i18n:setup'({ injectTranslations }) {
-        // Five strings, in the ten languages Chameleon ships. Tune labels are
+        // Nine strings, in the ten languages Chameleon ships. Tune labels are
         // deliberately absent: they are proper nouns chosen by the site author,
         // like skin names, and are never translated.
         //
@@ -35,6 +35,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': 'Auto',
             'starlightPulsar.tuneSelect.play': 'Play background music',
             'starlightPulsar.tuneSelect.pause': 'Pause background music',
+            'starlightPulsar.tuneSelect.previous': 'Previous tune',
+            'starlightPulsar.tuneSelect.next': 'Next tune',
+            'starlightPulsar.tuneSelect.stop': 'Stop and turn off',
+            'starlightPulsar.tuneSelect.nothing': 'Nothing here',
           },
           de: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Hintergrundmusik auswählen',
@@ -42,6 +46,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': 'Automatisch',
             'starlightPulsar.tuneSelect.play': 'Hintergrundmusik abspielen',
             'starlightPulsar.tuneSelect.pause': 'Hintergrundmusik pausieren',
+            'starlightPulsar.tuneSelect.previous': 'Vorheriges Stück',
+            'starlightPulsar.tuneSelect.next': 'Nächstes Stück',
+            'starlightPulsar.tuneSelect.stop': 'Anhalten und ausschalten',
+            'starlightPulsar.tuneSelect.nothing': 'Nichts hier',
           },
           'zh-CN': {
             'starlightPulsar.tuneSelect.accessibleLabel': '选择背景音乐',
@@ -49,6 +57,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': '自动',
             'starlightPulsar.tuneSelect.play': '播放背景音乐',
             'starlightPulsar.tuneSelect.pause': '暂停背景音乐',
+            'starlightPulsar.tuneSelect.previous': '上一首',
+            'starlightPulsar.tuneSelect.next': '下一首',
+            'starlightPulsar.tuneSelect.stop': '停止并关闭',
+            'starlightPulsar.tuneSelect.nothing': '此处无音乐',
           },
           es: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Seleccionar música de fondo',
@@ -56,6 +68,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': 'Automático',
             'starlightPulsar.tuneSelect.play': 'Reproducir música de fondo',
             'starlightPulsar.tuneSelect.pause': 'Pausar música de fondo',
+            'starlightPulsar.tuneSelect.previous': 'Pista anterior',
+            'starlightPulsar.tuneSelect.next': 'Pista siguiente',
+            'starlightPulsar.tuneSelect.stop': 'Detener y apagar',
+            'starlightPulsar.tuneSelect.nothing': 'Nada aquí',
           },
           fr: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Sélectionner la musique de fond',
@@ -63,6 +79,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': 'Automatique',
             'starlightPulsar.tuneSelect.play': 'Lire la musique de fond',
             'starlightPulsar.tuneSelect.pause': 'Mettre en pause la musique de fond',
+            'starlightPulsar.tuneSelect.previous': 'Morceau précédent',
+            'starlightPulsar.tuneSelect.next': 'Morceau suivant',
+            'starlightPulsar.tuneSelect.stop': 'Arrêter et désactiver',
+            'starlightPulsar.tuneSelect.nothing': 'Rien ici',
           },
           ja: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'バックグラウンド音楽を選択',
@@ -70,6 +90,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': '自動',
             'starlightPulsar.tuneSelect.play': 'バックグラウンド音楽を再生',
             'starlightPulsar.tuneSelect.pause': 'バックグラウンド音楽を一時停止',
+            'starlightPulsar.tuneSelect.previous': '前の曲',
+            'starlightPulsar.tuneSelect.next': '次の曲',
+            'starlightPulsar.tuneSelect.stop': '停止してオフにする',
+            'starlightPulsar.tuneSelect.nothing': 'ここには何もありません',
           },
           ko: {
             'starlightPulsar.tuneSelect.accessibleLabel': '배경 음악 선택',
@@ -77,6 +101,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': '자동',
             'starlightPulsar.tuneSelect.play': '배경 음악 재생',
             'starlightPulsar.tuneSelect.pause': '배경 음악 일시정지',
+            'starlightPulsar.tuneSelect.previous': '이전 곡',
+            'starlightPulsar.tuneSelect.next': '다음 곡',
+            'starlightPulsar.tuneSelect.stop': '정지하고 끄기',
+            'starlightPulsar.tuneSelect.nothing': '여기에는 없음',
           },
           pt: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Selecionar música de fundo',
@@ -84,6 +112,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': 'Automático',
             'starlightPulsar.tuneSelect.play': 'Reproduzir música de fundo',
             'starlightPulsar.tuneSelect.pause': 'Pausar música de fundo',
+            'starlightPulsar.tuneSelect.previous': 'Faixa anterior',
+            'starlightPulsar.tuneSelect.next': 'Próxima faixa',
+            'starlightPulsar.tuneSelect.stop': 'Parar e desligar',
+            'starlightPulsar.tuneSelect.nothing': 'Nada aqui',
           },
           ru: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Выбрать фоновую музыку',
@@ -91,6 +123,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': 'Авто',
             'starlightPulsar.tuneSelect.play': 'Воспроизвести фоновую музыку',
             'starlightPulsar.tuneSelect.pause': 'Приостановить фоновую музыку',
+            'starlightPulsar.tuneSelect.previous': 'Предыдущий трек',
+            'starlightPulsar.tuneSelect.next': 'Следующий трек',
+            'starlightPulsar.tuneSelect.stop': 'Остановить и выключить',
+            'starlightPulsar.tuneSelect.nothing': 'Здесь ничего нет',
           },
           it: {
             'starlightPulsar.tuneSelect.accessibleLabel': 'Seleziona musica di sottofondo',
@@ -98,6 +134,10 @@ export default function starlightPulsar(userConfig: StarlightPulsarUserConfig = 
             'starlightPulsar.tuneSelect.auto': 'Automatico',
             'starlightPulsar.tuneSelect.play': 'Riproduci musica di sottofondo',
             'starlightPulsar.tuneSelect.pause': 'Metti in pausa la musica di sottofondo',
+            'starlightPulsar.tuneSelect.previous': 'Brano precedente',
+            'starlightPulsar.tuneSelect.next': 'Brano successivo',
+            'starlightPulsar.tuneSelect.stop': 'Ferma e spegni',
+            'starlightPulsar.tuneSelect.nothing': 'Niente qui',
           },
         })
       },

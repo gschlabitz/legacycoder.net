@@ -60,25 +60,61 @@ re-enters on its own downbeat.
 _Avoid_: position, offset, timestamp, seek point
 
 **Tune selector**:
-The header control: a Transport and an Eject button side by side, plus the
-list Eject opens — Off, Auto, and the site's tunes. Choosing from that list is
-itself the gesture that starts playback, so picking and playing are one
-interaction.
-_Avoid_: player, dropdown, music picker
+Everything the reader touches: the two header buttons — a Transport and an
+Eject — and the Player that Eject opens.
+_Avoid_: dropdown, music picker
+
+**Windowshade**:
+The header pair on its own, which is all a reader sees until they press Eject.
+Named after Winamp's collapsed mode, and the same idea: the whole player
+reduced to the controls worth keeping in three inches of header.
+_Avoid_: compact mode, mini control
+
+**Player**:
+The panel Eject opens: Readout, Scope, the full transport row, and the
+Playlist. Styled entirely from Starlight's own custom properties, so it wears
+whatever skin the site has active — the reason it is built here rather than
+borrowed from Webamp, which renders bitmap skins of its own.
+_Avoid_: popup, modal, dialog
 
 **Transport**:
-The play/pause half of the Tune selector, and the one click that starts an
-Armed tune. Play/pause rather than play/stop because stopping writes a
-Bookmark and the next play resumes from it — the tune is paused, not reset.
-It shows pause only while sounding, and breathes in time with the tune's
-`cps`.
+The play/pause button, in the header and again in the Player's button row, and
+the one click that starts an Armed tune. Play/pause rather than play/stop
+because stopping writes a Bookmark and the next play resumes from it — the
+tune is paused, not reset. It shows pause only while sounding, and breathes in
+time with the tune's `cps`.
 _Avoid_: play button, toggle, speaker
 
 **Eject**:
-The half of the Tune selector that opens the tune list. Named for what the
-button has meant since tape decks: not "stop", but "show me what else goes in
-here". Separate from the Transport so resuming an Armed tune stays one click.
+The header button that opens the Player. Named for what the button has meant
+since tape decks: not "stop", but "show me what else goes in here". Separate
+from the Transport so resuming an Armed tune stays one click.
 _Avoid_: caret, chevron, menu button
+
+**Stop**:
+The transport button that turns the site quiet — it sets the reader to Off.
+Deliberately not a rewind: Bookmarks survive it, the same way they survive a
+Silent page, because Off means "stop offering" rather than "start over".
+_Avoid_: mute, reset
+
+**Readout**:
+The Player's top strip: which tune is loaded, and its tempo as `cps` and
+seconds per cycle. The place a hardware deck would put a track name and its
+bitrate, showing numbers that are actually true of the tune.
+_Avoid_: display, LCD, status bar
+
+**Scope**:
+The Player's oscilloscope, drawn from a named Strudel analyser the pattern is
+routed through. It draws into Pulsar's own canvas rather than Strudel's
+full-page one, so it fits the panel and takes its colour from the active skin.
+Still and flat when nothing is sounding.
+_Avoid_: visualizer, spectrum, waveform
+
+**Playlist**:
+The Player's list of Auto and the site's tunes. The selected row is the
+reader's choice; the loaded row is what is actually cued — on Auto those are
+different, and both are marked.
+_Avoid_: menu, track list, options
 
 **Site author**:
 The developer who installs Pulsar, writes or chooses its tunes, and decides
