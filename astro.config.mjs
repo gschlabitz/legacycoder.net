@@ -20,7 +20,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Guido Schlabitz",
-      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css"],
+      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css"],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
         { icon: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/guido-schlabitz/" },
@@ -54,7 +54,7 @@ export default defineConfig({
         // lists every one of them and buries the actual sections.
         starlightSidebarSections({
           exclude: ["blog"],
-          labels: { "llm-notebook": "LLM Notebook", workarounds: "Workarounds" },
+          labels: { "llm-notebook": "LLM Notebook", "recipes": "Recipes", workarounds: "Workarounds" },
         }),
         // After starlightBlog so Chameleon sees the final component map (ADR 0003).
         starlightThemeChameleon({

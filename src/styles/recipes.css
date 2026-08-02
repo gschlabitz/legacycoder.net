@@ -1,0 +1,19 @@
+
+.trn-card {
+  border-collapse: collapse;
+  border-top: 1px solid var(--sl-color-gray-5);
+  border-left: 1px solid var(--sl-color-gray-5);
+  /* Starlight sets `display: block` on all doc tables so wide ones can
+     scroll horizontally on mobile. That turns the table into a block box
+     which defaults to filling its container, while the columns inside
+     still size to content — leaving an empty bordered strip past the
+     last real column. Shrinking the box to its content removes it. */
+  width: fit-content;
+}
+
+.trn-card td,
+.trn-card th {
+  border-right: 1px solid var(--sl-color-gray-5);
+  border-bottom: 1px solid var(--sl-color-gray-5);
+  padding: 0.4rem 0.75rem;
+}
