@@ -14,17 +14,17 @@ import { z } from 'astro/zod'
  * })
  * ```
  *
- * Two values, matching the two editorial choices a page can make:
+ * Three values, matching the editorial choices a page can make:
  *
- * - a tune name — the page's Declared tune
- * - `false` — a Silent page, which refuses music and overrides the reader
+ * - a tune name — the page's one-tune playlist
+ * - a non-empty array of tune names — an ordered playlist with skip controls
+ * - `false` — an explicitly silent page
  *
- * Omitting `music` is the third, commonest case: the page declares nothing, so
- * a reader on Auto hears nothing here, while an explicit pick still plays.
+ * Omitting `music` is the commonest case: the page offers no music.
  */
 export function pulsarSchema() {
   return z.object({
-    music: z.union([z.string(), z.literal(false)]).optional(),
+    music: z.union([z.string(), z.array(z.string()).min(1), z.literal(false)]).optional(),
   })
 }
 

@@ -53,7 +53,7 @@ export const collections = {
     loader: docsLoader(),
     schema: docsSchema({
       // A Starlight plugin cannot extend the site's content schema — zod would
-      // strip `music` before the tune selector ever saw it — so Pulsar's
+      // strip `music` before the player ever saw it — so Pulsar's
       // fragment is merged here alongside the blog's.
       extend: (context) => blogSchema(context).merge(pulsarSchema()).merge(z.object({
         location: location.optional(),

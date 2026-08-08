@@ -206,9 +206,8 @@ _Avoid_: Farkle
 
 ### Strudel
 
-**Player island**:
-The click-to-play toggle (`StrudelPlayer.jsx`) that puts a fixed Strudel
-pattern on a page as background music. It downloads its engine on first
-click, never with the page, and never autoplays — browsers require the
-gesture anyway.
-_Avoid_: autoplay, embed
+**Pulsar player**:
+The page-local transport for a page's configured Strudel tune or playlist. It
+downloads its engine on first play, never autoplays, and shows Previous/Next
+only for a multi-tune page playlist.
+_Avoid_: global selector, autoplay, embed

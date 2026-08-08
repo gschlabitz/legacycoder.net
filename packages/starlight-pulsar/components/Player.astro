@@ -1,0 +1,519 @@
+---
+import config from 'virtual:starlight-pulsar/config'
+
+const t = Astro.locals.t
+
+const playLabel = t.exists('starlightPulsar.player.play')
+  ? t('starlightPulsar.player.play')
+  : 'Play tune'
+const pauseLabel = t.exists('starlightPulsar.player.pause')
+  ? t('starlightPulsar.player.pause')
+  : 'Pause tune'
+const loadingLabel = t.exists('starlightPulsar.player.loading')
+  ? t('starlightPulsar.player.loading')
+  : 'Loading tune'
+const previousLabel = t.exists('starlightPulsar.player.previous')
+  ? t('starlightPulsar.player.previous')
+  : 'Previous tune'
+const nextLabel = t.exists('starlightPulsar.player.next') ? t('starlightPulsar.player.next') : 'Next tune'
+
+const icon = {
+  previous: 'M7 5.5h2.4v13H7zM20 5.9v12.2a.8.8 0 0 1-1.24.67l-9.1-6.1a.8.8 0 0 1 0-1.34l9.1-6.1A.8.8 0 0 1 20 5.9Z',
+  play: 'M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z',
+  pause: 'M6.5 4.5h3.6v15H6.5zM13.9 4.5h3.6v15H13.9z',
+  next: 'M14.6 5.5H17v13h-2.4zM4 5.9v12.2a.8.8 0 0 0 1.24.67l9.1-6.1a.8.8 0 0 0 0-1.34l-9.1-6.1A.8.8 0 0 0 4 5.9Z',
+} as const
+
+// A page owns its playlist. A scalar is the common one-tune case; an array
+// opts into previous/next navigation. `false` and omission both render no
+// player, but `false` remains useful to sites that want to state silence.
+const music = Astro.locals.starlightRoute?.entry?.data?.music as string | string[] | false | undefined
+const pageTunes = typeof music === 'string' ? [music] : Array.isArray(music) ? music : []
+const duplicates = pageTunes.filter((name, index) => pageTunes.indexOf(name) !== index)
+const unknown = pageTunes.filter((name) => !config.tunes.some((tune) => tune.name === name))
+
+if (duplicates.length > 0) {
+  throw new Error(
+    `starlight-pulsar: page "${Astro.locals.starlightRoute?.id ?? Astro.url.pathname}" repeats ` +
+      `${[...new Set(duplicates)].map((name) => `\`${name}\``).join(', ')} in its \`music\` playlist.`
+  )
+}
+
+if (unknown.length > 0) {
+  const known = config.tunes.map((tune) => tune.name).join(', ') || '(none registered)'
+  throw new Error(
+    `starlight-pulsar: page "${Astro.locals.starlightRoute?.id ?? Astro.url.pathname}" declares unknown ` +
+      `${unknown.map((name) => `\`${name}\``).join(', ')} in \`music\`. Registered tunes: ${known}.`
+  )
+}
+
+const hasPlaylist = pageTunes.length > 1
+---
+
+{pageTunes.length > 0 && (
+  <pulsar-player
+    data-tunes={JSON.stringify(pageTunes)}
+    data-position={config.position}
+    data-label-play={playLabel}
+    data-label-pause={pauseLabel}
+    data-label-loading={loadingLabel}
+  >
+    <div class="pulsar-transport">
+      {hasPlaylist && (
+        <button class="pulsar-btn" type="button" data-action="prev" aria-label={previousLabel}>
+          <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d={icon.previous} />
+          </svg>
+        </button>
+      )}
+
+      <button class="pulsar-btn pulsar-trigger" type="button" data-action="playpause" data-state="armed" aria-label={playLabel}>
+        <canvas class="pulsar-scope" data-scope width="96" height="36" aria-hidden="true"></canvas>
+        <svg class="pulsar-icon pulsar-glyph-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d={icon.play} />
+        </svg>
+        <svg class="pulsar-icon pulsar-glyph-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d={icon.pause} />
+        </svg>
+        <svg class="pulsar-icon pulsar-glyph-loading" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="38 13" />
+        </svg>
+      </button>
+
+      {hasPlaylist && (
+        <button class="pulsar-btn" type="button" data-action="next" aria-label={nextLabel}>
+          <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d={icon.next} />
+          </svg>
+        </button>
+      )}
+    </div>
+  </pulsar-player>
+)}
+
+<script>
+  import config, { tuneLoaders } from 'virtual:starlight-pulsar/config'
+  import type { Tune } from 'starlight-pulsar/tune'
+
+  const BOOKMARKS_KEY = 'pulsar-bookmarks'
+  const ANALYSER_ID = 'pulsar'
+
+  const loadBookmarks = (): Record<string, number> => {
+    try {
+      const raw = localStorage.getItem(BOOKMARKS_KEY)
+      const parsed: unknown = raw ? JSON.parse(raw) : null
+      if (parsed && typeof parsed === 'object') return parsed as Record<string, number>
+    } catch {
+      // Storage is best-effort. Playback still works when it is unavailable.
+    }
+    return {}
+  }
+
+  const storeBookmark = (name: string, cycle: number): void => {
+    if (!Number.isFinite(cycle) || cycle < 0) return
+    try {
+      const bookmarks = loadBookmarks()
+      bookmarks[name] = cycle
+      localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks))
+    } catch {
+      // Storage is best-effort.
+    }
+  }
+
+  interface Repl {
+    setCps(cps: number): void
+    setPattern(pattern: unknown, autostart?: boolean): Promise<unknown>
+    stop(): void
+  }
+
+  interface StrudelModule {
+    initStrudel(options: Record<string, unknown>): Promise<unknown>
+    getAudioContext(): AudioContext
+    getAnalyzerData(type: 'time' | 'frequency', id?: string): Float32Array
+    resetGlobalEffects(): void
+    samples(map: unknown, base: string): unknown
+  }
+
+  let audioContext: AudioContext | null = null
+  let strudelModule: StrudelModule | null = null
+  let enginePromise: Promise<Repl> | null = null
+  let playing: { name: string; startedAt: number; offset: number; cps: number } | null = null
+  let currentName = ''
+  let loading = false
+
+  const loadEngine = (): Promise<Repl> => {
+    enginePromise ??= (async () => {
+      const strudel = (await import('@strudel/web')) as unknown as StrudelModule
+      const options: Record<string, unknown> = {}
+      if (config.samples) {
+        const { base, map } = config.samples
+        options.prebake = () => strudel.samples(map, base)
+      }
+      const repl = (await strudel.initStrudel(options)) as Repl
+      strudelModule = strudel
+      audioContext = strudel.getAudioContext()
+      return repl
+    })()
+    enginePromise.catch(() => {
+      enginePromise = null
+    })
+    return enginePromise
+  }
+
+  const play = async (name: string): Promise<boolean> => {
+    const loader = tuneLoaders[name]
+    if (!loader) return false
+
+    const [repl, module] = await Promise.all([loadEngine(), loader()])
+    const tune: Tune = module.default
+    const offset = Math.ceil(loadBookmarks()[name] ?? 0)
+    let pattern = tune.pattern()
+    if (offset > 0) pattern = pattern.early(offset)
+    if (typeof tune.gain === 'number') {
+      const gainControl = (globalThis as unknown as { gain: (value: number) => unknown }).gain
+      pattern = pattern.mul(gainControl(tune.gain))
+    }
+    pattern = pattern.analyze(ANALYSER_ID)
+
+    repl.setCps(tune.cps)
+    await repl.setPattern(pattern, true)
+    currentName = name
+    playing = { name, startedAt: audioContext?.currentTime ?? 0, offset, cps: tune.cps }
+    startScope()
+    return true
+  }
+
+  const bookmarkNow = (): void => {
+    if (!playing) return
+    const elapsed = (audioContext?.currentTime ?? playing.startedAt) - playing.startedAt
+    storeBookmark(playing.name, playing.offset + elapsed * playing.cps)
+  }
+
+  const pause = async (): Promise<void> => {
+    if (!playing || !enginePromise) return
+    const repl = await enginePromise
+    bookmarkNow()
+
+    // Stopping scheduling alone leaves released voices audible. Resetting the
+    // global effects graph cuts those tails before the next tune can start.
+    repl.stop()
+    strudelModule?.resetGlobalEffects()
+    playing = null
+    stopScope()
+  }
+
+  window.addEventListener('pagehide', bookmarkNow)
+
+  const pageTunes = (player: HTMLElement): string[] => {
+    try {
+      const parsed: unknown = JSON.parse(player.dataset.tunes || '[]')
+      return Array.isArray(parsed) && parsed.every((name) => typeof name === 'string') ? parsed : []
+    } catch {
+      return []
+    }
+  }
+
+  // Any page may add a larger `[data-scope]` canvas without expanding the
+  // player's interface. The player owns the one animation loop and audio tap.
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+  let scopeFrame = 0
+
+  const drawScopes = (): void => {
+    const samples = playing && strudelModule ? strudelModule.getAnalyzerData('time', ANALYSER_ID) : null
+
+    document.querySelectorAll<HTMLCanvasElement>('[data-scope]').forEach((canvas) => {
+      if (!canvas.clientWidth) return
+      const ratio = window.devicePixelRatio || 1
+      const width = Math.round(canvas.clientWidth * ratio)
+      const height = Math.round(canvas.clientHeight * ratio)
+      if (width > 0 && height > 0 && (canvas.width !== width || canvas.height !== height)) {
+        canvas.width = width
+        canvas.height = height
+      }
+
+      const context = canvas.getContext('2d')
+      if (!context) return
+      const middle = canvas.height / 2
+      context.clearRect(0, 0, canvas.width, canvas.height)
+      context.lineWidth = Math.max(1, ratio * 1.1)
+      context.strokeStyle = getComputedStyle(canvas).color
+      context.beginPath()
+
+      let peak = 0
+      if (samples) for (let index = 0; index < samples.length; index++) peak = Math.max(peak, Math.abs(samples[index]!))
+      const scale = peak > 0.002 ? Math.min(1 / peak, 14) : 0
+
+      if (!samples || samples.length === 0 || scale === 0) {
+        context.moveTo(0, middle)
+        context.lineTo(canvas.width, middle)
+      } else {
+        const step = canvas.width / (samples.length - 1)
+        for (let index = 0; index < samples.length; index++) {
+          const value = Math.max(-1, Math.min(1, samples[index]! * scale * 0.9))
+          const y = middle - value * (middle - 1)
+          index === 0 ? context.moveTo(0, y) : context.lineTo(index * step, y)
+        }
+      }
+      context.stroke()
+    })
+  }
+
+  const scopeTick = (): void => {
+    drawScopes()
+    scopeFrame = requestAnimationFrame(scopeTick)
+  }
+
+  const startScope = (): void => {
+    if (scopeFrame) return
+    if (reducedMotion.matches) drawScopes()
+    else scopeFrame = requestAnimationFrame(scopeTick)
+  }
+
+  const stopScope = (): void => {
+    if (scopeFrame) cancelAnimationFrame(scopeFrame)
+    scopeFrame = 0
+    drawScopes()
+  }
+
+  const renderAll = (): void => {
+    document.querySelectorAll<HTMLElement>('pulsar-player').forEach((player) => {
+      const trigger = player.querySelector<HTMLButtonElement>('.pulsar-trigger')
+      if (!trigger) return
+      const state = loading ? 'loading' : playing ? 'playing' : 'armed'
+      trigger.dataset.state = state
+      trigger.disabled = loading
+      trigger.toggleAttribute('aria-busy', loading)
+      const label =
+        state === 'loading'
+          ? player.dataset.labelLoading || 'Loading tune'
+          : state === 'playing'
+            ? player.dataset.labelPause || 'Pause tune'
+            : player.dataset.labelPlay || 'Play tune'
+      trigger.setAttribute('aria-label', label)
+    })
+  }
+
+  const withLoading = async (task: () => Promise<void>): Promise<void> => {
+    if (loading) return
+    loading = true
+    renderAll()
+    try {
+      await task()
+    } catch (error) {
+      console.error('Pulsar player failed:', error)
+    } finally {
+      loading = false
+      renderAll()
+    }
+  }
+
+  class PulsarPlayer extends HTMLElement {
+    #initialized = false
+
+    connectedCallback() {
+      if (this.#initialized) return
+      this.#initialized = true
+      currentName ||= pageTunes(this)[0] || ''
+
+      this.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
+        button.addEventListener('click', () => void this.#transport(button.dataset.action || ''))
+      })
+      renderAll()
+      drawScopes()
+    }
+
+    async #transport(action: string) {
+      const tunes = pageTunes(this)
+      if (tunes.length === 0) return
+
+      if (action === 'playpause') {
+        await withLoading(async () => {
+          if (playing) await pause()
+          else await play(currentName || tunes[0]!)
+        })
+        return
+      }
+
+      if ((action === 'prev' || action === 'next') && tunes.length > 1) {
+        const step = action === 'next' ? 1 : -1
+        const current = playing?.name || currentName || tunes[0]!
+        const index = Math.max(0, tunes.indexOf(current))
+        const next = tunes[(index + step + tunes.length) % tunes.length]!
+        await withLoading(async () => {
+          if (playing) await pause()
+          currentName = next
+          await play(next)
+        })
+      }
+    }
+  }
+
+  if (!customElements.get('pulsar-player')) customElements.define('pulsar-player', PulsarPlayer)
+</script>
+
+<style>
+  pulsar-player {
+    --pulsar-edge: 1rem;
+    position: fixed;
+    z-index: 50;
+    display: inline-flex;
+  }
+
+  pulsar-player[data-position^='top'] {
+    top: max(var(--pulsar-edge), env(safe-area-inset-top));
+  }
+
+  pulsar-player[data-position^='center'] {
+    top: 50%;
+  }
+
+  pulsar-player[data-position^='bottom'] {
+    bottom: max(var(--pulsar-edge), env(safe-area-inset-bottom));
+  }
+
+  pulsar-player[data-position$='left'] {
+    left: max(var(--pulsar-edge), env(safe-area-inset-left));
+  }
+
+  pulsar-player[data-position$='center'] {
+    left: 50%;
+  }
+
+  pulsar-player[data-position$='right'] {
+    right: max(var(--pulsar-edge), env(safe-area-inset-right));
+  }
+
+  pulsar-player[data-position='top center'],
+  pulsar-player[data-position='bottom center'] {
+    transform: translateX(-50%);
+  }
+
+  pulsar-player[data-position='center left'],
+  pulsar-player[data-position='center right'] {
+    transform: translateY(-50%);
+  }
+
+  pulsar-player[data-position='center center'] {
+    transform: translate(-50%, -50%);
+  }
+
+  .pulsar-transport {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .pulsar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 3.25rem;
+    block-size: 3.25rem;
+    border: 1px solid color-mix(in srgb, var(--sl-color-gray-4) 65%, transparent);
+    border-radius: 50%;
+    padding: 0;
+    background: rgb(0 0 0 / 0.68);
+    background: color-mix(in srgb, var(--sl-color-black) 68%, transparent);
+    box-shadow: var(--sl-shadow-md);
+    backdrop-filter: blur(8px);
+    color: var(--sl-color-text-accent);
+    cursor: pointer;
+  }
+
+  .pulsar-trigger {
+    position: relative;
+    overflow: hidden;
+    transition: inline-size 180ms ease;
+  }
+
+  .pulsar-trigger[data-state='playing'] {
+    inline-size: 7.5rem;
+    border-radius: 1.625rem;
+  }
+
+  .pulsar-btn:hover {
+    background: rgb(0 0 0 / 0.84);
+    background: color-mix(in srgb, var(--sl-color-black) 84%, transparent);
+    color: var(--sl-color-white);
+  }
+
+  .pulsar-btn:focus {
+    outline: none;
+  }
+
+  .pulsar-btn:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 0.0625rem;
+  }
+
+  .pulsar-btn .pulsar-icon {
+    flex: 0 0 auto;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+
+  .pulsar-trigger .pulsar-icon {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0.875rem;
+    margin-block: auto;
+  }
+
+  .pulsar-scope {
+    position: absolute;
+    inset-inline-start: 0.8rem;
+    inline-size: 3.5rem;
+    block-size: 1.5rem;
+    opacity: 0;
+    color: var(--sl-color-text-accent);
+    transition: opacity 120ms ease 60ms;
+  }
+
+  .pulsar-trigger[data-state='playing'] .pulsar-scope {
+    opacity: 1;
+  }
+
+  .pulsar-glyph-pause,
+  .pulsar-glyph-loading {
+    display: none;
+  }
+
+  .pulsar-trigger[data-state='playing'] .pulsar-glyph-play {
+    display: none;
+  }
+
+  .pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {
+    display: inline;
+  }
+
+  .pulsar-trigger[data-state='loading'] .pulsar-glyph-play {
+    display: none;
+  }
+
+  .pulsar-trigger[data-state='loading'] .pulsar-glyph-loading {
+    display: inline;
+    transform-origin: center;
+    animation: pulsar-spin 0.8s linear infinite;
+  }
+
+  .pulsar-trigger:disabled {
+    cursor: progress;
+  }
+
+  @keyframes pulsar-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulsar-trigger,
+    .pulsar-scope {
+      transition: none;
+    }
+
+    .pulsar-trigger[data-state='loading'] .pulsar-glyph-loading {
+      animation: none;
+    }
+  }
+</style>

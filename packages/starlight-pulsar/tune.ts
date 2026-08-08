@@ -8,7 +8,7 @@
  * tune, and only tunes the site registered can ever be named.
  */
 export interface Tune {
-  /** Reader-facing name in the tune selector. Not translated — tune names are proper nouns. */
+  /** Reader-facing tune name. Not translated — tune names are proper nouns. */
   label: string
   /**
    * Cycles per second. Separate from the pattern because the scheduler needs

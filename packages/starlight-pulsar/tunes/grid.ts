@@ -7,7 +7,7 @@ import { defineTune } from '../tune'
  * `white` its generated noise buffer, and the rest are plain oscillators. No
  * sample fetch, no soundfont host, nothing to license.
  *
- * Deliberately under-arranged. It is background music for a page of text, so
+ * Deliberately under-arranged. It accompanies a page of text, so
  * it holds one groove and lets the filter and the bass do the changing.
  */
 export default defineTune({

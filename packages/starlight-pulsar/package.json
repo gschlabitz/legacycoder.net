@@ -2,9 +2,12 @@
   "name": "starlight-pulsar",
   "version": "0.0.0",
   "private": true,
-  "description": "Starlight plugin for page-scoped background music: Strudel patterns curated by the site author, declared per page, started by the reader. The page sets the tune, the reader has the last word.",
+  "description": "Starlight plugin for page-scoped Strudel tunes selected per page and started by the reader.",
   "author": "Guido Schlabitz",
   "type": "module",
+  "scripts": {
+    "test": "node tests/player-click.mjs"
+  },
   "keywords": [
     "starlight",
     "starlight-plugin",

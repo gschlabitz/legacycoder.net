@@ -1,11 +1,25 @@
-/** Tunes that ship with Pulsar. Synth-only — see `tunes/README` reasoning in the package CONTEXT. */
+/** Tunes that ship with Pulsar. Built-ins are synth-only. */
 export const BUILT_IN_TUNES = ['drift', 'grid'] as const
 
 export type BuiltInTuneName = (typeof BUILT_IN_TUNES)[number]
 
+export const PLAYER_POSITIONS = [
+  'top left',
+  'top center',
+  'top right',
+  'center left',
+  'center center',
+  'center right',
+  'bottom left',
+  'bottom center',
+  'bottom right',
+] as const
+
+export type PlayerPosition = (typeof PLAYER_POSITIONS)[number]
+
 /** A tune the site author wrote, registered alongside the built-ins. */
 export interface CustomTuneConfig {
-  /** Stable id used in page frontmatter and in `localStorage`. */
+  /** Stable id used in page frontmatter and per-tune bookmarks. */
   name: string
   /** Reader-facing name. Defaults to `name` when omitted. */
   label?: string
@@ -26,8 +40,8 @@ export interface SamplesConfig {
 
 export interface StarlightPulsarUserConfig {
   /**
-   * Tunes to register: built-in names, custom tune objects, or a mix. Order is
-   * the order the selector lists them. Defaults to every built-in.
+   * Tunes to register: built-in names, custom tune objects, or a mix. Pages
+   * choose from these names in their `music` frontmatter.
    */
   tunes?: Array<BuiltInTuneName | (string & {}) | CustomTuneConfig>
   /**
@@ -36,16 +50,8 @@ export interface StarlightPulsarUserConfig {
    * network fetch and no sample license.
    */
   samples?: SamplesConfig
-  /**
-   * Where the tune selector renders.
-   *
-   * - `manual` (default) — Pulsar claims no component slot; the site imports
-   *   the control and places it in a slot it already owns.
-   * - `themeselect` — Pulsar claims Starlight's `ThemeSelect` slot when free,
-   *   and logs when it isn't. A convenience for sites running nothing else in
-   *   the header.
-   */
-  control?: 'manual' | 'themeselect'
+  /** Fixed viewport position of every page-local player. Defaults to `bottom right`. */
+  position?: PlayerPosition
 }
 
 /** A tune after resolution: always has a label and a module specifier. */
@@ -58,7 +64,7 @@ export interface ResolvedTune {
 export interface ResolvedPulsarConfig {
   tunes: ResolvedTune[]
   samples: SamplesConfig | undefined
-  control: 'manual' | 'themeselect'
+  position: PlayerPosition
 }
 
 /** Title-cases a built-in name for its default label: `drift` → `Drift`. */
@@ -68,6 +74,14 @@ function defaultLabel(name: string): string {
 
 export function resolveConfig(userConfig: StarlightPulsarUserConfig = {}): ResolvedPulsarConfig {
   const requested = userConfig.tunes ?? [...BUILT_IN_TUNES]
+  const position = userConfig.position ?? 'bottom right'
+
+  if (!(PLAYER_POSITIONS as readonly string[]).includes(position)) {
+    throw new Error(
+      `starlight-pulsar: unknown player position \`${position}\`. ` +
+        `Expected one of: ${PLAYER_POSITIONS.join(', ')}.`
+    )
+  }
 
   const tunes: ResolvedTune[] = []
   const seen = new Set<string>()
@@ -94,9 +108,8 @@ export function resolveConfig(userConfig: StarlightPulsarUserConfig = {}): Resol
       )
     }
 
-    // Names address tunes in frontmatter and in the reader's stored selection,
-    // so a duplicate would make `music: foo` ambiguous and could silently
-    // repoint a reader's saved pick at a different tune.
+    // Names address tunes in page frontmatter, so duplicates would make a
+    // playlist entry ambiguous.
     if (seen.has(tune.name)) {
       throw new Error(`starlight-pulsar: duplicate tune name \`${tune.name}\`. Tune names must be unique.`)
     }
@@ -108,6 +121,6 @@ export function resolveConfig(userConfig: StarlightPulsarUserConfig = {}): Resol
   return {
     tunes,
     samples: userConfig.samples,
-    control: userConfig.control ?? 'manual',
+    position,
   }
 }
