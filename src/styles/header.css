@@ -13,6 +13,75 @@
   font-size: var(--lc-header-icon-size);
 }
 
+.header-tooltip,
+.language-flags .flag-link::after,
+chameleon-skin-select[data-variant="icon"] .skin-trigger::after,
+starlight-theme-select .mode-button::after {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  z-index: 20;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 2px;
+  background: var(--sl-color-bg);
+  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, #000 30%, transparent);
+  color: var(--sl-color-gray-2);
+  font-family: var(--sl-font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
+  text-transform: capitalize;
+  transform: translate(-50%, -2px);
+  transition: opacity 0.08s ease, transform 0.08s ease, visibility 0s linear 0.08s;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+.language-flags .flag-link,
+chameleon-skin-select[data-variant="icon"] .skin-trigger,
+starlight-theme-select .mode-button {
+  position: relative;
+}
+
+.language-flags .flag-link::after,
+chameleon-skin-select[data-variant="icon"] .skin-trigger::after,
+starlight-theme-select .mode-button::after {
+  content: attr(title);
+}
+
+.language-flags .flag-link::after {
+  content: attr(data-tooltip);
+}
+
+.social-icons a:is(:hover, :focus-visible) .header-tooltip,
+.language-flags .flag-link:is(:hover, :focus-visible)::after,
+chameleon-skin-select[data-variant="icon"] .skin-trigger:is(:hover, :focus-visible)::after,
+starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 0.08s, 0.08s, 0s;
+  visibility: visible;
+}
+
+.mobile-preferences .header-tooltip,
+.mobile-preferences .language-flags .flag-link::after,
+.mobile-preferences chameleon-skin-select[data-variant="icon"] .skin-trigger::after,
+.mobile-preferences starlight-theme-select .mode-button::after {
+  top: auto;
+  bottom: calc(100% + 0.35rem);
+  transform: translate(-50%, 2px);
+}
+
+.mobile-preferences .social-icons a:is(:hover, :focus-visible) .header-tooltip,
+.mobile-preferences .language-flags .flag-link:is(:hover, :focus-visible)::after,
+.mobile-preferences chameleon-skin-select[data-variant="icon"] .skin-trigger:is(:hover, :focus-visible)::after,
+.mobile-preferences starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
+  transform: translate(-50%, 0);
+}
+
 .header .language-flags .flag-link,
 .header chameleon-skin-select[data-variant="icon"] .skin-trigger,
 .header starlight-theme-select .mode-button {

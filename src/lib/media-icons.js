@@ -29,6 +29,21 @@ export const TYPE_ICONS = {
     '<path d="M9 22l1-7h4l1 7"/>',
 };
 
+export const STATUS_ICONS = {
+  queued:
+    '<circle cx="12" cy="12" r="10"/>' +
+    '<polyline points="12 6 12 12 16 14"/>',
+  consuming: '<polygon points="5 3 19 12 5 21 5 3"/>',
+  finished: '<polyline points="20 6 9 17 4 12"/>',
+  abandoned:
+    '<line x1="18" y1="6" x2="6" y2="18"/>' +
+    '<line x1="6" y1="6" x2="18" y2="18"/>',
+};
+
 export function mediaIcon(type) {
   return TYPE_ICONS[type];
+}
+
+export function mediaStatusIcon(status) {
+  return STATUS_ICONS[status];
 }

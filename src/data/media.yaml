@@ -1,5 +1,147 @@
-# A flat media pile, newest-added first on /media. Facts live here; longer
-# prose belongs in a linked blog post.
+
+- id: the-odyssey-2026
+  title: The Odyssey
+  type: movie
+  status: finished
+  recommended: true
+  creator: Christopher Nolan
+  year: 2026
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Odyssey_(2026_film)
+  cover: https://image.tmdb.org/t/p/w500/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg
+
+- id: oppenheimer-2023
+  title: Oppenheimer
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2023
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Oppenheimer_(film)
+  cover: https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg
+
+- id: tenet-2020
+  title: Tenet
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2020
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Tenet_(film)
+  cover: https://image.tmdb.org/t/p/w500/aCIFMriQh8rvhxpN1IWGgvH0Tlg.jpg
+
+- id: dunkirk-2017
+  title: Dunkirk
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2017
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Dunkirk_(2017_film)
+  cover: https://image.tmdb.org/t/p/w500/b4Oe15CGLL61Ped0RAS9JpqdmCt.jpg
+
+- id: interstellar-2014
+  title: Interstellar
+  type: movie
+  status: finished
+  recommended: true
+  creator: Christopher Nolan
+  year: 2014
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Interstellar_(film)
+  cover: https://image.tmdb.org/t/p/w500/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg
+
+- id: the-dark-knight-rises-2012
+  title: The Dark Knight Rises
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2012
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Dark_Knight_Rises
+  cover: https://image.tmdb.org/t/p/w500/hr0L2aueqlP2BYUblTTjmtn0hw4.jpg
+
+- id: inception-2010
+  title: Inception
+  type: movie
+  status: finished
+  recommended: true
+  creator: Christopher Nolan
+  year: 2010
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Inception
+  cover: https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg
+
+- id: the-dark-knight-2008
+  title: The Dark Knight
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2008
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Dark_Knight
+  cover: https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg
+
+- id: the-prestige-2006
+  title: The Prestige
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2006
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Prestige_(film)
+  cover: https://image.tmdb.org/t/p/w500/Ag2B2KHKQPukjH7WutmgnnSNurZ.jpg
+
+- id: batman-begins-2005
+  title: Batman Begins
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2005
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Batman_Begins
+  cover: https://image.tmdb.org/t/p/w500/sPX89Td70IDDjVr85jdSBb4rWGr.jpg
+
+- id: insomnia-2002
+  title: Insomnia
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2002
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Insomnia_(2002_film)
+  cover: https://image.tmdb.org/t/p/w500/riVXh3EimGO0y5dgQxEWPRy5Itg.jpg
+
+- id: memento-2000
+  title: Memento
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2000
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Memento_(film)
+  cover: https://image.tmdb.org/t/p/w500/nzlv62aC0octS5AklAiWpXLX9Z0.jpg
+
+- id: following-1998
+  title: Following
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 1998
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Following
+  cover: https://image.tmdb.org/t/p/w500/3bX6VVSMf0dvzk5pMT4ALG5A92d.jpg
+
 - id: dune-1965
   title: Dune
   type: book

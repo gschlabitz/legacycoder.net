@@ -2,22 +2,15 @@
 import { Image } from 'astro:assets';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
 import MediaFilter from '../components/MediaFilter.jsx';
-import { mediaIcon } from '../lib/media-icons.js';
+import { mediaIcon, mediaStatusIcon } from '../lib/media-icons.js';
 import {
   getMediaEntries,
   MEDIA_STATUSES,
   MEDIA_TYPES,
   resolveNote,
-  sourceLabel,
 } from '../lib/media';
 
 const entries = await getMediaEntries();
-const dateFormat = new Intl.DateTimeFormat('en-US', {
-  month: 'short',
-  day: 'numeric',
-  year: 'numeric',
-  timeZone: 'UTC',
-});
 ---
 
 <StarlightPage
@@ -37,19 +30,19 @@ const dateFormat = new Intl.DateTimeFormat('en-US', {
   <div class="media-page">
     <header class="media-header">
       <div>
-        <p class="media-eyebrow">Watch · read · play · listen</p>
-        <h1>Media pile</h1>
+        <p class="media-eyebrow">Books · Movies · Games · Music</p>
+        <h1>Media Pile</h1>
         <p>
-          Not an ordered queue—just what caught my attention, what I am into,
-          and what I would recommend.
+            Let's be honest; this never has been a queue.
         </p>
       </div>
-      <MediaFilter
-        client:load
-        types={[...MEDIA_TYPES]}
-        statuses={[...MEDIA_STATUSES]}
-      />
     </header>
+
+    <MediaFilter
+      client:load
+      types={[...MEDIA_TYPES]}
+      statuses={[...MEDIA_STATUSES]}
+    />
 
     <div class="media-grid">
       {entries.map((entry) => {
@@ -63,21 +56,24 @@ const dateFormat = new Intl.DateTimeFormat('en-US', {
             data-type={data.type}
             data-status={data.status}
             data-recommended={String(data.recommended)}
+            data-year={data.year ?? ''}
+            data-byline={data.creator ?? ''}
           >
             <a
-              class="media-art"
+              class="media-card-target"
               href={data.link}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${data.title} at ${sourceLabel(data.link)}`}
-            >
+              aria-label={`Open ${data.title}`}
+            ></a>
+
+            <div class="media-art">
               {data.cover ? (
                 <Image
                   src={data.cover}
                   alt={`${data.title} cover`}
-                  width={360}
-                  height={540}
-                  fit="cover"
+                  inferSize
+                  layout="full-width"
                   loading="lazy"
                 />
               ) : (
@@ -92,30 +88,61 @@ const dateFormat = new Intl.DateTimeFormat('en-US', {
                   set:html={mediaIcon(data.type)}
                 />
               )}
-            </a>
+            </div>
 
             <div class="media-card-body">
-              <div class="media-chips">
-                <span class="media-chip">{data.type}</span>
-                <span class:list={['media-chip', `media-chip--${data.status}`]}>
-                  {data.status}
-                </span>
-                {data.recommended && (
-                  <span class="media-chip media-chip--recommended">recommended</span>
+              <h2>{data.title}</h2>
+
+              <div class="media-card-meta">
+                {(data.creator || data.year) && (
+                  <p class="media-byline">
+                    {[data.creator, data.year].filter(Boolean).join(' · ')}
+                  </p>
                 )}
+                <div class="media-chips">
+                  {data.recommended && (
+                    <span
+                      class="media-recommended"
+                      aria-label="recommended"
+                      data-tooltip="Recommended"
+                    >
+                      <span aria-hidden="true">♥</span>
+                    </span>
+                  )}
+                  <span
+                    class:list={['media-chip', 'media-chip--status', `media-chip--${data.status}`]}
+                    aria-label={data.status}
+                    data-tooltip={data.status}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      set:html={mediaStatusIcon(data.status)}
+                    />
+                  </span>
+                  <span
+                    class="media-chip media-chip--type"
+                    aria-label={`${data.type} media`}
+                    data-tooltip={data.type}
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                      set:html={mediaIcon(data.type)}
+                    />
+                  </span>
+                </div>
               </div>
-
-              <h2>
-                <a href={data.link} target="_blank" rel="noopener noreferrer">
-                  {data.title}
-                </a>
-              </h2>
-
-              {(data.creator || data.year) && (
-                <p class="media-byline">
-                  {[data.creator, data.year].filter(Boolean).join(' · ')}
-                </p>
-              )}
 
               {data.rating && (
                 <p class="media-rating" aria-label={`${data.rating} out of 5 stars`}>
@@ -125,23 +152,12 @@ const dateFormat = new Intl.DateTimeFormat('en-US', {
 
               {note && <p class="media-note">{note}</p>}
 
-              <footer class="media-card-footer">
-                <a
-                  class="media-source"
-                  href={data.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {sourceLabel(data.link)}
-                  <span aria-hidden="true">↗</span>
-                </a>
-                <time datetime={data.added.toISOString()}>
-                  Added {dateFormat.format(data.added)}
-                </time>
-                {data.post && (
+              {data.post && (
+                <footer class="media-card-footer">
                   <a class="media-post" href={`/${data.post}/`}>Wrote about it →</a>
-                )}
-              </footer>
+                </footer>
+              )}
+
             </div>
           </article>
         );

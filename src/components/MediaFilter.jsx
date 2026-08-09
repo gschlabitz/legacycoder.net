@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { mediaMatches, queryValues } from "../lib/media-filter.js";
+import {
+  facetState,
+  mediaMatches,
+  queryText,
+  queryValues,
+} from "../lib/media-filter.js";
 
 function toggleSetValue(setValue, value) {
   setValue((previous) => {
@@ -9,19 +14,57 @@ function toggleSetValue(setValue, value) {
   });
 }
 
+function FacetLine({ label, values, checked, setChecked }) {
+  const allRef = useRef(null);
+  const { checked: allSelected, indeterminate } = facetState(
+    checked.size,
+    values.length,
+  );
+  const labelId = `media-filter-${label.toLowerCase()}`;
+
+  useEffect(() => {
+    if (allRef.current) allRef.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+
+  return (
+    <div className="media-filter-line" role="group" aria-labelledby={labelId}>
+      <span className="media-filter-label" id={labelId}>{label}</span>
+      <div className="media-filter-options">
+        <label className="media-filter-item">
+          <input
+            ref={allRef}
+            type="checkbox"
+            checked={allSelected}
+            onChange={() => setChecked(allSelected ? new Set() : new Set(values))}
+          />
+          <span>All</span>
+        </label>
+        {values.map((value) => (
+          <label key={value} className="media-filter-item">
+            <input
+              type="checkbox"
+              checked={checked.has(value)}
+              onChange={() => toggleSetValue(setChecked, value)}
+            />
+            <span>{value}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function MediaFilter({ types, statuses }) {
   const [checkedTypes, setCheckedTypes] = useState(() => new Set(types));
   const [checkedStatuses, setCheckedStatuses] = useState(
     () => new Set(statuses),
   );
   const [recommendedOnly, setRecommendedOnly] = useState(false);
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef(null);
+  const [yearQuery, setYearQuery] = useState("");
+  const [bylineQuery, setBylineQuery] = useState("");
 
   const typeFiltering = checkedTypes.size < types.length;
   const statusFiltering = checkedStatuses.size < statuses.length;
-  const filtering = typeFiltering || statusFiltering || recommendedOnly;
-
   // Apply deep links after mount so the server HTML and first client render
   // agree. A facet containing only unknown values stays fully inclusive.
   useEffect(() => {
@@ -40,23 +83,9 @@ export default function MediaFilter({ types, statuses }) {
     if (recommended === "true" || recommended === "1") {
       setRecommendedOnly(true);
     }
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    const onPointerDown = (event) => {
-      if (!rootRef.current?.contains(event.target)) setOpen(false);
-    };
-    const onKeyDown = (event) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("pointerdown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
+    setYearQuery(queryText(window.location.search, "year"));
+    setBylineQuery(queryText(window.location.search, "byline"));
+  }, [types, statuses]);
 
   useEffect(() => {
     let visibleCount = 0;
@@ -68,6 +97,8 @@ export default function MediaFilter({ types, statuses }) {
           type: entry.dataset.type,
           status: entry.dataset.status,
           recommended: entry.dataset.recommended === "true",
+          year: entry.dataset.year,
+          byline: entry.dataset.byline,
         },
         {
           checkedTypes,
@@ -75,6 +106,8 @@ export default function MediaFilter({ types, statuses }) {
           recommendedOnly,
           typeFiltering,
           statusFiltering,
+          yearQuery,
+          bylineQuery,
         },
       );
       entry.toggleAttribute("hidden", !visible);
@@ -83,80 +116,61 @@ export default function MediaFilter({ types, statuses }) {
 
     const emptyState = document.querySelector("[data-media-empty]");
     emptyState?.toggleAttribute("hidden", visibleCount > 0);
-  }, [checkedTypes, checkedStatuses, recommendedOnly]);
+  }, [
+    checkedTypes,
+    checkedStatuses,
+    recommendedOnly,
+    yearQuery,
+    bylineQuery,
+    typeFiltering,
+    statusFiltering,
+  ]);
 
   return (
-    <div className="media-filter" ref={rootRef}>
-      <button
-        type="button"
-        className={
-          "media-filter-toggle" +
-          (filtering ? " media-filter-toggle--filtering" : "")
-        }
-        aria-expanded={open}
-        aria-label="Filter media"
-        onClick={() => setOpen((value) => !value)}
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M3 5h18l-7 8v5l-4 2v-7L3 5z" />
-        </svg>
-        <span>Filter</span>
-      </button>
+    <form className="media-filter" aria-label="Media filters" onSubmit={(event) => event.preventDefault()}>
+      <FacetLine
+        label="Type"
+        values={types}
+        checked={checkedTypes}
+        setChecked={setCheckedTypes}
+      />
 
-      {open && (
-        <div className="media-filter-pop" aria-label="Media filters">
-          <fieldset>
-            <legend>Type</legend>
-            <div className="media-filter-options">
-              {types.map((type) => (
-                <label key={type} className="media-filter-item">
-                  <input
-                    type="checkbox"
-                    checked={checkedTypes.has(type)}
-                    onChange={() => toggleSetValue(setCheckedTypes, type)}
-                  />
-                  <span>{type}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
+      <FacetLine
+        label="Status"
+        values={statuses}
+        checked={checkedStatuses}
+        setChecked={setCheckedStatuses}
+      />
 
-          <fieldset>
-            <legend>Status</legend>
-            <div className="media-filter-options">
-              {statuses.map((status) => (
-                <label key={status} className="media-filter-item">
-                  <input
-                    type="checkbox"
-                    checked={checkedStatuses.has(status)}
-                    onChange={() =>
-                      toggleSetValue(setCheckedStatuses, status)
-                    }
-                  />
-                  <span>{status}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-
-          <label className="media-filter-item media-filter-recommended">
-            <input
-              type="checkbox"
-              checked={recommendedOnly}
-              onChange={(event) => setRecommendedOnly(event.target.checked)}
-            />
-            <span>recommended only</span>
-          </label>
-        </div>
-      )}
-    </div>
+      <div className="media-filter-details">
+        <label className="media-filter-text">
+          <span>Year</span>
+          <input
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]{4}"
+            value={yearQuery}
+            onChange={(event) => setYearQuery(event.target.value)}
+          />
+        </label>
+        <label className="media-filter-text">
+          <span>Byline</span>
+          <input
+            type="search"
+            placeholder="Author, director…"
+            value={bylineQuery}
+            onChange={(event) => setBylineQuery(event.target.value)}
+          />
+        </label>
+        <label className="media-filter-item media-filter-recommended">
+          <input
+            type="checkbox"
+            checked={recommendedOnly}
+            onChange={(event) => setRecommendedOnly(event.target.checked)}
+          />
+          <span>recommended only</span>
+        </label>
+      </div>
+    </form>
   );
 }
