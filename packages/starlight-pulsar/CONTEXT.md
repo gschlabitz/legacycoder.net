@@ -16,6 +16,7 @@ Pulsar is this repo's Starlight plugin for page-scoped Strudel tunes.
 - While playing, Play/Pause expands left into a capsule. Its icon stays fixed
   and a mini oscilloscope fades in on the left.
 - Pausing or changing tunes stores a per-tune bookmark for later resumption.
+- A tune may declare cycle-relative `pulse` steps for synchronized page visuals.
 - Do not add a global tune selector, autoplay, Stop, or Off control.
 
 Use **tune**, **page playlist**, **player**, **armed**, and **bookmark** for the

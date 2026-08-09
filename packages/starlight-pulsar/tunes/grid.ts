@@ -15,6 +15,7 @@ export default defineTune({
   // 96 bpm in 4/4 — one bar per cycle.
   cps: 96 / 60 / 4,
   gain: 0.5,
+  pulse: { steps: 8, hits: [0, 5] },
   pattern: () =>
     stack(
       // Kick on 1 and the "and" of 3.

@@ -129,7 +129,7 @@ const hasPlaylist = pageTunes.length > 1
   interface StrudelModule {
     initStrudel(options: Record<string, unknown>): Promise<unknown>
     getAudioContext(): AudioContext
-    getAnalyzerData(type: 'time' | 'frequency', id?: string): Float32Array
+    getAnalyzerData(type: 'time', id?: string): Float32Array
     resetGlobalEffects(): void
     samples(map: unknown, base: string): unknown
   }
@@ -137,7 +137,13 @@ const hasPlaylist = pageTunes.length > 1
   let audioContext: AudioContext | null = null
   let strudelModule: StrudelModule | null = null
   let enginePromise: Promise<Repl> | null = null
-  let playing: { name: string; startedAt: number; offset: number; cps: number } | null = null
+  let playing: {
+    name: string
+    startedAt: number
+    offset: number
+    cps: number
+    pulse?: Tune['pulse']
+  } | null = null
   let currentName = ''
   let loading = false
 
@@ -178,7 +184,7 @@ const hasPlaylist = pageTunes.length > 1
     repl.setCps(tune.cps)
     await repl.setPattern(pattern, true)
     currentName = name
-    playing = { name, startedAt: audioContext?.currentTime ?? 0, offset, cps: tune.cps }
+    playing = { name, startedAt: audioContext?.currentTime ?? 0, offset, cps: tune.cps, pulse: tune.pulse }
     startScope()
     return true
   }
@@ -217,8 +223,36 @@ const hasPlaylist = pageTunes.length > 1
   // player's interface. The player owns the one animation loop and audio tap.
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
   let scopeFrame = 0
+  let lastPulseCycle: number | null = null
+
+  // Tunes declare kick positions as steps within a cycle. Convert the audio
+  // clock back to the tune's cycle position and emit once when a frame crosses
+  // a declared step; the page can react without inspecting the audio signal.
+  const emitPulse = (): void => {
+    if (!playing?.pulse || !audioContext) return
+    const { steps, hits } = playing.pulse
+    if (!Number.isInteger(steps) || steps < 1 || hits.length === 0) return
+
+    const current = playing.offset + (audioContext.currentTime - playing.startedAt) * playing.cps
+    const previous = lastPulseCycle ?? playing.offset - 0.000001
+    lastPulseCycle = current
+
+    // Do not replay missed pulses after a suspended or backgrounded frame.
+    if (current - previous > 0.25) return
+
+    for (let cycle = Math.floor(previous); cycle <= Math.floor(current); cycle++) {
+      for (const hit of hits) {
+        const pulseAt = cycle + hit / steps
+        if (pulseAt > previous && pulseAt <= current) {
+          window.dispatchEvent(new CustomEvent('pulsar:pulse'))
+          return
+        }
+      }
+    }
+  }
 
   const drawScopes = (): void => {
+    emitPulse()
     const samples = playing && strudelModule ? strudelModule.getAnalyzerData('time', ANALYSER_ID) : null
 
     document.querySelectorAll<HTMLCanvasElement>('[data-scope]').forEach((canvas) => {
@@ -272,6 +306,7 @@ const hasPlaylist = pageTunes.length > 1
   const stopScope = (): void => {
     if (scopeFrame) cancelAnimationFrame(scopeFrame)
     scopeFrame = 0
+    lastPulseCycle = null
     drawScopes()
   }
 

@@ -21,6 +21,11 @@ export interface Tune {
    * pattern should not be a volume event. There is no reader-facing volume.
    */
   gain?: number
+  /** Optional visual pulse positions within one cycle. */
+  pulse?: {
+    steps: number
+    hits: number[]
+  }
   /**
    * Builds the pattern. Called after the engine is initialised, so Strudel's
    * pattern constructors are in scope as globals (`initStrudel` assigns them
