@@ -3,7 +3,6 @@ import { glob } from 'astro/loaders';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 import { blogSchema } from 'starlight-blog/schema';
-import { pulsarSchema } from 'starlight-pulsar/schema';
 
 // TASL attribution metadata (Creative Commons' recommended model:
 // Title, Author, Source, License) for reusable assets in src/assets.
@@ -52,10 +51,7 @@ export const collections = {
   docs: defineCollection({
     loader: docsLoader(),
     schema: docsSchema({
-      // A Starlight plugin cannot extend the site's content schema — zod would
-      // strip `music` before the player ever saw it — so Pulsar's
-      // fragment is merged here alongside the blog's.
-      extend: (context) => blogSchema(context).merge(pulsarSchema()).merge(z.object({
+      extend: (context) => blogSchema(context).merge(z.object({
         location: location.optional(),
         skills: z.array(z.string()).optional(),
       })),

@@ -1,11 +1,14 @@
 import { readdir } from 'node:fs/promises'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
-const assets = fileURLToPath(new URL('../../../dist/_astro/', import.meta.url))
+const assets = fileURLToPath(new URL('../dist/_astro/', import.meta.url))
 const moduleName = (await readdir(assets)).find((name) =>
   /^Player\.astro_astro_type_script_index_0_lang\..+\.js$/.test(name)
 )
-if (!moduleName) throw new Error('Build the site before running the player click test.')
+const tuneModuleName = (await readdir(assets)).find((name) =>
+  /^FrontPageTune\.astro_astro_type_script_index_0_lang\..+\.js$/.test(name)
+)
+if (!moduleName || !tuneModuleName) throw new Error('Build the site before running the player click test.')
 
 class MockButton {
   dataset = { action: 'playpause', state: 'armed' }
@@ -28,7 +31,6 @@ const button = new MockButton()
 let player
 class MockElement {
   dataset = {
-    tunes: '["grid"]',
     labelPlay: 'Play tune',
     labelPause: 'Pause tune',
     labelLoading: 'Loading tune',
@@ -37,12 +39,17 @@ class MockElement {
     return selector === '[data-action]' ? [button] : []
   }
   querySelector(selector) {
-    return selector === '.pulsar-trigger' ? button : null
+    return selector === '.tune-player-trigger' ? button : null
   }
 }
 
 const registry = new Map()
 globalThis.HTMLElement = MockElement
+globalThis.CustomEvent = class {
+  constructor(type) {
+    this.type = type
+  }
+}
 globalThis.customElements = {
   get: (name) => registry.get(name),
   define: (name, constructor) => registry.set(name, constructor),
@@ -51,7 +58,7 @@ globalThis.document = {
   createElement: () => ({ relList: { supports: () => false } }),
   getElementsByTagName: () => [],
   head: { appendChild() {} },
-  querySelectorAll: (selector) => (selector === 'pulsar-player' && player ? [player] : []),
+  querySelectorAll: (selector) => (selector === 'tune-player' && player ? [player] : []),
   querySelector: () => null,
 }
 globalThis.window = {
@@ -60,12 +67,12 @@ globalThis.window = {
   matchMedia: () => ({ matches: true }),
   devicePixelRatio: 1,
 }
-globalThis.localStorage = { getItem: () => null, setItem() {} }
 globalThis.requestAnimationFrame = () => 1
 globalThis.cancelAnimationFrame = () => {}
 
 await import(pathToFileURL(`${assets}/${moduleName}`))
-const Player = customElements.get('pulsar-player')
+await import(pathToFileURL(`${assets}/${tuneModuleName}`))
+const Player = customElements.get('tune-player')
 player = new Player()
 player.connectedCallback()
 button.click()

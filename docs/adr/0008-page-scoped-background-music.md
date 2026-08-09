@@ -1,5 +1,4 @@
 # Tune playback is page-scoped
 
-Each participating page renders its own armed player. The site remains a
-plain multi-page app, so playback ends at navigation and never autoplays on
-the next page.
+Each tune is owned and registered by a page-specific component, which renders
+the shared site player. Playback ends at navigation and never autoplays.

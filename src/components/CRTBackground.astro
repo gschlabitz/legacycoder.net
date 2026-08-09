@@ -391,7 +391,7 @@ export async function notify(owner: Owner) {
       let paused = false;
       // Player.astro turns each tune-declared kick step into this event. Restart
       // the phosphor wash so every kick gets a fresh pulse, even mid-fade.
-      window.addEventListener('pulsar:pulse', () => {
+      window.addEventListener('tune-player:pulse', () => {
         if (paused) return;
         root.classList.remove('crt-pulse');
         void root.offsetWidth;

@@ -3,7 +3,6 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightBlog from "starlight-blog";
 import starlightThemeChameleon from "starlight-theme-chameleon";
-import starlightPulsar from "starlight-pulsar";
 import starlightSidebarSections from "./src/plugins/sidebar-sections.ts";
 import react from "@astrojs/react";
 
@@ -65,9 +64,6 @@ export default defineConfig({
           skinSelector: "icon",
           themeSelector: "icon",
         }),
-        // Page-scoped tune playback (ADR 0008). Each page that declares
-        // music renders its own player.
-        starlightPulsar({ tunes: ["drift", "grid"], position: "bottom right" }),
       ],
     }),
     react(),

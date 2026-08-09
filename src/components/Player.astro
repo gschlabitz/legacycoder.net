@@ -1,21 +1,35 @@
 ---
-import config from 'virtual:starlight-pulsar/config'
+type PlayerPosition =
+  | 'top left'
+  | 'top center'
+  | 'top right'
+  | 'center left'
+  | 'center center'
+  | 'center right'
+  | 'bottom left'
+  | 'bottom center'
+  | 'bottom right'
 
-const t = Astro.locals.t
+interface Props {
+  position?: PlayerPosition
+}
 
-const playLabel = t.exists('starlightPulsar.player.play')
-  ? t('starlightPulsar.player.play')
-  : 'Play tune'
-const pauseLabel = t.exists('starlightPulsar.player.pause')
-  ? t('starlightPulsar.player.pause')
-  : 'Pause tune'
-const loadingLabel = t.exists('starlightPulsar.player.loading')
-  ? t('starlightPulsar.player.loading')
-  : 'Loading tune'
-const previousLabel = t.exists('starlightPulsar.player.previous')
-  ? t('starlightPulsar.player.previous')
-  : 'Previous tune'
-const nextLabel = t.exists('starlightPulsar.player.next') ? t('starlightPulsar.player.next') : 'Next tune'
+const { position = 'bottom right' } = Astro.props
+const labels = Astro.currentLocale === 'de'
+  ? {
+      play: 'Stück abspielen',
+      pause: 'Stück pausieren',
+      loading: 'Stück wird geladen',
+      previous: 'Vorheriges Stück',
+      next: 'Nächstes Stück',
+    }
+  : {
+      play: 'Play tune',
+      pause: 'Pause tune',
+      loading: 'Loading tune',
+      previous: 'Previous tune',
+      next: 'Next tune',
+    }
 
 const icon = {
   previous: 'M7 5.5h2.4v13H7zM20 5.9v12.2a.8.8 0 0 1-1.24.67l-9.1-6.1a.8.8 0 0 1 0-1.34l9.1-6.1A.8.8 0 0 1 20 5.9Z',
@@ -24,101 +38,45 @@ const icon = {
   next: 'M14.6 5.5H17v13h-2.4zM4 5.9v12.2a.8.8 0 0 0 1.24.67l9.1-6.1a.8.8 0 0 0 0-1.34l-9.1-6.1A.8.8 0 0 0 4 5.9Z',
 } as const
 
-// A page owns its playlist. A scalar is the common one-tune case; an array
-// opts into previous/next navigation. `false` and omission both render no
-// player, but `false` remains useful to sites that want to state silence.
-const music = Astro.locals.starlightRoute?.entry?.data?.music as string | string[] | false | undefined
-const pageTunes = typeof music === 'string' ? [music] : Array.isArray(music) ? music : []
-const duplicates = pageTunes.filter((name, index) => pageTunes.indexOf(name) !== index)
-const unknown = pageTunes.filter((name) => !config.tunes.some((tune) => tune.name === name))
-
-if (duplicates.length > 0) {
-  throw new Error(
-    `starlight-pulsar: page "${Astro.locals.starlightRoute?.id ?? Astro.url.pathname}" repeats ` +
-      `${[...new Set(duplicates)].map((name) => `\`${name}\``).join(', ')} in its \`music\` playlist.`
-  )
-}
-
-if (unknown.length > 0) {
-  const known = config.tunes.map((tune) => tune.name).join(', ') || '(none registered)'
-  throw new Error(
-    `starlight-pulsar: page "${Astro.locals.starlightRoute?.id ?? Astro.url.pathname}" declares unknown ` +
-      `${unknown.map((name) => `\`${name}\``).join(', ')} in \`music\`. Registered tunes: ${known}.`
-  )
-}
-
-const hasPlaylist = pageTunes.length > 1
 ---
-
-{pageTunes.length > 0 && (
-  <pulsar-player
-    data-tunes={JSON.stringify(pageTunes)}
-    data-position={config.position}
-    data-label-play={playLabel}
-    data-label-pause={pauseLabel}
-    data-label-loading={loadingLabel}
+<tune-player
+    data-position={position}
+    data-label-play={labels.play}
+    data-label-pause={labels.pause}
+    data-label-loading={labels.loading}
   >
-    <div class="pulsar-transport">
-      {hasPlaylist && (
-        <button class="pulsar-btn" type="button" data-action="prev" aria-label={previousLabel}>
-          <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d={icon.previous} />
-          </svg>
-        </button>
-      )}
+  <div class="tune-player-transport">
+    <button class="tune-player-btn" type="button" data-action="prev" aria-label={labels.previous} hidden>
+      <svg class="tune-player-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d={icon.previous} />
+      </svg>
+    </button>
 
-      <button class="pulsar-btn pulsar-trigger" type="button" data-action="playpause" data-state="armed" aria-label={playLabel}>
-        <canvas class="pulsar-scope" data-scope width="96" height="36" aria-hidden="true"></canvas>
-        <svg class="pulsar-icon pulsar-glyph-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <button class="tune-player-btn tune-player-trigger" type="button" data-action="playpause" data-state="armed" aria-label={labels.play}>
+        <canvas class="tune-player-scope" data-scope width="96" height="36" aria-hidden="true"></canvas>
+        <svg class="tune-player-icon tune-player-glyph-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d={icon.play} />
         </svg>
-        <svg class="pulsar-icon pulsar-glyph-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg class="tune-player-icon tune-player-glyph-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d={icon.pause} />
         </svg>
-        <svg class="pulsar-icon pulsar-glyph-loading" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg class="tune-player-icon tune-player-glyph-loading" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="38 13" />
         </svg>
       </button>
 
-      {hasPlaylist && (
-        <button class="pulsar-btn" type="button" data-action="next" aria-label={nextLabel}>
-          <svg class="pulsar-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d={icon.next} />
-          </svg>
-        </button>
-      )}
-    </div>
-  </pulsar-player>
-)}
+    <button class="tune-player-btn" type="button" data-action="next" aria-label={labels.next} hidden>
+      <svg class="tune-player-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d={icon.next} />
+      </svg>
+    </button>
+  </div>
+</tune-player>
 
 <script>
-  import config, { tuneLoaders } from 'virtual:starlight-pulsar/config'
-  import type { Tune } from 'starlight-pulsar/tune'
+  import { getTunes, type Tune } from '../lib/tune'
 
-  const BOOKMARKS_KEY = 'pulsar-bookmarks'
-  const ANALYSER_ID = 'pulsar'
-
-  const loadBookmarks = (): Record<string, number> => {
-    try {
-      const raw = localStorage.getItem(BOOKMARKS_KEY)
-      const parsed: unknown = raw ? JSON.parse(raw) : null
-      if (parsed && typeof parsed === 'object') return parsed as Record<string, number>
-    } catch {
-      // Storage is best-effort. Playback still works when it is unavailable.
-    }
-    return {}
-  }
-
-  const storeBookmark = (name: string, cycle: number): void => {
-    if (!Number.isFinite(cycle) || cycle < 0) return
-    try {
-      const bookmarks = loadBookmarks()
-      bookmarks[name] = cycle
-      localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks))
-    } catch {
-      // Storage is best-effort.
-    }
-  }
+  const ANALYSER_ID = 'tune-player'
 
   interface Repl {
     setCps(cps: number): void
@@ -131,7 +89,6 @@ const hasPlaylist = pageTunes.length > 1
     getAudioContext(): AudioContext
     getAnalyzerData(type: 'time', id?: string): Float32Array
     resetGlobalEffects(): void
-    samples(map: unknown, base: string): unknown
   }
 
   let audioContext: AudioContext | null = null
@@ -140,7 +97,6 @@ const hasPlaylist = pageTunes.length > 1
   let playing: {
     name: string
     startedAt: number
-    offset: number
     cps: number
     pulse?: Tune['pulse']
   } | null = null
@@ -150,12 +106,7 @@ const hasPlaylist = pageTunes.length > 1
   const loadEngine = (): Promise<Repl> => {
     enginePromise ??= (async () => {
       const strudel = (await import('@strudel/web')) as unknown as StrudelModule
-      const options: Record<string, unknown> = {}
-      if (config.samples) {
-        const { base, map } = config.samples
-        options.prebake = () => strudel.samples(map, base)
-      }
-      const repl = (await strudel.initStrudel(options)) as Repl
+      const repl = (await strudel.initStrudel({})) as Repl
       strudelModule = strudel
       audioContext = strudel.getAudioContext()
       return repl
@@ -167,14 +118,11 @@ const hasPlaylist = pageTunes.length > 1
   }
 
   const play = async (name: string): Promise<boolean> => {
-    const loader = tuneLoaders[name]
-    if (!loader) return false
+    const tune = getTunes().find((candidate) => candidate.name === name)
+    if (!tune) return false
 
-    const [repl, module] = await Promise.all([loadEngine(), loader()])
-    const tune: Tune = module.default
-    const offset = Math.ceil(loadBookmarks()[name] ?? 0)
+    const repl = await loadEngine()
     let pattern = tune.pattern()
-    if (offset > 0) pattern = pattern.early(offset)
     if (typeof tune.gain === 'number') {
       const gainControl = (globalThis as unknown as { gain: (value: number) => unknown }).gain
       pattern = pattern.mul(gainControl(tune.gain))
@@ -184,21 +132,14 @@ const hasPlaylist = pageTunes.length > 1
     repl.setCps(tune.cps)
     await repl.setPattern(pattern, true)
     currentName = name
-    playing = { name, startedAt: audioContext?.currentTime ?? 0, offset, cps: tune.cps, pulse: tune.pulse }
+    playing = { name, startedAt: audioContext?.currentTime ?? 0, cps: tune.cps, pulse: tune.pulse }
     startScope()
     return true
-  }
-
-  const bookmarkNow = (): void => {
-    if (!playing) return
-    const elapsed = (audioContext?.currentTime ?? playing.startedAt) - playing.startedAt
-    storeBookmark(playing.name, playing.offset + elapsed * playing.cps)
   }
 
   const pause = async (): Promise<void> => {
     if (!playing || !enginePromise) return
     const repl = await enginePromise
-    bookmarkNow()
 
     // Stopping scheduling alone leaves released voices audible. Resetting the
     // global effects graph cuts those tails before the next tune can start.
@@ -208,16 +149,7 @@ const hasPlaylist = pageTunes.length > 1
     stopScope()
   }
 
-  window.addEventListener('pagehide', bookmarkNow)
-
-  const pageTunes = (player: HTMLElement): string[] => {
-    try {
-      const parsed: unknown = JSON.parse(player.dataset.tunes || '[]')
-      return Array.isArray(parsed) && parsed.every((name) => typeof name === 'string') ? parsed : []
-    } catch {
-      return []
-    }
-  }
+  const pageTunes = (): string[] => getTunes().map((tune) => tune.name)
 
   // Any page may add a larger `[data-scope]` canvas without expanding the
   // player's interface. The player owns the one animation loop and audio tap.
@@ -233,8 +165,8 @@ const hasPlaylist = pageTunes.length > 1
     const { steps, hits } = playing.pulse
     if (!Number.isInteger(steps) || steps < 1 || hits.length === 0) return
 
-    const current = playing.offset + (audioContext.currentTime - playing.startedAt) * playing.cps
-    const previous = lastPulseCycle ?? playing.offset - 0.000001
+    const current = (audioContext.currentTime - playing.startedAt) * playing.cps
+    const previous = lastPulseCycle ?? -0.000001
     lastPulseCycle = current
 
     // Do not replay missed pulses after a suspended or backgrounded frame.
@@ -244,7 +176,7 @@ const hasPlaylist = pageTunes.length > 1
       for (const hit of hits) {
         const pulseAt = cycle + hit / steps
         if (pulseAt > previous && pulseAt <= current) {
-          window.dispatchEvent(new CustomEvent('pulsar:pulse'))
+          window.dispatchEvent(new CustomEvent('tune-player:pulse'))
           return
         }
       }
@@ -311,8 +243,12 @@ const hasPlaylist = pageTunes.length > 1
   }
 
   const renderAll = (): void => {
-    document.querySelectorAll<HTMLElement>('pulsar-player').forEach((player) => {
-      const trigger = player.querySelector<HTMLButtonElement>('.pulsar-trigger')
+    const hasPlaylist = pageTunes().length > 1
+    document.querySelectorAll<HTMLElement>('tune-player').forEach((player) => {
+      player.querySelectorAll<HTMLButtonElement>('[data-action="prev"], [data-action="next"]').forEach((button) => {
+        button.hidden = !hasPlaylist
+      })
+      const trigger = player.querySelector<HTMLButtonElement>('.tune-player-trigger')
       if (!trigger) return
       const state = loading ? 'loading' : playing ? 'playing' : 'armed'
       trigger.dataset.state = state
@@ -335,20 +271,20 @@ const hasPlaylist = pageTunes.length > 1
     try {
       await task()
     } catch (error) {
-      console.error('Pulsar player failed:', error)
+      console.error('Tune player failed:', error)
     } finally {
       loading = false
       renderAll()
     }
   }
 
-  class PulsarPlayer extends HTMLElement {
+  class TunePlayer extends HTMLElement {
     #initialized = false
 
     connectedCallback() {
       if (this.#initialized) return
       this.#initialized = true
-      currentName ||= pageTunes(this)[0] || ''
+      currentName ||= pageTunes()[0] || ''
 
       this.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
         button.addEventListener('click', () => void this.#transport(button.dataset.action || ''))
@@ -358,7 +294,7 @@ const hasPlaylist = pageTunes.length > 1
     }
 
     async #transport(action: string) {
-      const tunes = pageTunes(this)
+      const tunes = pageTunes()
       if (tunes.length === 0) return
 
       if (action === 'playpause') {
@@ -383,62 +319,67 @@ const hasPlaylist = pageTunes.length > 1
     }
   }
 
-  if (!customElements.get('pulsar-player')) customElements.define('pulsar-player', PulsarPlayer)
+  window.addEventListener('tune-player:tunes-changed', () => {
+    currentName ||= pageTunes()[0] || ''
+    renderAll()
+  })
+
+  if (!customElements.get('tune-player')) customElements.define('tune-player', TunePlayer)
 </script>
 
 <style>
-  pulsar-player {
-    --pulsar-edge: 1rem;
+  tune-player {
+    --tune-player-edge: 1rem;
     position: fixed;
     z-index: 50;
     display: inline-flex;
   }
 
-  pulsar-player[data-position^='top'] {
-    top: max(var(--pulsar-edge), env(safe-area-inset-top));
+  tune-player[data-position^='top'] {
+    top: max(var(--tune-player-edge), env(safe-area-inset-top));
   }
 
-  pulsar-player[data-position^='center'] {
+  tune-player[data-position^='center'] {
     top: 50%;
   }
 
-  pulsar-player[data-position^='bottom'] {
-    bottom: max(var(--pulsar-edge), env(safe-area-inset-bottom));
+  tune-player[data-position^='bottom'] {
+    bottom: max(var(--tune-player-edge), env(safe-area-inset-bottom));
   }
 
-  pulsar-player[data-position$='left'] {
-    left: max(var(--pulsar-edge), env(safe-area-inset-left));
+  tune-player[data-position$='left'] {
+    left: max(var(--tune-player-edge), env(safe-area-inset-left));
   }
 
-  pulsar-player[data-position$='center'] {
+  tune-player[data-position$='center'] {
     left: 50%;
   }
 
-  pulsar-player[data-position$='right'] {
-    right: max(var(--pulsar-edge), env(safe-area-inset-right));
+  tune-player[data-position$='right'] {
+    right: max(var(--tune-player-edge), env(safe-area-inset-right));
   }
 
-  pulsar-player[data-position='top center'],
-  pulsar-player[data-position='bottom center'] {
+  tune-player[data-position='top center'],
+  tune-player[data-position='bottom center'] {
     transform: translateX(-50%);
   }
 
-  pulsar-player[data-position='center left'],
-  pulsar-player[data-position='center right'] {
+  tune-player[data-position='center left'],
+  tune-player[data-position='center right'] {
     transform: translateY(-50%);
   }
 
-  pulsar-player[data-position='center center'] {
+  tune-player[data-position='center center'] {
     transform: translate(-50%, -50%);
   }
 
-  .pulsar-transport {
+  .tune-player-transport {
     display: flex;
     align-items: center;
     gap: 0.4rem;
   }
 
-  .pulsar-btn {
+  .tune-player-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -455,46 +396,50 @@ const hasPlaylist = pageTunes.length > 1
     cursor: pointer;
   }
 
-  .pulsar-trigger {
+  .tune-player-btn[hidden] {
+    display: none;
+  }
+
+  .tune-player-trigger {
     position: relative;
     overflow: hidden;
     transition: inline-size 180ms ease;
   }
 
-  .pulsar-trigger[data-state='playing'] {
+  .tune-player-trigger[data-state='playing'] {
     inline-size: 7.5rem;
     border-radius: 1.625rem;
   }
 
-  .pulsar-btn:hover {
+  .tune-player-btn:hover {
     background: rgb(0 0 0 / 0.84);
     background: color-mix(in srgb, var(--sl-color-black) 84%, transparent);
     color: var(--sl-color-white);
   }
 
-  .pulsar-btn:focus {
+  .tune-player-btn:focus {
     outline: none;
   }
 
-  .pulsar-btn:focus-visible {
+  .tune-player-btn:focus-visible {
     outline: 2px solid var(--sl-color-accent);
     outline-offset: 0.0625rem;
   }
 
-  .pulsar-btn .pulsar-icon {
+  .tune-player-btn .tune-player-icon {
     flex: 0 0 auto;
     inline-size: 1.5rem;
     block-size: 1.5rem;
   }
 
-  .pulsar-trigger .pulsar-icon {
+  .tune-player-trigger .tune-player-icon {
     position: absolute;
     inset-block: 0;
     inset-inline-end: 0.875rem;
     margin-block: auto;
   }
 
-  .pulsar-scope {
+  .tune-player-scope {
     position: absolute;
     inset-inline-start: 0.8rem;
     inline-size: 3.5rem;
@@ -504,50 +449,50 @@ const hasPlaylist = pageTunes.length > 1
     transition: opacity 120ms ease 60ms;
   }
 
-  .pulsar-trigger[data-state='playing'] .pulsar-scope {
+  .tune-player-trigger[data-state='playing'] .tune-player-scope {
     opacity: 1;
   }
 
-  .pulsar-glyph-pause,
-  .pulsar-glyph-loading {
+  .tune-player-glyph-pause,
+  .tune-player-glyph-loading {
     display: none;
   }
 
-  .pulsar-trigger[data-state='playing'] .pulsar-glyph-play {
+  .tune-player-trigger[data-state='playing'] .tune-player-glyph-play {
     display: none;
   }
 
-  .pulsar-trigger[data-state='playing'] .pulsar-glyph-pause {
+  .tune-player-trigger[data-state='playing'] .tune-player-glyph-pause {
     display: inline;
   }
 
-  .pulsar-trigger[data-state='loading'] .pulsar-glyph-play {
+  .tune-player-trigger[data-state='loading'] .tune-player-glyph-play {
     display: none;
   }
 
-  .pulsar-trigger[data-state='loading'] .pulsar-glyph-loading {
+  .tune-player-trigger[data-state='loading'] .tune-player-glyph-loading {
     display: inline;
     transform-origin: center;
-    animation: pulsar-spin 0.8s linear infinite;
+    animation: tune-player-spin 0.8s linear infinite;
   }
 
-  .pulsar-trigger:disabled {
+  .tune-player-trigger:disabled {
     cursor: progress;
   }
 
-  @keyframes pulsar-spin {
+  @keyframes tune-player-spin {
     to {
       transform: rotate(1turn);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .pulsar-trigger,
-    .pulsar-scope {
+    .tune-player-trigger,
+    .tune-player-scope {
       transition: none;
     }
 
-    .pulsar-trigger[data-state='loading'] .pulsar-glyph-loading {
+    .tune-player-trigger[data-state='loading'] .tune-player-glyph-loading {
       animation: none;
     }
   }
