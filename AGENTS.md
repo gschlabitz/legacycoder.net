@@ -20,6 +20,17 @@ a place name to a paste-ready block with:
 npm run geocode -- "Harrisburg, Illinois"
 ```
 
+Resolve a media URL or title to entries that can be pasted into
+`src/data/media.yaml` with:
+
+```
+npm run media-meta -- "Dune"
+```
+
+Plain titles search Open Library. Use `album:`, `anime:`, or `manga:` before
+titles for those catalogs; pasted Wikipedia, Open Library, MusicBrainz,
+MyAnimeList, AniList, YouTube, and Amazon URLs select the matching resolver.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
