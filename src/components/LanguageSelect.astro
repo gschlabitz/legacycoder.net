@@ -64,7 +64,7 @@ const locales =
             href={localizedPathname(code)}
             aria-label={locale.label}
             aria-current={selected ? "true" : undefined}
-            title={locale.label}
+            data-tooltip={locale.label}
           >
             <span aria-hidden="true">{locale.flag}</span>
           </a>
@@ -91,6 +91,7 @@ const locales =
     height: 2rem;
     justify-content: center;
     line-height: 1;
+    position: relative;
     text-decoration: none;
     width: 2rem;
   }

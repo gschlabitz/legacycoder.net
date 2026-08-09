@@ -15,13 +15,13 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
       {links.map(({ label, href, icon }) => (
         <a
           {href}
-          title={label}
           rel={isExternal(href) ? "me noopener noreferrer" : "me"}
           target={isExternal(href) ? "_blank" : undefined}
           class="sl-flex"
         >
           <span class="sr-only">{label}</span>
           <Icon name={icon} />
+          <span class="header-tooltip" aria-hidden="true">{label}</span>
         </a>
       ))}
     </>
@@ -31,6 +31,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
 <style>
   @layer starlight.core {
     a {
+      position: relative;
       color: var(--sl-color-text-accent);
       padding: 0.5em;
       margin: -0.5em;
@@ -38,5 +39,6 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     a:hover {
       color: var(--sl-color-white);
     }
+
   }
 </style>

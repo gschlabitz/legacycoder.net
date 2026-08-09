@@ -1,0 +1,222 @@
+
+- id: the-odyssey-2026
+  title: The Odyssey
+  type: movie
+  status: finished
+  recommended: true
+  creator: Christopher Nolan
+  year: 2026
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Odyssey_(2026_film)
+  cover: https://image.tmdb.org/t/p/w500/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg
+
+- id: oppenheimer-2023
+  title: Oppenheimer
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2023
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Oppenheimer_(film)
+  cover: https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg
+
+- id: tenet-2020
+  title: Tenet
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2020
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Tenet_(film)
+  cover: https://image.tmdb.org/t/p/w500/aCIFMriQh8rvhxpN1IWGgvH0Tlg.jpg
+
+- id: dunkirk-2017
+  title: Dunkirk
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2017
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Dunkirk_(2017_film)
+  cover: https://image.tmdb.org/t/p/w500/b4Oe15CGLL61Ped0RAS9JpqdmCt.jpg
+
+- id: interstellar-2014
+  title: Interstellar
+  type: movie
+  status: finished
+  recommended: true
+  creator: Christopher Nolan
+  year: 2014
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Interstellar_(film)
+  cover: https://image.tmdb.org/t/p/w500/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg
+
+- id: the-dark-knight-rises-2012
+  title: The Dark Knight Rises
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2012
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Dark_Knight_Rises
+  cover: https://image.tmdb.org/t/p/w500/hr0L2aueqlP2BYUblTTjmtn0hw4.jpg
+
+- id: inception-2010
+  title: Inception
+  type: movie
+  status: finished
+  recommended: true
+  creator: Christopher Nolan
+  year: 2010
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Inception
+  cover: https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg
+
+- id: the-dark-knight-2008
+  title: The Dark Knight
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2008
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Dark_Knight
+  cover: https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg
+
+- id: the-prestige-2006
+  title: The Prestige
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2006
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/The_Prestige_(film)
+  cover: https://image.tmdb.org/t/p/w500/Ag2B2KHKQPukjH7WutmgnnSNurZ.jpg
+
+- id: batman-begins-2005
+  title: Batman Begins
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2005
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Batman_Begins
+  cover: https://image.tmdb.org/t/p/w500/sPX89Td70IDDjVr85jdSBb4rWGr.jpg
+
+- id: insomnia-2002
+  title: Insomnia
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2002
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Insomnia_(2002_film)
+  cover: https://image.tmdb.org/t/p/w500/riVXh3EimGO0y5dgQxEWPRy5Itg.jpg
+
+- id: memento-2000
+  title: Memento
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 2000
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Memento_(film)
+  cover: https://image.tmdb.org/t/p/w500/nzlv62aC0octS5AklAiWpXLX9Z0.jpg
+
+- id: following-1998
+  title: Following
+  type: movie
+  status: queued
+  recommended: false
+  creator: Christopher Nolan
+  year: 1998
+  added: 2026-08-08
+  link: https://en.wikipedia.org/wiki/Following
+  cover: https://image.tmdb.org/t/p/w500/3bX6VVSMf0dvzk5pMT4ALG5A92d.jpg
+
+- id: dune-1965
+  title: Dune
+  type: book
+  status: finished
+  recommended: true
+  creator: Frank Herbert
+  year: 1965
+  added: 2026-08-08
+  finished: 2026-07-24
+  link: https://openlibrary.org/works/OL893415W/Dune
+  cover: https://covers.openlibrary.org/b/isbn/9780441172719-L.jpg
+  rating: 5
+  note:
+    en: Still the best worldbuilding in the genre.
+
+- id: cowboy-bebop-1998
+  title: Cowboy Bebop
+  type: show
+  status: consuming
+  creator: Sunrise
+  year: 1998
+  added: 2026-08-07
+  link: https://myanimelist.net/anime/1/Cowboy_Bebop
+  cover: https://cdn.myanimelist.net/images/anime/4/19644l.jpg
+
+- id: blade-runner-1982
+  title: Blade Runner
+  type: movie
+  status: queued
+  creator: Ridley Scott
+  year: 1982
+  added: 2026-08-06
+  link: https://en.wikipedia.org/wiki/Blade_Runner
+
+- id: computer-chronicles-internet-1995
+  title: The Internet
+  type: video
+  status: finished
+  creator: Computer Chronicles
+  year: 1995
+  added: 2026-08-05
+  finished: 2026-08-05
+  link: https://www.youtube.com/watch?v=95-yZ-31j9A
+
+- id: selected-ambient-works-85-92
+  title: Selected Ambient Works 85–92
+  type: album
+  status: finished
+  creator: Aphex Twin
+  year: 1992
+  added: 2026-08-04
+  link: https://musicbrainz.org/release-group/f0a4ed09-2b2d-3ca8-9b24-90b96d3a67b7
+
+- id: myst-1993
+  title: Myst
+  type: game
+  status: abandoned
+  creator: Cyan
+  year: 1993
+  added: 2026-08-03
+  link: https://en.wikipedia.org/wiki/Myst
+
+- id: darknet-diaries
+  title: Darknet Diaries
+  type: podcast
+  status: queued
+  creator: Jack Rhysider
+  added: 2026-08-02
+  link: https://darknetdiaries.com/
+
+- id: city-and-the-city-2009
+  title: The City & The City
+  type: book
+  status: queued
+  creator: China Miéville
+  year: 2009
+  added: 2026-08-01
+  link: https://www.amazon.com/dp/034549752X

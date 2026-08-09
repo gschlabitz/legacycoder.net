@@ -1,8 +1,9 @@
 import { defineCollection, z } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 import { docsLoader } from '@astrojs/starlight/loaders';
 import { docsSchema } from '@astrojs/starlight/schema';
 import { blogSchema } from 'starlight-blog/schema';
+import { mediaEntrySchema } from './lib/media-schema';
 
 // TASL attribution metadata (Creative Commons' recommended model:
 // Title, Author, Source, License) for reusable assets in src/assets.
@@ -66,5 +67,9 @@ export const collections = {
       generateId: ({ entry }) => entry.replace(/\.json$/, ''),
     }),
     schema: tasl,
+  }),
+  media: defineCollection({
+    loader: file('./src/data/media.yaml'),
+    schema: mediaEntrySchema,
   }),
 };

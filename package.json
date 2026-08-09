@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "node tests/player-click.mjs",
+    "test": "node tests/media-filter.mjs && node tests/media-meta.mjs && node tests/player-click.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "stop": "astro dev stop",
@@ -14,6 +14,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "geocode": "node scripts/geocode.mjs",
+    "media-meta": "node scripts/media-meta.mjs",
     "morph:warm": "node scripts/morph/warm.mjs",
     "morph:hot": "node scripts/morph/hot.mjs",
     "morph:task": "node scripts/morph/task.mjs",
