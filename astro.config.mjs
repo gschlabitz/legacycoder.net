@@ -9,6 +9,15 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   site: "https://legacycoder.net",
+  image: {
+    remotePatterns: [
+      { protocol: "https", hostname: "covers.openlibrary.org" },
+      { protocol: "https", hostname: "image.tmdb.org" },
+      { protocol: "https", hostname: "coverartarchive.org" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
+      { protocol: "https", hostname: "cdn.myanimelist.net" },
+    ],
+  },
   vite: {
     server: {
       // Morph task instances expose the dev server as
@@ -19,7 +28,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Guido Schlabitz",
-      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css"],
+      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css", "./src/styles/media.css"],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
         { icon: "laptop", label: "Upwork", href: "https://www.upwork.com/freelancers/~01385cf1007a0ae63d" },

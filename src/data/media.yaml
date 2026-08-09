@@ -1,0 +1,80 @@
+# A flat media pile, newest-added first on /media. Facts live here; longer
+# prose belongs in a linked blog post.
+- id: dune-1965
+  title: Dune
+  type: book
+  status: finished
+  recommended: true
+  creator: Frank Herbert
+  year: 1965
+  added: 2026-08-08
+  finished: 2026-07-24
+  link: https://openlibrary.org/works/OL893415W/Dune
+  cover: https://covers.openlibrary.org/b/isbn/9780441172719-L.jpg
+  rating: 5
+  note:
+    en: Still the best worldbuilding in the genre.
+
+- id: cowboy-bebop-1998
+  title: Cowboy Bebop
+  type: show
+  status: consuming
+  creator: Sunrise
+  year: 1998
+  added: 2026-08-07
+  link: https://myanimelist.net/anime/1/Cowboy_Bebop
+  cover: https://cdn.myanimelist.net/images/anime/4/19644l.jpg
+
+- id: blade-runner-1982
+  title: Blade Runner
+  type: movie
+  status: queued
+  creator: Ridley Scott
+  year: 1982
+  added: 2026-08-06
+  link: https://en.wikipedia.org/wiki/Blade_Runner
+
+- id: computer-chronicles-internet-1995
+  title: The Internet
+  type: video
+  status: finished
+  creator: Computer Chronicles
+  year: 1995
+  added: 2026-08-05
+  finished: 2026-08-05
+  link: https://www.youtube.com/watch?v=95-yZ-31j9A
+
+- id: selected-ambient-works-85-92
+  title: Selected Ambient Works 85–92
+  type: album
+  status: finished
+  creator: Aphex Twin
+  year: 1992
+  added: 2026-08-04
+  link: https://musicbrainz.org/release-group/f0a4ed09-2b2d-3ca8-9b24-90b96d3a67b7
+
+- id: myst-1993
+  title: Myst
+  type: game
+  status: abandoned
+  creator: Cyan
+  year: 1993
+  added: 2026-08-03
+  link: https://en.wikipedia.org/wiki/Myst
+
+- id: darknet-diaries
+  title: Darknet Diaries
+  type: podcast
+  status: queued
+  creator: Jack Rhysider
+  added: 2026-08-02
+  link: https://darknetdiaries.com/
+
+- id: city-and-the-city-2009
+  title: The City & The City
+  type: book
+  status: queued
+  creator: China Miéville
+  year: 2009
+  added: 2026-08-01
+  link: https://www.amazon.com/dp/034549752X

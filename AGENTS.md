@@ -1,6 +1,6 @@
 ## Development
 
-When starting the dev server, use background mode:
+Before starting the dev server, check if it is maybe already running. If not, use background mode:
 
 ```
 astro dev --background
