@@ -1,16 +1,13 @@
 ---
-// Full-page CRT backdrop for the landing page: code being typed on a
-// phosphor screen, cycling through the eras of the timeline (C on green
-// phosphor, Turbo Pascal on amber, jQuery-era JS, modern TypeScript).
-// Pure CSS + a small inline script — no framework payload. Rendered by the
-// Hero override (src/components/Hero.astro), so it appears exactly on pages
-// with hero frontmatter. The nav header and hero layer above it; a theme-
-// tinted overlay keeps them legible in both color schemes.
-//
-// VT323 (OFL, self-hosted via Fontsource) supplies the bitmap-style glyphs;
-// the phosphor-mask pattern below turns their strokes into a dot grid. Only
-// the latin-400 subset is imported — the package index also pulls in the
-// latin-ext and vietnamese faces, which the ASCII snippets never touch.
+/**
+ * Pure CSS full-page backdrop animation, of my coding eras:
+ * - C on green phosphor
+ * - Turbo Pascal on amber
+ * - jQuery-era JS
+ * - modern TypeScript
+ */
+
+/* VT323 for bitmap-style glyphs */
 import '@fontsource/vt323/latin-400.css';
 ---
 
@@ -42,9 +39,7 @@ import '@fontsource/vt323/latin-400.css';
 </button>
 
 <style is:global>
-  /* Let the fixed backdrop show through the page surfaces — these rules only
-     ship on pages that render the hero (this component's host). The header
-     keeps a translucent wash so nav text stays readable while scrolling. */
+  /* backdrop shows through on hero pages only */
   [data-has-hero] .page {
     background: transparent;
   }
@@ -57,6 +52,8 @@ import '@fontsource/vt323/latin-400.css';
 
 <style>
   .crt-bg {
+    --crt-pulse-opacity: 0.04;
+    --crt-pulse-blend: screen;
     position: fixed;
     inset: 0;
     z-index: -1;
@@ -64,17 +61,35 @@ import '@fontsource/vt323/latin-400.css';
     background: var(--sl-color-bg);
   }
 
-  /* The code plane: oversized past every edge and tilted in 3D, so the
-     typing reads as a surface receding behind the page rather than a flat
-     wallpaper. The overshoot (negative inset) keeps the rotated corners
-     from exposing the background. */
+  .crt-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: var(--crt-color, #4eff7e);
+    opacity: 0;
+    mix-blend-mode: var(--crt-pulse-blend);
+  }
+
+  .crt-bg.crt-pulse::after {
+    /* Pulse the background in time with the bass drum. */
+    animation: crt-pulse 555ms linear 55ms;
+  }
+
+  .crt-bg.crt-pulse {
+    animation: crt-pulse-pop 555ms ease-out 55ms;
+  }
+
+  /*
+    Simulate an angled view on a CRT screen.
+    Negative inset keeps the rotated corners from showing the background.
+  */
   .crt-screen {
     position: absolute;
     inset: -4% -30% -20% -2%;
     margin: 0;
     padding: clamp(2rem, 6vh, 4rem) clamp(2rem, 5vw, 5rem);
     font-family: 'VT323', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-    /* VT323 runs narrow and small on the body — size up to compensate. */
     font-size: clamp(1.6rem, 3.8vw, 3.4rem);
     line-height: 1.3;
     white-space: pre-wrap;
@@ -88,10 +103,7 @@ import '@fontsource/vt323/latin-400.css';
     animation: crt-flicker 4s infinite;
   }
 
-  /* Phosphor mask: vertical RGB-fringed triads sliced into rows, clipped
-     into the glyphs themselves — up close, strokes resolve into the dot
-     grid of a shadow-mask tube. The cursor stays solid (an empty span has
-     no text for background-clip to fill). */
+  /* Simulate phosphor mask */
   .crt-text {
     --crt-ink: var(--crt-color, #4eff7e);
     background-image:
@@ -109,8 +121,6 @@ import '@fontsource/vt323/latin-400.css';
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    /* Explicit glow: the inherited text-shadow would resolve currentColor
-       to the transparent fill above. */
     text-shadow: 0 0 10px
       color-mix(in srgb, var(--crt-ink) 45%, transparent);
   }
@@ -123,6 +133,10 @@ import '@fontsource/vt323/latin-400.css';
      row slicing so the backdrop reads like faint dot-matrix print. */
   :global([data-theme='light']) .crt-screen {
     opacity: 0.5;
+  }
+  :global([data-theme='light']) .crt-bg {
+    --crt-pulse-opacity: 0.06;
+    --crt-pulse-blend: multiply;
   }
   :global([data-theme='light']) .crt-text {
     --crt-ink: color-mix(in srgb, var(--crt-color, #4eff7e) 35%, #2e3440);
@@ -231,9 +245,27 @@ import '@fontsource/vt323/latin-400.css';
       opacity: 0.75;
     }
   }
+  @keyframes crt-pulse {
+    0% {
+      opacity: var(--crt-pulse-opacity);
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes crt-pulse-pop {
+    0% {
+      transform: scale(1.006);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
   @media (prefers-reduced-motion: reduce) {
+    .crt-bg,
     .crt-screen,
-    .crt-cursor {
+    .crt-cursor,
+    .crt-bg::after {
       animation: none;
     }
     .crt-pause {
@@ -341,6 +373,7 @@ export async function notify(owner: Owner) {
   );
 
   if (root && textEl && screenEl && pauseBtn) {
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const setLabel = () => {
       const paused = pauseBtn.getAttribute('aria-pressed') === 'true';
       pauseBtn.setAttribute(
@@ -350,12 +383,23 @@ export async function notify(owner: Owner) {
     };
     setLabel();
 
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (reducedMotion) {
       // Static frame instead of motion: first snippet, fully typed.
-      screenEl.style.setProperty('--crt-color', SNIPPETS[0].color);
+      root.style.setProperty('--crt-color', SNIPPETS[0].color);
       textEl.textContent = SNIPPETS[0].text;
     } else {
       let paused = false;
+      // Player.astro turns each tune-declared kick step into this event. Restart
+      // the phosphor wash so every kick gets a fresh pulse, even mid-fade.
+      window.addEventListener('tune-player:pulse', () => {
+        if (paused) return;
+        root.classList.remove('crt-pulse');
+        void root.offsetWidth;
+        root.classList.add('crt-pulse');
+      });
+      root.addEventListener('animationend', (event) => {
+        if ((event as AnimationEvent).animationName === 'crt-pulse') root.classList.remove('crt-pulse');
+      });
       pauseBtn.addEventListener('click', () => {
         paused = !paused;
         pauseBtn.setAttribute('aria-pressed', String(paused));
@@ -508,7 +552,7 @@ export async function notify(owner: Owner) {
       (async () => {
         for (let i = 0; ; i = (i + 1) % SNIPPETS.length) {
           const { color, text } = SNIPPETS[i];
-          screenEl.style.setProperty('--crt-color', color);
+          root.style.setProperty('--crt-color', color);
           await typeSnippet(text);
           await idle(3200);
           // Power-blink between eras.

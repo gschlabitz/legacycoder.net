@@ -50,13 +50,6 @@
   gap: 1rem;
 }
 
-/* Starlight divides the social links from the site's controls with a rule.
-   The player sits between them now — a bordered strip that is visibly its own
-   unit — so the line is a second separator inside one group. */
-.header .social-icons::after {
-  display: none;
-}
-
 /* ------------------------------------------------------------------ */
 /* What the header carries, by width                                    */
 /* ------------------------------------------------------------------ */
@@ -69,13 +62,12 @@
 /* The social links and the language flags leave the header early — as soon as
    it stops being roomy, rather than once it is already tight. They are the
    least likely thing a reader wants mid-page, and between them they free about
-   240px: more than the whole deck, which is what lets the deck stay intact
-   (scope included) all the way down to phone widths.
+   240px, leaving the remaining controls room to breathe.
 
    The sidebar is still a visible column here — Starlight's hamburger does not
    appear until 50em — so its copy is revealed there instead: not a menu, but
-   in view and out of the header. The duplicated deck, skin and theme stay
-   hidden, since the header still carries those. */
+   in view and out of the header. The duplicated skin and theme stay hidden,
+   since the header still carries those. */
 @media (max-width: 82rem) {
   .header .right-group .social-icons a,
   .header .right-group .language-flags {
@@ -91,7 +83,6 @@
     display: block;
   }
 
-  .mobile-preferences pulsar-tune-select,
   .mobile-preferences chameleon-skin-select,
   .mobile-preferences starlight-theme-select {
     display: none;
@@ -99,11 +90,8 @@
 }
 
 /* Mobile. Starlight hides `.right-group` outright and moves everything into the
-   hamburger. Keep just enough in the header to be useful without opening it:
-   play/pause, and the light/dark toggle. Search and the hamburger are
-   Starlight's own and already there. Everything else — the track list, skip,
-   stop, the skin picker, the social links, the flags — lives one tap away in
-   the menu, where the second copy of the deck is full-size. */
+   hamburger. Keep the light/dark toggle in the header; search and the hamburger
+   are Starlight's own and already there. */
 @media (max-width: 50em) {
   .header .right-group {
     display: flex;
@@ -114,34 +102,6 @@
   .header .right-group .language-flags,
   .header .right-group chameleon-skin-select {
     display: none;
-  }
-
-  /* The deck collapses to its transport: no chrome, no readout, no eject. */
-  .header .right-group .pulsar-strip {
-    gap: 0;
-    block-size: auto;
-    padding-inline: 0;
-    border: 0;
-    background: none;
-  }
-
-  .header .right-group pulsar-tune-select .pulsar-title,
-  .header .right-group pulsar-tune-select .pulsar-btn--skip,
-  .header .right-group pulsar-tune-select [data-action="stop"],
-  .header .right-group pulsar-tune-select .pulsar-eject {
-    display: none;
-  }
-
-  /* Standing alone, it should be read as an icon rather than as one key of a
-     transport, so it takes the same size as every other header icon. */
-  .header .right-group pulsar-tune-select [data-action="playpause"] {
-    inline-size: var(--lc-header-action-size);
-    block-size: var(--lc-header-action-size);
-  }
-
-  .header .right-group pulsar-tune-select [data-action="playpause"] svg {
-    inline-size: var(--lc-header-icon-size);
-    block-size: var(--lc-header-icon-size);
   }
 }
 

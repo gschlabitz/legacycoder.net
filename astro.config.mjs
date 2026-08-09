@@ -3,7 +3,6 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightBlog from "starlight-blog";
 import starlightThemeChameleon from "starlight-theme-chameleon";
-import starlightPulsar from "starlight-pulsar";
 import starlightSidebarSections from "./src/plugins/sidebar-sections.ts";
 import react from "@astrojs/react";
 
@@ -23,6 +22,9 @@ export default defineConfig({
       customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css"],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
+        { icon: "laptop", label: "Upwork", href: "https://www.upwork.com/freelancers/~01385cf1007a0ae63d" },
+        { icon: "twitter", label: "Twitter", href: "https://x.com/legacy__coder" },
+        // { icon: "discord", label: "Discord", href: "https://discord.com/????????????????????????" },
         { icon: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/in/guido-schlabitz/" },
         { icon: "email", label: "Email", href: "mailto:hello@legacycoder.net" },
       ],
@@ -62,11 +64,6 @@ export default defineConfig({
           skinSelector: "icon",
           themeSelector: "icon",
         }),
-        // Page-scoped background music (ADR 0008). `control: "manual"` is the
-        // default and the deliberate choice: Chameleon already owns
-        // `ThemeSelect`, so Pulsar claims no slot and the site renders the tune
-        // selector itself from SocialIcons.astro, a slot it already overrides.
-        starlightPulsar({ tunes: ["drift", "grid"] }),
       ],
     }),
     react(),

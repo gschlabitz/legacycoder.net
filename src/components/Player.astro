@@ -1,0 +1,499 @@
+---
+type PlayerPosition =
+  | 'top left'
+  | 'top center'
+  | 'top right'
+  | 'center left'
+  | 'center center'
+  | 'center right'
+  | 'bottom left'
+  | 'bottom center'
+  | 'bottom right'
+
+interface Props {
+  position?: PlayerPosition
+}
+
+const { position = 'bottom right' } = Astro.props
+const labels = Astro.currentLocale === 'de'
+  ? {
+      play: 'Stück abspielen',
+      pause: 'Stück pausieren',
+      loading: 'Stück wird geladen',
+      previous: 'Vorheriges Stück',
+      next: 'Nächstes Stück',
+    }
+  : {
+      play: 'Play tune',
+      pause: 'Pause tune',
+      loading: 'Loading tune',
+      previous: 'Previous tune',
+      next: 'Next tune',
+    }
+
+const icon = {
+  previous: 'M7 5.5h2.4v13H7zM20 5.9v12.2a.8.8 0 0 1-1.24.67l-9.1-6.1a.8.8 0 0 1 0-1.34l9.1-6.1A.8.8 0 0 1 20 5.9Z',
+  play: 'M8 5.14v13.72a1 1 0 0 0 1.54.84l10.3-6.86a1 1 0 0 0 0-1.68L9.54 4.3A1 1 0 0 0 8 5.14Z',
+  pause: 'M6.5 4.5h3.6v15H6.5zM13.9 4.5h3.6v15H13.9z',
+  next: 'M14.6 5.5H17v13h-2.4zM4 5.9v12.2a.8.8 0 0 0 1.24.67l9.1-6.1a.8.8 0 0 0 0-1.34l-9.1-6.1A.8.8 0 0 0 4 5.9Z',
+} as const
+
+---
+<tune-player
+    data-position={position}
+    data-label-play={labels.play}
+    data-label-pause={labels.pause}
+    data-label-loading={labels.loading}
+  >
+  <div class="tune-player-transport">
+    <button class="tune-player-btn" type="button" data-action="prev" aria-label={labels.previous} hidden>
+      <svg class="tune-player-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d={icon.previous} />
+      </svg>
+    </button>
+
+      <button class="tune-player-btn tune-player-trigger" type="button" data-action="playpause" data-state="armed" aria-label={labels.play}>
+        <canvas class="tune-player-scope" data-scope width="96" height="36" aria-hidden="true"></canvas>
+        <svg class="tune-player-icon tune-player-glyph-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d={icon.play} />
+        </svg>
+        <svg class="tune-player-icon tune-player-glyph-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d={icon.pause} />
+        </svg>
+        <svg class="tune-player-icon tune-player-glyph-loading" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="38 13" />
+        </svg>
+      </button>
+
+    <button class="tune-player-btn" type="button" data-action="next" aria-label={labels.next} hidden>
+      <svg class="tune-player-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d={icon.next} />
+      </svg>
+    </button>
+  </div>
+</tune-player>
+
+<script>
+  import { getTunes, type Tune } from '../lib/tune'
+
+  const ANALYSER_ID = 'tune-player'
+
+  interface Repl {
+    setCps(cps: number): void
+    setPattern(pattern: unknown, autostart?: boolean): Promise<unknown>
+    stop(): void
+  }
+
+  interface StrudelModule {
+    initStrudel(options: Record<string, unknown>): Promise<unknown>
+    getAudioContext(): AudioContext
+    getAnalyzerData(type: 'time', id?: string): Float32Array
+    resetGlobalEffects(): void
+  }
+
+  let audioContext: AudioContext | null = null
+  let strudelModule: StrudelModule | null = null
+  let enginePromise: Promise<Repl> | null = null
+  let playing: {
+    name: string
+    startedAt: number
+    cps: number
+    pulse?: Tune['pulse']
+  } | null = null
+  let currentName = ''
+  let loading = false
+
+  const loadEngine = (): Promise<Repl> => {
+    enginePromise ??= (async () => {
+      const strudel = (await import('@strudel/web')) as unknown as StrudelModule
+      const repl = (await strudel.initStrudel({})) as Repl
+      strudelModule = strudel
+      audioContext = strudel.getAudioContext()
+      return repl
+    })()
+    enginePromise.catch(() => {
+      enginePromise = null
+    })
+    return enginePromise
+  }
+
+  const play = async (name: string): Promise<boolean> => {
+    const tune = getTunes().find((candidate) => candidate.name === name)
+    if (!tune) return false
+
+    const repl = await loadEngine()
+    let pattern = tune.pattern()
+    if (typeof tune.gain === 'number') {
+      const gainControl = (globalThis as unknown as { gain: (value: number) => unknown }).gain
+      pattern = pattern.mul(gainControl(tune.gain))
+    }
+    pattern = pattern.analyze(ANALYSER_ID)
+
+    repl.setCps(tune.cps)
+    await repl.setPattern(pattern, true)
+    currentName = name
+    playing = { name, startedAt: audioContext?.currentTime ?? 0, cps: tune.cps, pulse: tune.pulse }
+    startScope()
+    return true
+  }
+
+  const pause = async (): Promise<void> => {
+    if (!playing || !enginePromise) return
+    const repl = await enginePromise
+
+    // Stopping scheduling alone leaves released voices audible. Resetting the
+    // global effects graph cuts those tails before the next tune can start.
+    repl.stop()
+    strudelModule?.resetGlobalEffects()
+    playing = null
+    stopScope()
+  }
+
+  const pageTunes = (): string[] => getTunes().map((tune) => tune.name)
+
+  // Any page may add a larger `[data-scope]` canvas without expanding the
+  // player's interface. The player owns the one animation loop and audio tap.
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+  let scopeFrame = 0
+  let lastPulseCycle: number | null = null
+
+  // Tunes declare kick positions as steps within a cycle. Convert the audio
+  // clock back to the tune's cycle position and emit once when a frame crosses
+  // a declared step; the page can react without inspecting the audio signal.
+  const emitPulse = (): void => {
+    if (!playing?.pulse || !audioContext) return
+    const { steps, hits } = playing.pulse
+    if (!Number.isInteger(steps) || steps < 1 || hits.length === 0) return
+
+    const current = (audioContext.currentTime - playing.startedAt) * playing.cps
+    const previous = lastPulseCycle ?? -0.000001
+    lastPulseCycle = current
+
+    // Do not replay missed pulses after a suspended or backgrounded frame.
+    if (current - previous > 0.25) return
+
+    for (let cycle = Math.floor(previous); cycle <= Math.floor(current); cycle++) {
+      for (const hit of hits) {
+        const pulseAt = cycle + hit / steps
+        if (pulseAt > previous && pulseAt <= current) {
+          window.dispatchEvent(new CustomEvent('tune-player:pulse'))
+          return
+        }
+      }
+    }
+  }
+
+  const drawScopes = (): void => {
+    emitPulse()
+    const samples = playing && strudelModule ? strudelModule.getAnalyzerData('time', ANALYSER_ID) : null
+
+    document.querySelectorAll<HTMLCanvasElement>('[data-scope]').forEach((canvas) => {
+      if (!canvas.clientWidth) return
+      const ratio = window.devicePixelRatio || 1
+      const width = Math.round(canvas.clientWidth * ratio)
+      const height = Math.round(canvas.clientHeight * ratio)
+      if (width > 0 && height > 0 && (canvas.width !== width || canvas.height !== height)) {
+        canvas.width = width
+        canvas.height = height
+      }
+
+      const context = canvas.getContext('2d')
+      if (!context) return
+      const middle = canvas.height / 2
+      context.clearRect(0, 0, canvas.width, canvas.height)
+      context.lineWidth = Math.max(1, ratio * 1.1)
+      context.strokeStyle = getComputedStyle(canvas).color
+      context.beginPath()
+
+      let peak = 0
+      if (samples) for (let index = 0; index < samples.length; index++) peak = Math.max(peak, Math.abs(samples[index]!))
+      const scale = peak > 0.002 ? Math.min(1 / peak, 14) : 0
+
+      if (!samples || samples.length === 0 || scale === 0) {
+        context.moveTo(0, middle)
+        context.lineTo(canvas.width, middle)
+      } else {
+        const step = canvas.width / (samples.length - 1)
+        for (let index = 0; index < samples.length; index++) {
+          const value = Math.max(-1, Math.min(1, samples[index]! * scale * 0.9))
+          const y = middle - value * (middle - 1)
+          index === 0 ? context.moveTo(0, y) : context.lineTo(index * step, y)
+        }
+      }
+      context.stroke()
+    })
+  }
+
+  const scopeTick = (): void => {
+    drawScopes()
+    scopeFrame = requestAnimationFrame(scopeTick)
+  }
+
+  const startScope = (): void => {
+    if (scopeFrame) return
+    if (reducedMotion.matches) drawScopes()
+    else scopeFrame = requestAnimationFrame(scopeTick)
+  }
+
+  const stopScope = (): void => {
+    if (scopeFrame) cancelAnimationFrame(scopeFrame)
+    scopeFrame = 0
+    lastPulseCycle = null
+    drawScopes()
+  }
+
+  const renderAll = (): void => {
+    const hasPlaylist = pageTunes().length > 1
+    document.querySelectorAll<HTMLElement>('tune-player').forEach((player) => {
+      player.querySelectorAll<HTMLButtonElement>('[data-action="prev"], [data-action="next"]').forEach((button) => {
+        button.hidden = !hasPlaylist
+      })
+      const trigger = player.querySelector<HTMLButtonElement>('.tune-player-trigger')
+      if (!trigger) return
+      const state = loading ? 'loading' : playing ? 'playing' : 'armed'
+      trigger.dataset.state = state
+      trigger.disabled = loading
+      trigger.toggleAttribute('aria-busy', loading)
+      const label =
+        state === 'loading'
+          ? player.dataset.labelLoading || 'Loading tune'
+          : state === 'playing'
+            ? player.dataset.labelPause || 'Pause tune'
+            : player.dataset.labelPlay || 'Play tune'
+      trigger.setAttribute('aria-label', label)
+    })
+  }
+
+  const withLoading = async (task: () => Promise<void>): Promise<void> => {
+    if (loading) return
+    loading = true
+    renderAll()
+    try {
+      await task()
+    } catch (error) {
+      console.error('Tune player failed:', error)
+    } finally {
+      loading = false
+      renderAll()
+    }
+  }
+
+  class TunePlayer extends HTMLElement {
+    #initialized = false
+
+    connectedCallback() {
+      if (this.#initialized) return
+      this.#initialized = true
+      currentName ||= pageTunes()[0] || ''
+
+      this.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
+        button.addEventListener('click', () => void this.#transport(button.dataset.action || ''))
+      })
+      renderAll()
+      drawScopes()
+    }
+
+    async #transport(action: string) {
+      const tunes = pageTunes()
+      if (tunes.length === 0) return
+
+      if (action === 'playpause') {
+        await withLoading(async () => {
+          if (playing) await pause()
+          else await play(currentName || tunes[0]!)
+        })
+        return
+      }
+
+      if ((action === 'prev' || action === 'next') && tunes.length > 1) {
+        const step = action === 'next' ? 1 : -1
+        const current = playing?.name || currentName || tunes[0]!
+        const index = Math.max(0, tunes.indexOf(current))
+        const next = tunes[(index + step + tunes.length) % tunes.length]!
+        await withLoading(async () => {
+          if (playing) await pause()
+          currentName = next
+          await play(next)
+        })
+      }
+    }
+  }
+
+  window.addEventListener('tune-player:tunes-changed', () => {
+    currentName ||= pageTunes()[0] || ''
+    renderAll()
+  })
+
+  if (!customElements.get('tune-player')) customElements.define('tune-player', TunePlayer)
+</script>
+
+<style>
+  tune-player {
+    --tune-player-edge: 1rem;
+    position: fixed;
+    z-index: 50;
+    display: inline-flex;
+  }
+
+  tune-player[data-position^='top'] {
+    top: max(var(--tune-player-edge), env(safe-area-inset-top));
+  }
+
+  tune-player[data-position^='center'] {
+    top: 50%;
+  }
+
+  tune-player[data-position^='bottom'] {
+    bottom: max(var(--tune-player-edge), env(safe-area-inset-bottom));
+  }
+
+  tune-player[data-position$='left'] {
+    left: max(var(--tune-player-edge), env(safe-area-inset-left));
+  }
+
+  tune-player[data-position$='center'] {
+    left: 50%;
+  }
+
+  tune-player[data-position$='right'] {
+    right: max(var(--tune-player-edge), env(safe-area-inset-right));
+  }
+
+  tune-player[data-position='top center'],
+  tune-player[data-position='bottom center'] {
+    transform: translateX(-50%);
+  }
+
+  tune-player[data-position='center left'],
+  tune-player[data-position='center right'] {
+    transform: translateY(-50%);
+  }
+
+  tune-player[data-position='center center'] {
+    transform: translate(-50%, -50%);
+  }
+
+  .tune-player-transport {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .tune-player-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 3.25rem;
+    block-size: 3.25rem;
+    border: 1px solid color-mix(in srgb, var(--sl-color-gray-4) 65%, transparent);
+    border-radius: 50%;
+    padding: 0;
+    background: rgb(0 0 0 / 0.68);
+    background: color-mix(in srgb, var(--sl-color-black) 68%, transparent);
+    box-shadow: var(--sl-shadow-md);
+    backdrop-filter: blur(8px);
+    color: var(--sl-color-text-accent);
+    cursor: pointer;
+  }
+
+  .tune-player-btn[hidden] {
+    display: none;
+  }
+
+  .tune-player-trigger {
+    position: relative;
+    overflow: hidden;
+    transition: inline-size 180ms ease;
+  }
+
+  .tune-player-trigger[data-state='playing'] {
+    inline-size: 7.5rem;
+    border-radius: 1.625rem;
+  }
+
+  .tune-player-btn:hover {
+    background: rgb(0 0 0 / 0.84);
+    background: color-mix(in srgb, var(--sl-color-black) 84%, transparent);
+    color: var(--sl-color-white);
+  }
+
+  .tune-player-btn:focus {
+    outline: none;
+  }
+
+  .tune-player-btn:focus-visible {
+    outline: 2px solid var(--sl-color-accent);
+    outline-offset: 0.0625rem;
+  }
+
+  .tune-player-btn .tune-player-icon {
+    flex: 0 0 auto;
+    inline-size: 1.5rem;
+    block-size: 1.5rem;
+  }
+
+  .tune-player-trigger .tune-player-icon {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0.875rem;
+    margin-block: auto;
+  }
+
+  .tune-player-scope {
+    position: absolute;
+    inset-inline-start: 0.8rem;
+    inline-size: 3.5rem;
+    block-size: 1.5rem;
+    opacity: 0;
+    color: var(--sl-color-text-accent);
+    transition: opacity 120ms ease 60ms;
+  }
+
+  .tune-player-trigger[data-state='playing'] .tune-player-scope {
+    opacity: 1;
+  }
+
+  .tune-player-glyph-pause,
+  .tune-player-glyph-loading {
+    display: none;
+  }
+
+  .tune-player-trigger[data-state='playing'] .tune-player-glyph-play {
+    display: none;
+  }
+
+  .tune-player-trigger[data-state='playing'] .tune-player-glyph-pause {
+    display: inline;
+  }
+
+  .tune-player-trigger[data-state='loading'] .tune-player-glyph-play {
+    display: none;
+  }
+
+  .tune-player-trigger[data-state='loading'] .tune-player-glyph-loading {
+    display: inline;
+    transform-origin: center;
+    animation: tune-player-spin 0.8s linear infinite;
+  }
+
+  .tune-player-trigger:disabled {
+    cursor: progress;
+  }
+
+  @keyframes tune-player-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tune-player-trigger,
+    .tune-player-scope {
+      transition: none;
+    }
+
+    .tune-player-trigger[data-state='loading'] .tune-player-glyph-loading {
+      animation: none;
+    }
+  }
+</style>

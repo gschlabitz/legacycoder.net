@@ -11,7 +11,7 @@
  * into every consumer's typecheck for no gain — these are authoring aids, and
  * the engine is the actual arbiter of what works.
  */
-import type { StrudelPattern } from './tune'
+import type { StrudelPattern } from './lib/tune'
 
 declare global {
   /** Layers patterns so they sound together. */

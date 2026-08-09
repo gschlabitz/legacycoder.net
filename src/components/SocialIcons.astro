@@ -2,15 +2,8 @@
 // Starlight SocialIcons override: the stock icon links, but external
 // profiles open in a new tab. mailto: is exempt — target=_blank on an
 // email link just leaves an orphaned blank tab behind.
-//
-// Also the host for Pulsar's tune selector. Starlight has no "append to the
-// header" API (issue #25), so a plugin wanting a header control must own one
-// of six slots — and Chameleon already holds `ThemeSelect`. Rather than have
-// the two contend, Pulsar claims nothing and the site places the control in a
-// slot it already overrides.
 import config from "virtual:starlight/user-config";
 import { Icon } from "@astrojs/starlight/components";
-import TuneSelect from "starlight-pulsar/components/TuneSelect.astro";
 
 const links = config.social || [];
 const isExternal = (href: string) => /^https?:\/\//.test(href);
@@ -22,6 +15,7 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
       {links.map(({ label, href, icon }) => (
         <a
           {href}
+          title={label}
           rel={isExternal(href) ? "me noopener noreferrer" : "me"}
           target={isExternal(href) ? "_blank" : undefined}
           class="sl-flex"
@@ -33,7 +27,6 @@ const isExternal = (href: string) => /^https?:\/\//.test(href);
     </>
   )
 }
-<TuneSelect />
 
 <style>
   @layer starlight.core {
