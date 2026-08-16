@@ -1,0 +1,58 @@
+---
+import Default from '@astrojs/starlight/components/PageFrame.astro';
+
+// Per-page wallpaper (`backgroundImage` in frontmatter — see
+// src/content.config.ts). The image layers over the skin's
+// `--sl-color-bg`, so pages without one are untouched. Content and TOC
+// get a translucent veil in the skin's background color so text stays
+// legible over the image.
+const { backgroundImage } = Astro.locals.starlightRoute.entry.data;
+
+const wallpaperCss =
+  backgroundImage &&
+  `
+  body {
+    background-image: url("${backgroundImage.src}");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  .main-pane .sl-container {
+    background-color: color-mix(in srgb, var(--sl-color-bg) 80%, transparent);
+    backdrop-filter: blur(8px);
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+  }
+  /* The title and the body are separate content panels; joining their veils
+     at the seam (no gap, no divider, square inner corners) makes them read
+     as one card instead of a floating title box. */
+  .main-pane .content-panel:first-of-type {
+    padding-block-end: 0;
+  }
+  .main-pane .content-panel:first-of-type .sl-container {
+    padding-block-end: 0;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .main-pane .content-panel + .content-panel {
+    border-top: none;
+    padding-block-start: 0;
+  }
+  .main-pane .content-panel + .content-panel .sl-container {
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+  }
+  .right-sidebar,
+  .sidebar-pane {
+    background-color: color-mix(in srgb, var(--sl-color-bg-sidebar, var(--sl-color-bg)) 80%, transparent);
+    backdrop-filter: blur(8px);
+  }
+`;
+---
+
+{backgroundImage && <style is:inline set:html={wallpaperCss} />}
+<Default>
+  <slot name="header" slot="header" />
+  <slot name="sidebar" slot="sidebar" />
+  <slot />
+</Default>

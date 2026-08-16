@@ -1,0 +1,64 @@
+---
+title: Weihnachtskaktus
+description: Schlumbergera truncata — der brasilianische Regenwaldkaktus, der für die dunkelsten Wochen blüht.
+backgroundImage: ../../../../assets/plants/christmas-cactus.jpg
+plant:
+  binomial: Schlumbergera truncata
+  family: Cactaceae
+  genus: Schlumbergera
+  commonNames:
+    - Weihnachtskaktus
+    - Gliederkaktus
+  origin: Küstengebirge Südostbrasiliens
+  light: Hell und indirekt; keine Mittagssonne
+  temperature: 10–25 °C, kühle Herbstnächte setzen die Knospen an
+  care:
+    watering:
+      every: 7
+      unit: days
+      note: Wenn das Substrat oben trocken ist; nach der Blüte sparsamer.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Halbe Dosierung, nur während der Wachstumszeit.
+    repotting:
+      every: 3
+      unit: years
+      months: [3, 4]
+      note: Er blüht am besten leicht wurzelgebunden — nichts überstürzen.
+  schedule: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/christmas-cactus.jpg"
+  alt="Ein Weihnachtskaktus mit flachen Gliedertrieben und magentafarbenen Blüten an den Spitzen."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Dem Familiennamen zum Trotz ist das keine Wüstenpflanze: *Schlumbergera*
+wächst als Aufsitzer im Moos brasilianischer Nebelwaldbäume — deshalb will
+er gefiltertes Licht, etwas Luftfeuchte und Gießen eher wie eine
+Zimmerpflanze als wie ein Kaktus. Er ist eine Kurztagspflanze — die
+Blütenknospen werden von den langen, kühlen Nächten des Herbstes ausgelöst.
+Das ist das ganze Geheimnis der Dezemberblüte: ab Oktober ein Platz mit
+kühlen Nächten (10–15 °C) und ohne abendliches Lampenlicht, und sobald
+Knospen zu sehen sind, nicht mehr umstellen — bei jeder plötzlichen
+Veränderung wirft er sie ab.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Einen Schnittplan gibt es nicht, aber nach der Blüte ein, zwei Glieder
+abzudrehen hält ihn verzweigt — und jedes Glied bewurzelt in feuchtem
+Substrat, so wird aus einer Pflanze eine Fensterbank-Dynastie. Gut
+gehaltene Exemplare überleben die übrigen Zimmerpflanzen ihrer Besitzer
+routinemäßig um Jahrzehnte.

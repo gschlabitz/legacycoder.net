@@ -1,0 +1,73 @@
+---
+title: Sweet Basil
+description: Ocimum basilicum — the tender annual that powers pesto.
+backgroundImage: ../../../assets/plants/sweet-basil.jpg
+plant:
+  binomial: Ocimum basilicum
+  family: Lamiaceae
+  genus: Ocimum
+  commonNames:
+    - Sweet basil
+    - Genovese basil
+  origin: Tropical Asia
+  light: Full sun, sheltered and warm
+  temperature: 15–30 °C, dies below 10 °C
+  care:
+    watering:
+      every: 2
+      unit: days
+      note: Daily in midsummer; wilts dramatically, recovers fast.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Heavy feeder in a pot — balanced liquid feed.
+    trimming:
+      every: 2
+      unit: weeks
+      months: [5, 6, 7, 8, 9]
+      note: Pinch stem tips and flower spikes to keep it leafy.
+    repotting:
+      every: 1
+      unit: years
+      months: [4, 5]
+      note: Annual — divide crowded supermarket pots on purchase.
+  schedule: true
+  culinary: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/sweet-basil.jpg"
+  alt="A potted sweet basil plant with broad, glossy green leaves."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Sweet basil is a tropical annual and behaves like one: it wants heat, sun,
+steady water, and it dies at the first breath of frost. Supermarket basil
+pots are dozens of seedlings crammed together to look lush on the shelf —
+split the clump into three or four pots and each will outlive the original
+by months. Pinch off flower spikes as they appear; once basil sets seed,
+leaf production stops and the flavor turns sharp.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+Harvest by pinching whole stem tips just above a leaf pair — each cut
+branches into two new stems. Plucking single leaves off the stem is the slow
+way to a bare plant.
+
+## In the kitchen
+
+The soul of pesto alla genovese, caprese, and most of the tomato canon.
+Basil is at its best raw or barely warmed: tear it over a dish at the end,
+since chopping and cooking both blacken it and dull the perfume. Surplus
+keeps best blended with oil and frozen — dried basil is a different, sadder
+herb.

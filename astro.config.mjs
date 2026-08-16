@@ -28,7 +28,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Guido Schlabitz",
-      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css", "./src/styles/media.css"],
+      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css", "./src/styles/media.css", "./src/styles/plants.css", "./src/styles/outline.css"],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
         { icon: "laptop", label: "Upwork", href: "https://www.upwork.com/freelancers/~01385cf1007a0ae63d" },
@@ -45,6 +45,8 @@ export default defineConfig({
         SocialIcons: "./src/components/SocialIcons.astro",
         // Stock hero plus the CRT typing backdrop behind the whole page.
         Hero: "./src/components/Hero.astro",
+        // Stock frame plus the per-page `backgroundImage` wallpaper.
+        PageFrame: "./src/components/PageFrame.astro",
       },
       defaultLocale: "root",
       locales: {
@@ -65,7 +67,7 @@ export default defineConfig({
         // lists every one of them and buries the actual sections.
         starlightSidebarSections({
           exclude: ["blog"],
-          labels: { "llm-notebook": "LLM Notebook", "recipes": "Recipes", workarounds: "Workarounds" },
+          labels: { "llm-notebook": "LLM Notebook", plants: "Plants", "recipes": "Recipes", workarounds: "Workarounds" },
         }),
         // After starlightBlog so Chameleon sees the final component map (ADR 0003).
         starlightThemeChameleon({

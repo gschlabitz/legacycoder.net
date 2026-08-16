@@ -1,0 +1,75 @@
+---
+title: Citronella
+description: Pelargonium 'citrosum' — die zitronig duftende „Moskito-Pflanze".
+backgroundImage: ../../../../assets/plants/citronella.jpg
+plant:
+  binomial: Pelargonium 'citrosum'
+  family: Geraniaceae
+  genus: Pelargonium
+  commonNames:
+    - Citronella-Pflanze
+    - Moskito-Pflanze
+    - Duftgeranie „Citrosa"
+  origin: Gartenhybride südafrikanischer Pelargonien
+  light: Volle Sonne bis hell absonnig
+  temperature: 10–30 °C, kein Frost — drinnen überwintern
+  care:
+    watering:
+      every: 5
+      unit: days
+      note: Die oberen Zentimeter erst abtrocknen lassen.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Ausgewogener Flüssigdünger in halber Dosierung.
+    trimming:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Kräftig zurückschneiden, damit sie buschig bleibt.
+    repotting:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Frisches Substrat, zusammen mit dem Frühjahrsschnitt.
+  schedule: true
+  medicinal: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/citronella.jpg"
+  alt="Eine Citronella-Pelargonie mit tief gelappten, gefransten grünen Blättern."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Die Topfpflanze, die als „Citronella" verkauft wird, ist kein
+Citronellagras (*Cymbopogon*, die Quelle des kommerziellen Citronellaöls),
+sondern eine Duftpelargonie, deren Laub zufällig danach riecht. Sie wächst
+wie jede Pelargonie: sonnenhungrig, eingewachsen trockenheitsverträglich —
+und ohne Frühjahrsschnitt schnell vergeilt. Frost verträgt sie nicht: vor
+der ersten kalten Nacht hereinholen und ihr über den Winter ein helles,
+kühles Fenster geben.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Stecklinge bewurzeln im Frühherbst zuverlässig — eine billigere
+Versicherung, als einen großen Topf durch den Winter zu schleppen.
+
+## Hausapotheke
+
+Das Werbeversprechen — die Pflanze selbst vertreibe Mücken — hat sich in
+Studien nicht bestätigt; daneben zu sitzen bringt nichts. Ein paar Blätter
+zerreiben und auf die Haut auftragen setzt aber Citronellal frei und wirkt
+kurz und mild abweisend — eher Hausmittel als Ersatz für ein echtes
+Repellent. Ehrliche Arbeit leisten die Duftblätter außerdem in Potpourri
+und Duftsäckchen.

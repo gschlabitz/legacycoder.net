@@ -1,0 +1,75 @@
+---
+title: Roma Tomato
+description: Solanum lycopersicum 'Roma' — the determinate paste tomato for sauce, not salad.
+backgroundImage: ../../../assets/plants/roma-tomato.jpg
+plant:
+  binomial: Solanum lycopersicum 'Roma'
+  family: Solanaceae
+  genus: Solanum
+  commonNames:
+    - Roma tomato
+    - Paste tomato
+    - Plum tomato
+  origin: Cultivar (USDA, 1955); species from western South America
+  light: Full sun, six hours or more
+  temperature: 15–30 °C, dies at frost
+  care:
+    watering:
+      every: 2
+      unit: days
+      note: Deep and even — irregular watering causes blossom-end rot and split fruit.
+    fertilizing:
+      every: 2
+      unit: weeks
+      months: [5, 6, 7, 8, 9]
+      note: Tomato feed once the first truss has set.
+    trimming:
+      every: 2
+      unit: weeks
+      months: [6, 7, 8]
+      note: Remove yellowing lower leaves; determinate — leave the trusses alone.
+    repotting:
+      every: 1
+      unit: years
+      months: [5]
+      note: Annual — a fresh plant into a 30+ cm pot each May, buried deep.
+  schedule: true
+  culinary: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/roma-tomato.jpg"
+  alt="A pile of ripe Roma tomatoes, oblong and deep red."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Roma is a determinate ("bush") tomato: it grows to about a meter, sets most
+of its fruit in one concentrated flush, and then it is done — exactly what
+you want for a batch of sauce, and why it behaves in a pot where sprawling
+indeterminate varieties need scaffolding. Being determinate also means the
+usual tomato ritual of pinching out side shoots mostly doesn't apply; every
+sucker you leave carries fruit. Plant seedlings deep — the buried stem grows
+roots along its whole length.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+Blossom-end rot — the black leathery patch on the fruit's base — is not a
+disease but a calcium-transport failure caused by uneven watering. In a pot
+that means one thing: never let it cycle between bone dry and soaked.
+
+## In the kitchen
+
+Romas are dense, seed-poor, and low on juice — mediocre in a salad and
+exactly right in the pan. They reduce into sauce in half the time of a slicing
+tomato, and they are the classic choice for canning whole, oven-drying, and
+long-simmered *sugo*. A tray of halved Romas, roasted flat with olive oil and
+salt, is the shortest path from pot to pasta.

@@ -1,0 +1,82 @@
+---
+title: Deutscher Thymian
+description: Thymus vulgaris — der winterharte Küchenthymian.
+backgroundImage: ../../../../assets/plants/german-thyme.jpg
+plant:
+  binomial: Thymus vulgaris
+  family: Lamiaceae
+  genus: Thymus
+  commonNames:
+    - Deutscher Thymian
+    - Echter Thymian
+    - Gartenthymian
+  origin: Westliches Mittelmeer
+  light: Volle Sonne
+  temperature: 5–30 °C, winterhart
+  care:
+    watering:
+      every: 10
+      unit: days
+      note: Erde zwischen den Wassergaben vollständig abtrocknen lassen.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8]
+      note: Schwachzehrer — halbe Dosierung oder etwas Kompost.
+    trimming:
+      every: 1
+      unit: years
+      months: [7]
+      note: Nach der Blüte um ein Drittel einkürzen; nie ins alte Holz.
+    repotting:
+      every: 2
+      unit: years
+      months: [3, 4]
+      note: Mageres, durchlässiges Substrat; Terrakotta hilft.
+  schedule: true
+  culinary: true
+  medicinal: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/german-thyme.jpg"
+  alt="Ein niedriger, verholzender Thymian mit vielen kleinen graugrünen Blättern."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+„Deutscher" Thymian ist die winterharte Auslese des Echten Thymians — die,
+die auf dem Balkon draußen überlebt, wo französischer Thymian aufgibt. Im
+Kern ist er ein kleiner Mittelmeerstrauch: Er will Sonne, mageren Boden und
+Vernachlässigung. Am schnellsten stirbt Topfthymian an Fürsorge — in Form
+von Wasser und nährstoffreicher Blumenerde.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Nach der Blüte um ein Drittel zurückschneiden, sonst verholzt er und wird
+in der Mitte kahl. Nie ins alte, blattlose Holz schneiden — dort treibt er
+selten wieder aus.
+
+## In der Küche
+
+Das Rückgrat von Fonds, Eintöpfen und allem Geschmorten. Ganze Zweige kommen
+früh hinein und vor dem Servieren wieder heraus; abgestreifte Blättchen
+jederzeit. Thymian trocknet besser als fast jedes andere Kraut — überzählige
+Zweige eine Woche kopfüber aufhängen, und das Aroma hält Monate.
+
+## Hausapotheke
+
+Thymiantee ist der Klassiker gegen Husten: Thymol, sein wichtigstes
+ätherisches Öl, wirkt nachweislich schleimlösend und leicht antiseptisch;
+Thymianzubereitungen sind in den Monographien der Kommission E bei Husten
+und Bronchitis anerkannt. Einen Teelöffel getrockneten (oder einen frischen
+Zweig) Thymian zehn Minuten in heißem Wasser ziehen lassen, nach Geschmack
+mit Honig.

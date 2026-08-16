@@ -1,0 +1,66 @@
+---
+title: Eisbegonie
+description: Begonia semperflorens — die unermüdliche Beetbegonie, die das ganze Jahr blüht.
+backgroundImage: ../../../../assets/plants/wax-begonia.jpg
+plant:
+  binomial: Begonia semperflorens
+  family: Begoniaceae
+  genus: Begonia
+  commonNames:
+    - Eisbegonie
+    - Gottesauge
+    - Beetbegonie
+  origin: Südamerika (Brasilien, Argentinien)
+  light: Hell, verträgt Halbschatten
+  temperature: 15–25 °C, kein Frost
+  care:
+    watering:
+      every: 3
+      unit: days
+      note: Leicht feucht; die Erde gießen, nicht die Wachsblätter.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [3, 4, 5, 6, 7, 8, 9]
+      note: Ausgewogener Flüssigdünger in halber Dosierung.
+    trimming:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Vergeilte Triebe und Verblühtes auskneifen, damit sie kompakt bleibt.
+    repotting:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Flacher Topf; sie wurzelt nahe der Oberfläche.
+  schedule: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/wax-begonia.jpg"
+  alt="Eisbegonien mit glänzenden runden Blättern und Büscheln kleiner rosa Blüten."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Die Eisbegonie ist das Arbeitstier der Gattung: glänzende, fast sukkulente
+Blätter, Blüten vom Frühjahr, bis das Licht ausgeht, und dazwischen kein
+Drama. Ihr Beiname *semperflorens* heißt „immerblühend", und auf einer
+hellen Fensterbank löst sie das Versprechen beinahe ein. Sie ist eine der
+wenigen Beetpflanzen, die das Topfleben ehrlich genießen — vor dem Frost
+hereingeholt, macht sie als Zimmerpflanze weiter, statt als Einjährige zu
+sterben.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Stecklinge bewurzeln binnen Wochen im Wasserglas — eine Pflanze ist ein
+Abonnement: Einen müden Topf erneuert man aus den eigenen Stecklingen,
+statt alte verholzte Stängel durchzufüttern.

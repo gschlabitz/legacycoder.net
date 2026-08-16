@@ -1,0 +1,64 @@
+---
+title: Wax Begonia
+description: Begonia semperflorens — the tireless bedding begonia that blooms all year.
+backgroundImage: ../../../assets/plants/wax-begonia.jpg
+plant:
+  binomial: Begonia semperflorens
+  family: Begoniaceae
+  genus: Begonia
+  commonNames:
+    - Wax begonia
+    - Bedding begonia
+  origin: South America (Brazil, Argentina)
+  light: Bright, tolerates partial shade
+  temperature: 15–25 °C, no frost
+  care:
+    watering:
+      every: 3
+      unit: days
+      note: Lightly moist; water the soil, not the waxy leaves.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [3, 4, 5, 6, 7, 8, 9]
+      note: Half-strength balanced liquid feed.
+    trimming:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Pinch leggy shoots and spent flowers to keep it compact.
+    repotting:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Shallow pot; it roots near the surface.
+  schedule: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/wax-begonia.jpg"
+  alt="Wax begonias with glossy rounded leaves and clusters of small pink flowers."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+The wax begonia is the workhorse of the genus: glossy, succulent-ish leaves,
+flowers from spring until the light runs out, and no drama in between. Its
+*semperflorens* name means "always flowering," and indoors on a bright
+windowsill it very nearly delivers. It is one of the few bedding plants that
+genuinely enjoys pot life — bring it in before frost and it carries on as a
+houseplant instead of dying as an annual.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+Stem cuttings root in a glass of water within weeks, so one plant is a
+subscription: refresh a tired pot from its own cuttings rather than nursing
+old woody stems along.

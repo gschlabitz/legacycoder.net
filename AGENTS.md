@@ -31,6 +31,34 @@ Plain titles search Open Library. Use `album:`, `anime:`, or `manga:` before
 titles for those catalogs; pasted Wikipedia, Open Library, MusicBrainz,
 MyAnimeList, AniList, YouTube, and Amazon URLs select the matching resolver.
 
+Potted-plant pages live in `src/content/docs/plants/` with a structured
+`plant:` frontmatter block (botanical facts plus a machine-readable care
+schedule — see `src/content.config.ts`). Resolve a plant name to a
+paste-ready block, and fetch its Commons image with the TASL sidecar that
+`<Figure>` needs, with:
+
+```
+npm run plant-meta -- "Thymus vulgaris" --slug german-thyme
+```
+
+Pass `--image "File:…"` to pick a specific Commons file over Wikipedia's
+lead image. Swapping in your own photo later means replacing the image in
+`src/assets/plants/` and rewriting its `.json` sidecar; the page markup
+stays unchanged.
+
+The plants index renders `src/data/care-calendar.yaml` — a materialized,
+committed schedule derived deterministically from each plant's `plant.care`
+frontmatter (only pages with `plant.schedule: true`). After adding a plant or
+changing an interval, regenerate it with:
+
+```
+npm run care-calendar
+```
+
+Existing dates stay put across regenerations. Pass `--start 2027-01` and
+`--months 18` to control the span; the page asks for a regenerate once the
+span has run out.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build

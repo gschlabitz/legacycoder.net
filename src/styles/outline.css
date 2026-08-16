@@ -1,0 +1,19 @@
+/* Shrink-wrap the "On this page" outline to its content and pin it to the
+   top-right corner, instead of Starlight's full-height fixed-width column.
+   Wallpaper pages (src/components/PageFrame.astro) add a translucent veil
+   behind it. */
+.right-sidebar {
+  left: auto;
+  inset-inline-end: 0;
+  width: fit-content;
+  height: fit-content;
+  max-height: calc(100vh - var(--sl-nav-height));
+  top: var(--sl-nav-height);
+  padding-top: 0;
+  border-inline-start: none;
+  border-end-start-radius: 0.5rem;
+}
+
+.right-sidebar-panel {
+  width: fit-content;
+}

@@ -9,9 +9,12 @@ interface Props {
   alt: string;
   /** Optional display width; omit to use the image's intrinsic size. */
   width?: number;
+  /** Stretch the image to the full content-column width; `width` then
+   * only sets the resolution of the generated asset. */
+  fullWidth?: boolean;
 }
 
-const { src, alt, width } = Astro.props;
+const { src, alt, width, fullWidth = false } = Astro.props;
 
 // Resolve the optimized image by filename so the page only names the asset once.
 const images = import.meta.glob<{ default: ImageMetadata }>(
@@ -47,7 +50,7 @@ const licenseLabel = LICENSE_LABELS[license] ?? license;
 const sourceLabel = sourceName ?? new URL(source).hostname;
 ---
 
-<figure>
+<figure class:list={{ 'full-width': fullWidth }}>
   <Image src={image} alt={alt} width={width} />
   <figcaption>
     &ldquo;{title}&rdquo; by {
@@ -61,6 +64,10 @@ const sourceLabel = sourceName ?? new URL(source).hostname;
 <style>
   figure {
     margin: 1.5rem 0;
+  }
+  figure.full-width :global(img) {
+    width: 100%;
+    height: auto;
   }
   figcaption {
     margin-top: 0.5rem;

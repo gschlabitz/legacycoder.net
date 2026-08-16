@@ -1,0 +1,61 @@
+---
+title: Silberblatt-Blaustern
+description: Ledebouria socialis — eine Fensterbank-Zwiebel mit leopardengefleckten Blättern.
+backgroundImage: ../../../../assets/plants/silver-squill.jpg
+plant:
+  binomial: Ledebouria socialis
+  family: Asparagaceae
+  genus: Ledebouria
+  commonNames:
+    - Silberblatt-Blaustern
+    - Silver Squill
+  origin: Ostkap, Südafrika
+  light: Hell, mit ein paar Stunden direkter Sonne für kräftige Flecken
+  temperature: 10–25 °C, nicht unter 7 °C
+  care:
+    watering:
+      every: 10
+      unit: days
+      note: Durchdringend gießen, dann ganz abtrocknen lassen; im Winter fast trocken.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Viertel-Dosierung — sie ist mageren Boden gewohnt.
+    repotting:
+      every: 3
+      unit: years
+      months: [3, 4]
+      note: Flacher Topf, Zwiebeln auf der Oberfläche; dabei die Kolonie teilen.
+  schedule: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/silver-squill.jpg"
+  alt="Silberblatt-Blaustern mit silbrigen, dunkelgrün gefleckten Blättern über violetten Zwiebeln auf der Erde."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Der Silberblatt-Blaustern wächst aus Tropfenzwiebeln, die *auf* der Erde
+sitzen statt darin — violett gehäutet, wasserspeichernd und schnell zur
+Kolonie vermehrt (das *socialis* im Namen). Die Blätter sind die Schau:
+oben silbern mit dunkler Leopardenfleckung, unten weinrot, dazu im Frühjahr
+Rispen winziger grün-weißer Blüten. Man behandelt ihn wie die Sukkulente,
+die er fast ist: helles Licht, ein enger flacher Topf und Zurückhaltung mit
+der Gießkanne. Mehr Licht heißt schärfere Flecken; Übergießen heißt Matsch.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Schneiden entfällt — verbrauchte Blätter lassen sich von Hand von der
+Zwiebel ziehen. Mit Haustieren gut zu wissen: Wie viele Zwiebeln enthält er
+Herzglykoside und gehört außer Reichweite knabbernder Katzen — eine
+Regalpflanze, keine Bodenpflanze.
