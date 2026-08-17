@@ -1,0 +1,73 @@
+---
+title: Husky Cherry Tomato
+description: Solanum lycopersicum 'Husky Cherry Red' — a dwarf cherry tomato built for pots.
+backgroundImage: ../../../assets/plants/husky-cherry-tomato.jpg
+plant:
+  binomial: Solanum lycopersicum 'Husky Cherry Red'
+  family: Solanaceae
+  genus: Solanum
+  commonNames:
+    - Husky cherry tomato
+    - Husky Cherry Red
+    - Patio cherry tomato
+  origin: Dwarf hybrid cultivar; species from western South America
+  light: Full sun, six hours or more
+  temperature: 15–30 °C, dies at frost
+  care:
+    watering:
+      every: 2
+      unit: days
+      note: Even moisture; pots dry out faster than the plant forgives.
+    fertilizing:
+      every: 2
+      unit: weeks
+      months: [5, 6, 7, 8, 9]
+      note: Tomato feed once flowering starts.
+    trimming:
+      every: 2
+      unit: weeks
+      months: [6, 7, 8, 9]
+      note: Thin suckers sparingly — the dwarf habit does most of the work.
+    repotting:
+      every: 1
+      unit: years
+      months: [5]
+      note: Annual — one plant per 25+ cm pot, planted deep.
+  schedule: true
+  culinary: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/husky-cherry-tomato.jpg"
+  alt="Clusters of small round cherry tomatoes ripening on the vine."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Husky Cherry Red is a dwarf indeterminate — an odd and useful combination.
+Indeterminate, so it keeps flowering and fruiting all season rather than in
+one flush; dwarf, so it does it on a stocky plant around a meter tall with
+short internodes that barely needs staking. That combination is why it is
+sold as a patio tomato: it is a cherry tomato engineered for exactly the
+container life the Roma merely tolerates.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+The dwarf habit slows sucker growth but doesn't stop it — thin just enough
+to keep air moving through the foliage. Cherry fruit splits after a sudden
+soak, so steady watering matters more than generous watering.
+
+## In the kitchen
+
+Cherry tomatoes are the pot-to-mouth crop; most of the harvest never reaches
+the kitchen. The ones that do are sweeter and thinner-skinned than anything
+from a store: halve them raw over pasta with olive oil and basil, or blister
+them whole in a screaming-hot pan until they just collapse.

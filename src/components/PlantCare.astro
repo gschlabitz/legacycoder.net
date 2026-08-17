@@ -1,0 +1,97 @@
+---
+// Care schedule table for a potted-plant page, rendered from the page's
+// `plant.care` frontmatter. Intervals are structured (every/unit/months —
+// schema in src/content.config.ts) so a future calendar/reminder system can
+// reuse the same data; this component only formats it for reading.
+interface CareTask {
+  every: number;
+  unit: 'days' | 'weeks' | 'months' | 'years';
+  months?: number[];
+  note?: string;
+}
+
+interface Props {
+  care: {
+    watering: CareTask;
+    fertilizing: CareTask;
+    trimming?: CareTask;
+    repotting: CareTask;
+  };
+}
+
+const { care } = Astro.props;
+const locale = Astro.currentLocale === 'de' ? 'de' : 'en';
+
+const STRINGS = {
+  en: {
+    heading: 'Care schedule',
+    task: 'Task',
+    frequency: 'Frequency',
+    window: 'When',
+    notes: 'Notes',
+    yearRound: 'year-round',
+    tasks: { watering: 'Watering', fertilizing: 'Fertilizing', trimming: 'Trimming', repotting: 'Repotting' },
+    once: { days: 'daily', weeks: 'weekly', months: 'monthly', years: 'yearly' },
+    every: (n: number, unit: string) => `every ${n} ${unit}`,
+  },
+  de: {
+    heading: 'Pflegeplan',
+    task: 'Aufgabe',
+    frequency: 'Rhythmus',
+    window: 'Wann',
+    notes: 'Hinweise',
+    yearRound: 'ganzjährig',
+    tasks: { watering: 'Gießen', fertilizing: 'Düngen', trimming: 'Schneiden', repotting: 'Umtopfen' },
+    once: { days: 'täglich', weeks: 'wöchentlich', months: 'monatlich', years: 'jährlich' },
+    every: (n: number, unit: string) =>
+      `alle ${n} ${{ days: 'Tage', weeks: 'Wochen', months: 'Monate', years: 'Jahre' }[unit]}`,
+  },
+}[locale];
+
+function frequency({ every, unit }: CareTask): string {
+  return every === 1 ? STRINGS.once[unit] : STRINGS.every(every, unit);
+}
+
+// A months window renders as a range ("Mar–Oct") when contiguous, otherwise
+// as a list; no window means the task runs all year.
+function window({ months }: CareTask): string {
+  if (!months?.length) return STRINGS.yearRound;
+  const format = new Intl.DateTimeFormat(locale, { month: 'short' });
+  const name = (month: number) => format.format(new Date(Date.UTC(2000, month - 1, 15)));
+  const sorted = [...months].sort((a, b) => a - b);
+  const contiguous = sorted.every(
+    (month, index) => index === 0 || month === sorted[index - 1] + 1,
+  );
+  return contiguous && sorted.length > 1
+    ? `${name(sorted[0])}–${name(sorted[sorted.length - 1])}`
+    : sorted.map(name).join(', ');
+}
+
+const order = (['watering', 'fertilizing', 'trimming', 'repotting'] as const).filter(
+  (key) => care[key],
+);
+---
+
+<table class="plant-care">
+  <caption class="sr-only">{STRINGS.heading}</caption>
+  <thead>
+    <tr>
+      <th>{STRINGS.task}</th>
+      <th>{STRINGS.frequency}</th>
+      <th>{STRINGS.window}</th>
+      <th>{STRINGS.notes}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      order.map((key) => (
+        <tr>
+          <th scope="row">{STRINGS.tasks[key]}</th>
+          <td>{frequency(care[key]!)}</td>
+          <td>{window(care[key]!)}</td>
+          <td>{care[key]!.note}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>

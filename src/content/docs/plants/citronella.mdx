@@ -1,0 +1,74 @@
+---
+title: Citronella
+description: Pelargonium 'citrosum' — the lemon-scented "mosquito plant" geranium.
+backgroundImage: ../../../assets/plants/citronella.jpg
+plant:
+  binomial: Pelargonium 'citrosum'
+  family: Geraniaceae
+  genus: Pelargonium
+  commonNames:
+    - Citronella plant
+    - Mosquito plant
+    - Citrosa geranium
+  origin: Garden hybrid of South African pelargoniums
+  light: Full sun to bright indirect
+  temperature: 10–30 °C, no frost — overwinter indoors
+  care:
+    watering:
+      every: 5
+      unit: days
+      note: Let the top few centimeters dry out first.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Balanced liquid feed at half strength.
+    trimming:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Prune back hard to keep it bushy.
+    repotting:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Fresh mix at the same time as the spring prune.
+  schedule: true
+  medicinal: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/citronella.jpg"
+  alt="A citronella pelargonium with deeply lobed, fringed green leaves."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+The potted plant sold as "Citronella" is not citronella grass (*Cymbopogon*,
+the source of commercial citronella oil) but a scented-leaf pelargonium
+whose foliage happens to smell like it. It grows like any pelargonium:
+sun-loving, drought-tolerant once established, and quick to get leggy
+without a spring haircut. It is frost-tender — bring it inside before the
+first cold night and give it a bright, cool window for the winter.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+Cuttings root readily in early autumn, which is cheaper insurance than
+hauling a large pot through the winter.
+
+## Home medicine
+
+The marketing claim — that the plant itself repels mosquitoes — has not
+held up in trials; sitting next to one does nothing. Crushing a few leaves
+and rubbing them on the skin does release citronellal and gives short-lived,
+mild repellent effect, more folk remedy than substitute for a real
+repellent. The scented leaves also do honest work in potpourri and drawer
+sachets.

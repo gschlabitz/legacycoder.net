@@ -1,0 +1,63 @@
+---
+title: Christmas Cactus
+description: Schlumbergera truncata — the Brazilian rainforest cactus that blooms for the darkest weeks.
+backgroundImage: ../../../assets/plants/christmas-cactus.jpg
+plant:
+  binomial: Schlumbergera truncata
+  family: Cactaceae
+  genus: Schlumbergera
+  commonNames:
+    - Christmas cactus
+    - Holiday cactus
+    - Thanksgiving cactus
+  origin: Coastal mountains of southeastern Brazil
+  light: Bright indirect; no midday sun
+  temperature: 10–25 °C, cool autumn nights set the buds
+  care:
+    watering:
+      every: 7
+      unit: days
+      note: When the top of the mix is dry; sparser after flowering.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Half-strength feed through the growing season only.
+    repotting:
+      every: 3
+      unit: years
+      months: [3, 4]
+      note: It blooms best slightly root-bound — don't rush this.
+  schedule: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/christmas-cactus.jpg"
+  alt="A Christmas cactus with flat segmented stems and magenta flowers at the tips."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Despite the family name, this is no desert plant: *Schlumbergera* grows as
+an epiphyte in the moss of Brazilian cloud-forest trees, which is why it
+wants filtered light, some humidity, and watering more like a houseplant
+than a cactus. It is a short-day plant — the flower buds are triggered by
+the long, cool nights of autumn. That is the whole secret to the December
+bloom: from October, give it a spot with cool nights (10–15 °C) and no
+evening lamplight, then stop moving it once buds show, because it drops
+them at any sudden change.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+There is no trimming schedule, but twisting off a segment or two after
+flowering keeps it branching — and every segment roots in moist mix, which
+is how one plant becomes a windowsill dynasty. Well-kept plants routinely
+outlive their owners' other houseplants by decades.

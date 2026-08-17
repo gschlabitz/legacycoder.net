@@ -1,0 +1,67 @@
+---
+title: Krause Petersilie
+description: Petroselinum crispum — die krause Zweijährige, die alles garniert.
+backgroundImage: ../../../../assets/plants/curly-parsley.jpg
+plant:
+  binomial: Petroselinum crispum
+  family: Apiaceae
+  genus: Petroselinum
+  commonNames:
+    - Krause Petersilie
+    - Krauspetersilie
+  origin: Zentrales und östliches Mittelmeer
+  light: Hell, mit ein paar Stunden milder Sonne
+  temperature: 15–25 °C, verträgt leichten Frost
+  care:
+    watering:
+      every: 2
+      unit: days
+      note: Erde gleichmäßig feucht halten, nie staunass.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [3, 4, 5, 6, 7, 8, 9, 10]
+      note: Ausgewogener Flüssigdünger in halber Dosierung.
+    repotting:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Zweijährig — Töpfe werden meist neu gesät statt umgetopft.
+  schedule: true
+  culinary: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/curly-parsley.jpg"
+  alt="Ein dichter Horst krauser Petersilie mit stark gekräuselten dunkelgrünen Blättern."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Die krause Petersilie ist die gekräuselte Zuchtform der gewöhnlichen
+Petersilie — gezüchtet fürs Auge mindestens so sehr wie für den Geschmack.
+Sie ist zweijährig: im ersten Jahr Blätter, im zweiten Blütenstand und
+Samen — dann werden die Blätter bitter, weshalb Topfpetersilie meist wie
+eine Einjährige behandelt und jedes Frühjahr neu gesät wird. Sommerhitze
+mag sie nicht, und sie braucht einen tiefen Topf: Die Pfahlwurzel reicht
+weiter hinunter, als das krause Oberteil vermuten lässt.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Von außen nach innen ernten — der Neuaustrieb kommt aus der Mitte des
+Horsts, und wer dort schneidet, legt die ganze Pflanze lahm.
+
+## In der Küche
+
+Milder und weniger grasig als glatte Petersilie, mit einer Textur, die als
+Garnitur standhält. Passt gehackt in Kartoffelgerichte, Eierspeisen und
+Buttersaucen — und ist eine Grundzutat der Frankfurter Grünen Soße. Erst am
+Ende zugeben: Hitze nimmt dem Aroma schnell die Frische.

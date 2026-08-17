@@ -1,0 +1,75 @@
+---
+title: Lavendel
+description: Lavandula angustifolia — der duftende Mittelmeerstrauch, den Bienen und Schlaf gleichermaßen gutheißen.
+backgroundImage: ../../../../assets/plants/lavender.jpg
+plant:
+  binomial: Lavandula angustifolia
+  family: Lamiaceae
+  genus: Lavandula
+  commonNames:
+    - Lavendel
+    - Echter Lavendel
+    - Schmalblättriger Lavendel
+  origin: Berge des westlichen Mittelmeers
+  light: Volle Sonne
+  temperature: −5–30 °C, im geschützten Topf winterhart
+  care:
+    watering:
+      every: 7
+      unit: days
+      note: Zwischen den Wassergaben abtrocknen lassen; Wintertöpfe brauchen kaum etwas.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8]
+      note: Magere Kost — Überdüngen kostet Duft und Blüten.
+    trimming:
+      every: 1
+      unit: years
+      months: [8]
+      note: Nach der Blüte um ein Drittel einkürzen; nie ins blattlose Holz.
+    repotting:
+      every: 2
+      unit: years
+      months: [3, 4]
+      note: Mageres, leicht kalkhaltiges Substrat; Terrakotta statt Plastik.
+  schedule: true
+  medicinal: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/lavender.jpg"
+  alt="Blühender Lavendel mit graugrünem Laub und aufrechten violetten Blütenähren."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+*Lavandula angustifolia* — „englischer" Lavendel, verwirrenderweise, denn er
+stammt von Mittelmeerhängen — ist die winterharte, süß duftende Art, die
+sich im Topf lohnt. Wie seine Verwandten Thymian und Rosmarin will er die
+volle Mittelmeerbehandlung: alle Sonne, die da ist, mageren grusigen Boden
+und Wasser nur bei Trockenheit. Der Jahresschnitt ist das einzige
+Unverhandelbare: Ungeschnittener Lavendel wird in wenigen Jahren zum
+hochbeinigen Gestrüpp, und aus altem Holz treibt er nicht wieder aus.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Blütenähren ernten, sobald sich die Knospen gerade öffnen — ihr
+Dufthöhepunkt — und die Ernte lässt sich in den Augustschnitt einbauen.
+
+## Hausapotheke
+
+Lavendel gehört zu den besser belegten Beruhigungskräutern: Die Kommission
+E erkennt die Blüten bei Unruhezuständen und Einschlafstörungen an, und ein
+standardisiertes Lavendelöl-Präparat (Silexan) ist in Deutschland bei
+ängstlicher Unruhe zugelassen. Zu Hause heißt das Lavendeltee (ein
+Teelöffel getrocknete Blüten, zehn Minuten ziehen), ein Säckchen unterm
+Kissen oder ein paar Tropfen ätherisches Öl im Abendbad.

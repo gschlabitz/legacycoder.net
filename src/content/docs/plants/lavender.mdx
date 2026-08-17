@@ -1,0 +1,75 @@
+---
+title: Lavender
+description: Lavandula angustifolia — the fragrant Mediterranean shrub bees and sleep both approve of.
+backgroundImage: ../../../assets/plants/lavender.jpg
+plant:
+  binomial: Lavandula angustifolia
+  family: Lamiaceae
+  genus: Lavandula
+  commonNames:
+    - Lavender
+    - English lavender
+    - True lavender
+  origin: Western Mediterranean mountains
+  light: Full sun
+  temperature: −5–30 °C, frost-hardy in a protected pot
+  care:
+    watering:
+      every: 7
+      unit: days
+      note: Let it dry out between waterings; winter pots barely need any.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8]
+      note: Lean diet — overfeeding costs fragrance and flowers.
+    trimming:
+      every: 1
+      unit: years
+      months: [8]
+      note: Cut back by a third after flowering; never into leafless wood.
+    repotting:
+      every: 2
+      unit: years
+      months: [3, 4]
+      note: Gritty, slightly alkaline mix; terracotta over plastic.
+  schedule: true
+  medicinal: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/lavender.jpg"
+  alt="Lavender in bloom, with gray-green foliage and upright violet flower spikes."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+*Lavandula angustifolia* — "English" lavender, confusingly, since it comes
+from Mediterranean mountainsides — is the hardy, sweet-scented species worth
+growing in a pot. Like its relatives thyme and rosemary it wants the full
+Mediterranean treatment: all the sun you have, gritty lean soil, and water
+only when dry. The annual prune is the one non-negotiable: unpruned lavender
+turns into a bare-legged tangle within a few years, and it will not regrow
+from old wood.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+Harvest flower spikes just as the buds open — that is their fragrant peak —
+and you can fold the harvest into the August prune.
+
+## Home medicine
+
+Lavender is one of the better-evidenced calming herbs: Commission E approves
+the flowers for restlessness and difficulty falling asleep, and a
+standardized lavender-oil capsule (silexan) is licensed in Germany for
+anxious restlessness. At home that translates to lavender tea (a teaspoon of
+dried flowers, steeped ten minutes), a sachet under the pillow, or a few
+drops of the essential oil in an evening bath.

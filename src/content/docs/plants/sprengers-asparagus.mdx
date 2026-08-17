@@ -1,0 +1,66 @@
+---
+title: Sprenger's Asparagus
+description: Asparagus densiflorus 'Sprengeri' — the "fern" that is actually an asparagus.
+backgroundImage: ../../../assets/plants/sprengers-asparagus.jpg
+plant:
+  binomial: Asparagus densiflorus 'Sprengeri'
+  family: Asparagaceae
+  genus: Asparagus
+  commonNames:
+    - Sprenger's asparagus
+    - Asparagus fern
+    - Emerald fern
+  origin: Coastal South Africa
+  light: Bright indirect to gentle morning sun
+  temperature: 10–25 °C, no frost
+  care:
+    watering:
+      every: 4
+      unit: days
+      note: Moderately moist; the water-storing tubers forgive a missed round.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [3, 4, 5, 6, 7, 8, 9]
+      note: Balanced liquid feed at half strength.
+    trimming:
+      every: 1
+      unit: years
+      months: [3]
+      note: Cut yellowed or bald stems out at the base to force fresh fronds.
+    repotting:
+      every: 2
+      unit: years
+      months: [3, 4]
+      note: The tuberous roots will bulge or crack a tight pot — size up.
+  schedule: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/sprengers-asparagus.jpg"
+  alt="Arching stems of Sprenger's asparagus densely covered in fine needle-like leaves."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Sprenger's asparagus is sold as a fern and is nothing of the sort — it is a
+true *Asparagus*, cousin to the vegetable, and its "needles" are flattened
+stems doing a leaf's job. The giveaway is underground: a mat of white
+water-storing tubers that lets it shrug off a forgotten watering and, left
+long enough, bend the pot out of shape. It is close to unkillable in bright
+indirect light; harsh sun yellows it, deep shade thins it out.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+A word of caution rather than medicine: the red berries that follow the tiny
+white flowers are mildly toxic — a stomach upset for children, worse for
+cats and dogs — and the arching stems carry small hidden thorns. Hang it
+high; it looks best there anyway.

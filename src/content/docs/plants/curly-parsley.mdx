@@ -1,0 +1,66 @@
+---
+title: Curly Parsley
+description: Petroselinum crispum — the frilly biennial that garnishes everything.
+backgroundImage: ../../../assets/plants/curly-parsley.jpg
+plant:
+  binomial: Petroselinum crispum
+  family: Apiaceae
+  genus: Petroselinum
+  commonNames:
+    - Curly parsley
+    - Curly-leaf parsley
+  origin: Central and eastern Mediterranean
+  light: Bright, with a few hours of gentle direct sun
+  temperature: 15–25 °C, tolerates light frost
+  care:
+    watering:
+      every: 2
+      unit: days
+      note: Keep the soil evenly moist, never waterlogged.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [3, 4, 5, 6, 7, 8, 9, 10]
+      note: Half-strength balanced liquid feed.
+    repotting:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Biennial — most pots are resown instead of repotted.
+  schedule: true
+  culinary: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/curly-parsley.jpg"
+  alt="A dense clump of curly parsley with tightly ruffled dark-green leaves."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Curly parsley is the ruffled cultivar of common parsley, bred for looks as
+much as flavor. It is a biennial: leaves the first year, a flower stalk and
+seeds the second — by which point the leaves turn bitter, so pot-grown
+parsley is usually treated as an annual and resown each spring. It sulks in
+summer heat and appreciates a deep pot; the taproot goes further down than
+the frilly top suggests.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+Harvest from the outside in — the new growth comes from the center of the
+crown, and cutting it there stalls the whole plant.
+
+## In the kitchen
+
+Milder and less grassy than flat-leaf parsley, with a texture that holds up
+as a garnish. Chop it into potato dishes, eggs, and butter sauces, or use it
+as the base of a classic *Frankfurter Grüne Soße*. Add it at the end of
+cooking — heat flattens the flavor quickly.

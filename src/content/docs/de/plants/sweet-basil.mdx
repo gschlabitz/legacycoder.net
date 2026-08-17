@@ -1,0 +1,76 @@
+---
+title: Basilikum
+description: Ocimum basilicum — die frostempfindliche Einjährige hinter jedem Pesto.
+backgroundImage: ../../../../assets/plants/sweet-basil.jpg
+plant:
+  binomial: Ocimum basilicum
+  family: Lamiaceae
+  genus: Ocimum
+  commonNames:
+    - Basilikum
+    - Genoveser Basilikum
+    - Königskraut
+  origin: Tropisches Asien
+  light: Volle Sonne, warm und geschützt
+  temperature: 15–30 °C, stirbt unter 10 °C
+  care:
+    watering:
+      every: 2
+      unit: days
+      note: Im Hochsommer täglich; welkt dramatisch, erholt sich schnell.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Starkzehrer im Topf — ausgewogener Flüssigdünger.
+    trimming:
+      every: 2
+      unit: weeks
+      months: [5, 6, 7, 8, 9]
+      note: Triebspitzen und Blütenstände auskneifen, damit es blattreich bleibt.
+    repotting:
+      every: 1
+      unit: years
+      months: [4, 5]
+      note: Einjährig — überfüllte Supermarkttöpfe beim Kauf teilen.
+  schedule: true
+  culinary: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/sweet-basil.jpg"
+  alt="Ein Basilikum im Topf mit breiten, glänzend grünen Blättern."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Basilikum ist eine tropische Einjährige und benimmt sich auch so: Es will
+Wärme, Sonne und gleichmäßig Wasser — und stirbt beim ersten Hauch von
+Frost. Supermarkt-Basilikum sind Dutzende Sämlinge, die im Topf
+zusammengepfercht wurden, damit er im Regal üppig aussieht. Wer den Ballen
+in drei, vier Töpfe aufteilt, hat an jedem einzelnen monatelang länger
+Freude als am Original. Blütenstände laufend auskneifen: Sobald Basilikum
+Samen ansetzt, stellt es die Blattproduktion ein und wird scharf im
+Geschmack.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Zum Ernten ganze Triebspitzen knapp über einem Blattpaar abkneifen — aus
+jedem Schnitt werden zwei neue Triebe. Einzelne Blätter zu zupfen ist der
+langsame Weg zur kahlen Pflanze.
+
+## In der Küche
+
+Die Seele von Pesto alla genovese, Caprese und dem halben Tomaten-Kanon.
+Am besten roh oder nur kurz erwärmt: Erst am Ende über das Gericht zupfen,
+denn Schneiden und Kochen machen die Blätter schwarz und das Aroma stumpf.
+Überschuss hält sich am besten mit Öl püriert im Tiefkühler — getrocknetes
+Basilikum ist ein anderes, traurigeres Kraut.

@@ -1,0 +1,80 @@
+---
+title: Rosmarin
+description: Salvia rosmarinus — der Mittelmeerstrauch, der deinen Topf für eine Steilküste hält.
+backgroundImage: ../../../../assets/plants/rosemary.jpg
+plant:
+  binomial: Salvia rosmarinus
+  family: Lamiaceae
+  genus: Salvia
+  commonNames:
+    - Rosmarin
+  origin: Mittelmeerküsten
+  light: Volle Sonne
+  temperature: 5–30 °C, im geschützten Topf leicht frosthart
+  care:
+    watering:
+      every: 7
+      unit: days
+      note: Erde zwischen den Wassergaben abtrocknen lassen; nie im Wasser stehen lassen.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8]
+      note: Schwachzehrer — halbe Dosierung genügt.
+    trimming:
+      every: 1
+      unit: years
+      months: [5, 6]
+      note: Nach der Blüte leicht in Form schneiden; nie ins kahle Holz.
+    repotting:
+      every: 2
+      unit: years
+      months: [3, 4]
+      note: Mageres, durchlässiges Substrat; ein Tontopf verzeiht Gießfehler.
+  schedule: true
+  culinary: true
+  medicinal: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/rosemary.jpg"
+  alt="Ein Rosmarin im Topf mit aufrechten verholzten Trieben und nadelförmigen Blättern."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Rosmarin wächst auf Steilküsten am Mittelmeer — der Name kommt wohl von
+*ros marinus*, „Tau des Meeres" — und ein Topf auf einem heißen, trockenen
+Balkon ist das Nächstbeste zur Heimat. Botanisch ist er inzwischen ein
+Salbei: 2017 wurde er von *Rosmarinus officinalis* zu *Salvia rosmarinus*
+umgruppiert. Wie Thymian stirbt er an Fürsorge — nasse Erde bringt mehr
+Topfrosmarin um als jeder Winter. Kälte hält er aus; nasse Füße nicht.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Bei hartem Frost den Topf an eine Hauswand rücken oder in ein kaltes,
+helles Treppenhaus stellen — er will eine kühle Ruhepause, kein geheiztes
+Wohnzimmer.
+
+## In der Küche
+
+Die harzigen Nadeln überstehen langes, heißes Garen wie kaum etwas anderes:
+Röstkartoffeln, Focaccia, Lamm und alles vom Grill. Ganze Zweige mitgaren
+und herausfischen, oder die Nadeln fein hacken — bei getrocknetem Rosmarin
+die Menge halbieren, das Trocknen konzentriert die Harznoten.
+
+## Hausapotheke
+
+Rosmarinblätter sind in den Monographien der Kommission E bei
+Verdauungsbeschwerden und äußerlich zur Kreislaufunterstützung anerkannt —
+Rosmarinöl steckt in Bädern und Einreibungen. Ein Tee aus einem frischen
+Zweig ist ein traditioneller Muntermacher; der Duft allein, von einem Blatt
+gerieben, die schnellste Form davon.

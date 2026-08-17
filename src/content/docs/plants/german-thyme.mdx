@@ -1,0 +1,80 @@
+---
+title: German Thyme
+description: Thymus vulgaris — the winter-hardy kitchen thyme.
+backgroundImage: ../../../assets/plants/german-thyme.jpg
+plant:
+  binomial: Thymus vulgaris
+  family: Lamiaceae
+  genus: Thymus
+  commonNames:
+    - German thyme
+    - Common thyme
+    - Garden thyme
+  origin: Western Mediterranean
+  light: Full sun
+  temperature: 5–30 °C, frost-hardy
+  care:
+    watering:
+      every: 10
+      unit: days
+      note: Let the soil dry out completely between waterings.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8]
+      note: Light feeder — half-strength feed or a compost top-up.
+    trimming:
+      every: 1
+      unit: years
+      months: [7]
+      note: Cut back by a third after flowering; never into bare wood.
+    repotting:
+      every: 2
+      unit: years
+      months: [3, 4]
+      note: Gritty, fast-draining mix; terracotta helps.
+  schedule: true
+  culinary: true
+  medicinal: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/german-thyme.jpg"
+  alt="A low, woody thyme plant with many small gray-green leaves."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+"German" thyme is the winter-hardy strain of common thyme — the one that
+survives outside on a balcony where French thyme gives up. It is a small
+Mediterranean shrub at heart: it wants sun, lean soil, and neglect. The
+fastest way to kill a potted thyme is kindness, in the form of water and
+rich potting mix.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+Trim it back by a third after flowering to keep it from going woody and
+bald in the middle. Never cut into old, leafless wood — it rarely resprouts.
+
+## In the kitchen
+
+The backbone herb of stocks, stews, and anything braised. Whole sprigs go in
+early and come out before serving; stripped leaves can be added any time.
+Thyme dries better than almost any herb — hang surplus sprigs upside down
+for a week and the flavor keeps for months.
+
+## Home medicine
+
+Thyme tea is the classic German cough remedy: thymol, its main essential
+oil, is a proven expectorant and mild antiseptic, and thyme preparations are
+approved for coughs and bronchitis in Germany's Commission E monographs.
+Steep a teaspoon of dried (or a fresh sprig of) thyme in hot water for ten
+minutes, with honey to taste.

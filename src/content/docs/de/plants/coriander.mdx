@@ -1,0 +1,73 @@
+---
+title: Koriander
+description: Coriandrum sativum — das Kraut in Eile; es schießt, sobald man wegsieht.
+backgroundImage: ../../../../assets/plants/coriander.jpg
+plant:
+  binomial: Coriandrum sativum
+  family: Apiaceae
+  genus: Coriandrum
+  commonNames:
+    - Koriander
+    - Echter Koriander
+    - Asiatische Petersilie
+  origin: Östliches Mittelmeer und Westasien
+  light: Hell mit Morgensonne; Schatten vor Mittagshitze
+  temperature: 10–25 °C, schießt bei Hitze
+  care:
+    watering:
+      every: 2
+      unit: days
+      note: Gleichmäßig feucht — Trockenstress löst das Schießen aus.
+    fertilizing:
+      every: 4
+      unit: weeks
+      months: [3, 4, 5, 6, 7, 8, 9]
+      note: Ausgewogener Flüssigdünger in halber Dosierung.
+    repotting:
+      every: 1
+      unit: years
+      months: [3, 4]
+      note: Einjährig und verpflanzungsscheu — direkt säen, alle paar Wochen nach.
+  schedule: true
+  culinary: true
+---
+
+import Figure from '../../../../components/Figure.astro';
+import PlantInfo from '../../../../components/PlantInfo.astro';
+import PlantCare from '../../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/coriander.jpg"
+  alt="Junge Korianderpflanzen mit filigranen grünen Blättern in Anzuchttöpfen."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Koriander ist eine Einjährige mit Abgabetermin: Wärme, lange Tage oder eine
+Trockenphase kippen ihn von der Blattproduktion in den Blütenstand, und
+einmal geschossen werden die Blätter spärlich und fadendünn. Die
+Topfstrategie ist nicht dagegen anzukämpfen, sondern damit zu planen — eine
+Prise Samen direkt in den Topf säen (die Pfahlwurzel nimmt Verpflanzen
+übel, deshalb schmollen Supermarkttöpfe), ein paar Wochen ernten, und den
+nächsten Topf schon gesät haben. Im Hochsommer Morgensonne und
+Mittagsschatten geben, um jede Aussaat zu strecken.
+
+## Pflegeplan
+
+<PlantCare care={frontmatter.plant.care} />
+
+Einen Schnittplan gibt es nicht, weil die Ernte *der* Schnitt ist — äußere
+Blätter schneiden und die Mitte weiterproduzieren lassen, oder den ganzen
+Topf am Höhepunkt scheren und neu säen.
+
+## In der Küche
+
+Eine Pflanze, zwei Gewürze. Die frischen Blätter sind das rohe
+Letzte-Sekunde-Kraut von Salsa, Curry, Phở und Guacamole — Kochen löscht
+sie aus. Schießt ein Topf, bevor man dazu kommt: laufen lassen. Die runden
+Samen danach sind der eigentliche Koriander, warm und zitrusartig, zum
+Rösten und Mahlen für Currybasen und Gewürzmischungen. Ob die Blätter
+frisch oder seifig schmecken, ist teils genetisch — wer die Seifenkarte
+gezogen hat, bekommt die Samen als Trostpreis.

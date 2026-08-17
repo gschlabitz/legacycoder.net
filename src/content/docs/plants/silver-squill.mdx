@@ -1,0 +1,62 @@
+---
+title: Silver Squill
+description: Ledebouria socialis — a windowsill bulb with leopard-spotted leaves.
+backgroundImage: ../../../assets/plants/silver-squill.jpg
+plant:
+  binomial: Ledebouria socialis
+  family: Asparagaceae
+  genus: Ledebouria
+  commonNames:
+    - Silver squill
+    - Leopard lily
+    - Wood hyacinth
+  origin: Eastern Cape, South Africa
+  light: Bright, with a few hours of direct sun for good spotting
+  temperature: 10–25 °C, keep above 7 °C
+  care:
+    watering:
+      every: 10
+      unit: days
+      note: Soak, then let it dry fully; near-dry through winter.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8, 9]
+      note: Quarter-strength feed — it is used to poor soil.
+    repotting:
+      every: 3
+      unit: years
+      months: [3, 4]
+      note: Shallow pot, bulbs sitting on the surface; divide the colony then.
+  schedule: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/silver-squill.jpg"
+  alt="Silver squill with silver leaves spotted dark green, growing from purple bulbs above the soil."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Silver squill grows from teardrop bulbs that sit *on* the soil rather than
+in it — purple-skinned, water-storing, and quick to multiply into a colony
+(the *socialis* in the name). The leaves are the show: silver with dark
+leopard spotting on top, wine-purple underneath, plus sprays of tiny
+green-and-white flowers in spring. Treat it like the succulent it almost is:
+bright light, a cramped shallow pot, and restraint with the watering can.
+More light means sharper spots; overwatering means mush.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+No trimming needed — spent leaves pull away from the bulb by hand. Worth
+knowing with pets in the house: like many bulbs it contains cardiac
+glycosides, so it belongs out of reach of nibbling cats — a shelf plant, not
+a floor plant.

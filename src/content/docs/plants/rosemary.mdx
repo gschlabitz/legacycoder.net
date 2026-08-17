@@ -1,0 +1,79 @@
+---
+title: Rosemary
+description: Salvia rosmarinus — the Mediterranean shrub that thinks your pot is a cliffside.
+backgroundImage: ../../../assets/plants/rosemary.jpg
+plant:
+  binomial: Salvia rosmarinus
+  family: Lamiaceae
+  genus: Salvia
+  commonNames:
+    - Rosemary
+  origin: Mediterranean coasts
+  light: Full sun
+  temperature: 5–30 °C, hardy to light frost in a sheltered pot
+  care:
+    watering:
+      every: 7
+      unit: days
+      note: Let the soil dry between waterings; never leave it standing in water.
+    fertilizing:
+      every: 8
+      unit: weeks
+      months: [4, 5, 6, 7, 8]
+      note: Light feeder — half-strength feed is plenty.
+    trimming:
+      every: 1
+      unit: years
+      months: [5, 6]
+      note: Shape lightly after flowering; never cut into bare wood.
+    repotting:
+      every: 2
+      unit: years
+      months: [3, 4]
+      note: Gritty, fast-draining mix; a clay pot forgives overwatering.
+  schedule: true
+  culinary: true
+  medicinal: true
+---
+
+import Figure from '../../../components/Figure.astro';
+import PlantInfo from '../../../components/PlantInfo.astro';
+import PlantCare from '../../../components/PlantCare.astro';
+
+<Figure
+  src="plants/rosemary.jpg"
+  alt="A rosemary plant in a pot, with upright woody stems and needle-like leaves."
+  width={1280}
+  fullWidth
+/>
+
+<PlantInfo plant={frontmatter.plant} />
+
+Rosemary grows on Mediterranean sea cliffs — the name likely comes from
+*ros marinus*, "dew of the sea" — and a pot on a hot, dry balcony is the
+closest thing to home you can offer it. Botanically it is now a sage,
+reclassified from *Rosmarinus officinalis* to *Salvia rosmarinus* in 2017.
+Like thyme, it dies of kindness: soggy soil kills more potted rosemary than
+any winter. Cold it can take; wet feet it cannot.
+
+## Care schedule
+
+<PlantCare care={frontmatter.plant.care} />
+
+In climates with hard frost, overwinter the pot against a house wall or in
+a cold, bright stairwell — it wants a cool rest, not a heated living room.
+
+## In the kitchen
+
+The resinous needles stand up to long, hot cooking like almost nothing else:
+roast potatoes, focaccia, lamb, and anything grilled. Use whole sprigs and
+fish them out, or chop the needles fine — and halve the amount when using
+dried, which concentrates the pine notes.
+
+## Home medicine
+
+Rosemary leaf preparations are approved in Germany's Commission E monographs
+for digestive complaints and, externally, for supporting circulation —
+rosemary oil shows up in warming baths and liniments. A tea of a fresh sprig
+is a traditional pick-me-up; the scent alone, rubbed from a leaf, is the
+quickest form of it.
