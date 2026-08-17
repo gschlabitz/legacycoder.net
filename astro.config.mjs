@@ -9,15 +9,6 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   site: "https://legacycoder.net",
-  image: {
-    remotePatterns: [
-      { protocol: "https", hostname: "covers.openlibrary.org" },
-      { protocol: "https", hostname: "image.tmdb.org" },
-      { protocol: "https", hostname: "coverartarchive.org" },
-      { protocol: "https", hostname: "upload.wikimedia.org" },
-      { protocol: "https", hostname: "cdn.myanimelist.net" },
-    ],
-  },
   vite: {
     server: {
       // Morph task instances expose the dev server as
