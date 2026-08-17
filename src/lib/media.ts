@@ -2,7 +2,6 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import { parse } from 'yaml';
-export { MEDIA_STATUSES, MEDIA_TYPES } from './media-schema';
 
 export type MediaEntry = CollectionEntry<'media'>;
 
@@ -50,32 +49,3 @@ export async function getMediaEntries(): Promise<MediaEntry[]> {
   );
 }
 
-export function resolveNote(
-  entry: MediaEntry,
-  locale: string,
-): string | undefined {
-  return entry.data.note?.[locale] ?? entry.data.note?.en;
-}
-
-export function sourceLabel(link: string): string {
-  const hostname = new URL(link).hostname.toLowerCase().replace(/^www\./, '');
-
-  if (hostname.startsWith('amazon.') || hostname.includes('.amazon.')) return 'Amazon';
-  if (hostname === 'myanimelist.net' || hostname.endsWith('.myanimelist.net')) {
-    return 'MyAnimeList';
-  }
-  if (hostname === 'wikipedia.org' || hostname.endsWith('.wikipedia.org')) {
-    return 'Wikipedia';
-  }
-  if (hostname === 'openlibrary.org' || hostname.endsWith('.openlibrary.org')) {
-    return 'Open Library';
-  }
-  if (hostname === 'musicbrainz.org' || hostname.endsWith('.musicbrainz.org')) {
-    return 'MusicBrainz';
-  }
-  if (hostname === 'youtube.com' || hostname.endsWith('.youtube.com') || hostname === 'youtu.be') {
-    return 'YouTube';
-  }
-
-  return hostname;
-}

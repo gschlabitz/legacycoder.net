@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "node tests/media-filter.mjs && node tests/media-meta.mjs && node tests/player-click.mjs",
+    "test": "node tests/media-meta.mjs && node tests/player-click.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "stop": "astro dev stop",

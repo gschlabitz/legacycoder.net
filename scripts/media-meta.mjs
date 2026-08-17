@@ -8,13 +8,6 @@ import { pathToFileURL } from 'node:url';
 import { stringify } from 'yaml';
 
 const USER_AGENT = 'legacycoder.net media authoring (https://legacycoder.net)';
-const ALLOWED_COVER_HOSTS = new Set([
-  'covers.openlibrary.org',
-  'image.tmdb.org',
-  'coverartarchive.org',
-  'upload.wikimedia.org',
-  'cdn.myanimelist.net',
-]);
 
 const LIMIT = 5;
 
@@ -47,17 +40,6 @@ export function canonicalAmazonUrl(input) {
   return `https://${hostname}/dp/${asin.toUpperCase()}`;
 }
 
-export function allowedCover(url) {
-  if (!url) return undefined;
-  try {
-    return ALLOWED_COVER_HOSTS.has(new URL(url).hostname.toLowerCase())
-      ? url
-      : undefined;
-  } catch {
-    return undefined;
-  }
-}
-
 function yearFrom(value) {
   const match = String(value ?? '').match(/\b(1[0-9]{3}|20[0-9]{2})\b/);
   return match ? Number(match[1]) : undefined;
@@ -86,7 +68,6 @@ function toEntry(candidate, added = today()) {
     year: candidate.year,
     added,
     link: candidate.link,
-    cover: allowedCover(candidate.cover),
   });
 }
 
@@ -163,9 +144,8 @@ async function resolveWikipedia(input, fetchImpl) {
   api.searchParams.set('format', 'json');
   api.searchParams.set('formatversion', '2');
   api.searchParams.set('redirects', '1');
-  api.searchParams.set('prop', 'info|pageimages|categories|extracts');
+  api.searchParams.set('prop', 'info|categories|extracts');
   api.searchParams.set('inprop', 'url');
-  api.searchParams.set('piprop', 'original');
   api.searchParams.set('cllimit', 'max');
   api.searchParams.set('exintro', '1');
   api.searchParams.set('explaintext', '1');
@@ -179,7 +159,6 @@ async function resolveWikipedia(input, fetchImpl) {
     type: inferWikipediaType(page),
     year: yearFrom(`${page.title} ${page.extract}`),
     link: page.fullurl ?? input,
-    cover: page.original?.source,
   }];
 }
 
@@ -203,9 +182,6 @@ async function resolveOpenLibraryUrl(input, fetchImpl) {
     creator: await openLibraryAuthor(authorKey, fetchImpl),
     year: yearFrom(data.first_publish_date ?? data.publish_date),
     link: `https://openlibrary.org${path}`,
-    cover: data.covers?.[0]
-      ? `https://covers.openlibrary.org/b/id/${data.covers[0]}-L.jpg`
-      : undefined,
   }];
 }
 
@@ -215,7 +191,7 @@ async function searchOpenLibrary(query, fetchImpl) {
   url.searchParams.set('limit', '25');
   url.searchParams.set(
     'fields',
-    'key,title,author_name,first_publish_year,cover_i,edition_count',
+    'key,title,author_name,first_publish_year,edition_count',
   );
   const data = await fetchJson(url, {}, fetchImpl);
   const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -232,9 +208,6 @@ async function searchOpenLibrary(query, fetchImpl) {
     creator: book.author_name?.[0],
     year: book.first_publish_year,
     link: `https://openlibrary.org${book.key}`,
-    cover: book.cover_i
-      ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
-      : undefined,
   }));
 }
 
@@ -244,24 +217,13 @@ function musicBrainzCreator(credit = []) {
     .join('');
 }
 
-async function coverArtForReleaseGroup(id, fetchImpl) {
-  const cover = `https://coverartarchive.org/release-group/${id}/front-500`;
-  const response = await fetchImpl(cover, {
-    method: 'HEAD',
-    redirect: 'manual',
-    headers: { 'User-Agent': USER_AGENT },
-  });
-  return response.ok || response.status === 307 ? cover : undefined;
-}
-
-async function musicBrainzCandidate(group, fetchImpl) {
+function musicBrainzCandidate(group) {
   return {
     title: group.title,
     type: 'album',
     creator: musicBrainzCreator(group['artist-credit']),
     year: yearFrom(group['first-release-date']),
     link: `https://musicbrainz.org/release-group/${group.id}`,
-    cover: await coverArtForReleaseGroup(group.id, fetchImpl),
   };
 }
 
@@ -272,7 +234,7 @@ async function resolveMusicBrainzUrl(input, fetchImpl) {
   url.searchParams.set('fmt', 'json');
   url.searchParams.set('inc', 'artist-credits');
   const group = await fetchJson(url, {}, fetchImpl);
-  return [await musicBrainzCandidate(group, fetchImpl)];
+  return [musicBrainzCandidate(group)];
 }
 
 async function searchMusicBrainz(query, fetchImpl) {
@@ -281,9 +243,7 @@ async function searchMusicBrainz(query, fetchImpl) {
   url.searchParams.set('fmt', 'json');
   url.searchParams.set('limit', String(LIMIT));
   const data = await fetchJson(url, {}, fetchImpl);
-  return Promise.all(
-    (data['release-groups'] ?? []).map((group) => musicBrainzCandidate(group, fetchImpl)),
-  );
+  return (data['release-groups'] ?? []).map(musicBrainzCandidate);
 }
 
 function jikanType(kind, format) {
@@ -308,7 +268,6 @@ async function resolveMyAnimeList(input, fetchImpl) {
       creator: kind === 'anime' ? media.studios?.[0]?.name : media.authors?.[0]?.name,
       year: media.year ?? yearFrom(media.published?.from),
       link: media.url,
-      cover: media.images?.jpg?.large_image_url,
     }];
   } catch (error) {
     console.error(`Jikan lookup failed (${error.message}); trying AniList by MAL id.`);
@@ -353,8 +312,6 @@ async function resolveAniList({ id, idMal, search, kind }, fetchImpl) {
     creator: media.studios?.nodes?.[0]?.name,
     year: media.startDate?.year,
     link: media.siteUrl ?? `https://anilist.co/${kind}/${media.id}`,
-    // AniList covers use s4.anilist.co, which is intentionally not in
-    // Astro's remotePatterns allowlist. Omit it and use the local glyph.
   }));
 }
 
@@ -374,7 +331,6 @@ async function resolveYouTube(input, fetchImpl) {
     type: 'video',
     creator: data.author_name,
     link: input,
-    // oEmbed thumbnails live at i.ytimg.com, deliberately not allowlisted.
   }];
 }
 

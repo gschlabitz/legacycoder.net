@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { parse } from 'yaml';
 import {
-  allowedCover,
   canonicalAmazonUrl,
   formatCandidates,
   inferWikipediaType,
@@ -28,11 +27,6 @@ assert.equal(
   'https://amazon.co.uk/dp/B012345678',
 );
 assert.equal(
-  allowedCover('https://cdn.myanimelist.net/images/anime/example.jpg'),
-  'https://cdn.myanimelist.net/images/anime/example.jpg',
-);
-assert.equal(allowedCover('https://i.ytimg.com/vi/example/hqdefault.jpg'), undefined);
-assert.equal(
   inferWikipediaType({ title: 'Blade Runner', categories: [{ title: '1982 films' }] }),
   'movie',
 );
@@ -46,7 +40,6 @@ const openLibraryFetch = async (url) => {
         title: 'Dune',
         author_name: ['Frank Herbert'],
         first_publish_year: 1965,
-        cover_i: 12345,
         edition_count: 100,
       },
     ],
@@ -67,7 +60,6 @@ assert.deepEqual(parse(bookYaml), [
     year: 1965,
     added: '2026-08-09',
     link: 'https://openlibrary.org/works/OL893415W',
-    cover: 'https://covers.openlibrary.org/b/id/12345-L.jpg',
   },
 ]);
 
@@ -93,7 +85,7 @@ const wiki = await resolveInput(
 );
 assert.equal(wiki[0].type, 'movie');
 assert.equal(wiki[0].year, 1982);
-assert.equal(wiki[0].cover, 'https://upload.wikimedia.org/example.jpg');
+assert.equal(wiki[0].cover, undefined);
 
 const musicBrainzFetch = async (url, options = {}) => {
   if (options.method === 'HEAD') return new Response(null, { status: 404 });
@@ -132,7 +124,7 @@ const mal = await resolveInput(
   jikanFetch,
 );
 assert.equal(mal[0].type, 'show');
-assert.equal(mal[0].cover, 'https://cdn.myanimelist.net/bebop.jpg');
+assert.equal(mal[0].cover, undefined);
 
 const aniListFetch = async (url, options) => {
   assert.equal(String(url), 'https://graphql.anilist.co');

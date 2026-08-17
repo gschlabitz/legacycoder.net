@@ -1,16 +1,42 @@
 ---
-import { Image } from 'astro:assets';
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-import MediaFilter from '../components/MediaFilter.jsx';
-import { mediaIcon, mediaStatusIcon } from '../lib/media-icons.js';
-import {
-  getMediaEntries,
-  MEDIA_STATUSES,
-  MEDIA_TYPES,
-  resolveNote,
-} from '../lib/media';
+import { getMediaEntries } from '../lib/media';
 
 const entries = await getMediaEntries();
+
+// The page is a timeline running downward: queued media above (the future),
+// everything currently in progress inside a colored band across the middle
+// (the present), finished media below (the past, abandoned entries struck
+// through at the tail). One column per media type, all side by side.
+// Only these types get a column, in this order; the rest of the registry
+// stays in media.yaml but off the page.
+const SHOWN_TYPES = ['game', 'show', 'movie', 'book'] as const;
+
+const TYPE_HEADERS: Record<string, { icon: string; label: string }> = {
+  game: { icon: '🎮', label: 'Games' },
+  show: { icon: '📺', label: 'Shows' },
+  movie: { icon: '🎬', label: 'Movies' },
+  book: { icon: '📚', label: 'Books' },
+};
+
+// getMediaEntries sorts newest-added first; the past keeps finished entries
+// ahead of abandoned ones.
+const byType = (type: string, statuses: readonly string[]) =>
+  entries
+    .filter(
+      (entry) => entry.data.type === type && statuses.includes(entry.data.status),
+    )
+    .sort(
+      (a, b) => statuses.indexOf(a.data.status) - statuses.indexOf(b.data.status),
+    );
+
+const columns = SHOWN_TYPES.map((type) => ({
+  type,
+  ...TYPE_HEADERS[type],
+  future: byType(type, ['queued']),
+  now: byType(type, ['consuming']),
+  past: byType(type, ['finished', 'abandoned']),
+})).filter((column) => column.future.length || column.now.length || column.past.length);
 ---
 
 <StarlightPage
@@ -38,134 +64,57 @@ const entries = await getMediaEntries();
       </div>
     </header>
 
-    <MediaFilter
-      client:load
-      types={[...MEDIA_TYPES]}
-      statuses={[...MEDIA_STATUSES]}
-    />
+    <div class="media-timeline" style={`--media-columns: ${columns.length}`}>
+      {columns.map((column, index) => (
+        <h2 class="media-type" style={`grid-column: ${index + 2}`}>
+          <span aria-hidden="true">{column.icon}</span>
+          {column.label}
+        </h2>
+      ))}
 
-    <div class="media-grid">
-      {entries.map((entry) => {
-        const { data } = entry;
-        const note = resolveNote(entry, 'en');
-        return (
-          <article
-            id={entry.id}
-            class="media-card"
-            data-media-entry
-            data-type={data.type}
-            data-status={data.status}
-            data-recommended={String(data.recommended)}
-            data-year={data.year ?? ''}
-            data-byline={data.creator ?? ''}
-          >
-            <a
-              class="media-card-target"
-              href={data.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Open ${data.title}`}
-            ></a>
+      <div class="media-band" aria-hidden="true"></div>
+      <span class="media-label media-label-future">Future</span>
+      <span class="media-label media-label-now">Now</span>
+      <span class="media-label media-label-past">Past</span>
 
-            <div class="media-art">
-              {data.cover ? (
-                <Image
-                  src={data.cover}
-                  alt={`${data.title} cover`}
-                  inferSize
-                  layout="full-width"
-                  loading="lazy"
-                />
-              ) : (
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                  set:html={mediaIcon(data.type)}
-                />
-              )}
-            </div>
-
-            <div class="media-card-body">
-              <h2>{data.title}</h2>
-
-              <div class="media-card-meta">
-                {(data.creator || data.year) && (
-                  <p class="media-byline">
-                    {[data.creator, data.year].filter(Boolean).join(' · ')}
-                  </p>
+      {columns.map((column, index) => (
+        <>
+          <ul class="media-list media-future" style={`grid-column: ${index + 2}`}>
+            {column.future.map(({ id, data }) => (
+              <li id={id}>
+                <a href={data.link} target="_blank" rel="noopener noreferrer">{data.title}</a>
+                {data.recommended && (
+                  <span class="media-recommended" aria-label="recommended" title="Recommended">♥</span>
                 )}
-                <div class="media-chips">
-                  {data.recommended && (
-                    <span
-                      class="media-recommended"
-                      aria-label="recommended"
-                      data-tooltip="Recommended"
-                    >
-                      <span aria-hidden="true">♥</span>
-                    </span>
-                  )}
-                  <span
-                    class:list={['media-chip', 'media-chip--status', `media-chip--${data.status}`]}
-                    aria-label={data.status}
-                    data-tooltip={data.status}
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.75"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                      set:html={mediaStatusIcon(data.status)}
-                    />
-                  </span>
-                  <span
-                    class="media-chip media-chip--type"
-                    aria-label={`${data.type} media`}
-                    data-tooltip={data.type}
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.75"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      aria-hidden="true"
-                      set:html={mediaIcon(data.type)}
-                    />
-                  </span>
-                </div>
-              </div>
-
-              {data.rating && (
-                <p class="media-rating" aria-label={`${data.rating} out of 5 stars`}>
-                  <span aria-hidden="true">{'★'.repeat(data.rating)}{'☆'.repeat(5 - data.rating)}</span>
-                </p>
-              )}
-
-              {note && <p class="media-note">{note}</p>}
-
-              {data.post && (
-                <footer class="media-card-footer">
-                  <a class="media-post" href={`/${data.post}/`}>Wrote about it →</a>
-                </footer>
-              )}
-
-            </div>
-          </article>
-        );
-      })}
+              </li>
+            ))}
+          </ul>
+          <ul class="media-list media-now" style={`grid-column: ${index + 2}`}>
+            {column.now.map(({ id, data }) => (
+              <li id={id}>
+                <a href={data.link} target="_blank" rel="noopener noreferrer">{data.title}</a>
+                {data.recommended && (
+                  <span class="media-recommended" aria-label="recommended" title="Recommended">♥</span>
+                )}
+              </li>
+            ))}
+          </ul>
+          <ul class="media-list media-past" style={`grid-column: ${index + 2}`}>
+            {column.past.map(({ id, data }) => (
+              <li
+                id={id}
+                class:list={[data.status === 'abandoned' && 'media-abandoned']}
+              >
+                <a href={data.link} target="_blank" rel="noopener noreferrer">{data.title}</a>
+                {data.recommended && (
+                  <span class="media-recommended" aria-label="recommended" title="Recommended">♥</span>
+                )}
+                {data.post && <a class="media-post" href={`/${data.post}/`}>wrote about it →</a>}
+              </li>
+            ))}
+          </ul>
+        </>
+      ))}
     </div>
-
-    <p class="media-empty" data-media-empty hidden aria-live="polite">
-      Nothing matches those filters.
-    </p>
   </div>
 </StarlightPage>
