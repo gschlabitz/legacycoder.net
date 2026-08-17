@@ -1,8 +1,8 @@
 import { z } from 'astro:content';
 
-// These vocabularies drive validation, filter options, and fallback glyphs.
-// Adding a media type also requires a matching TYPE_ICONS entry in
-// src/lib/media-icons.js.
+// These vocabularies drive validation. A media type only appears on /media
+// when it also has a TYPE_HEADERS entry (emoji + label) in
+// src/pages/media.astro.
 export const mediaTypeSchema = z.enum([
   'book',
   'show',
@@ -20,9 +20,6 @@ export const mediaStatusSchema = z.enum([
   'abandoned',
 ]);
 
-export const MEDIA_TYPES = mediaTypeSchema.options;
-export const MEDIA_STATUSES = mediaStatusSchema.options;
-
 export const mediaEntrySchema = z.object({
   id: z.string().regex(
     /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
@@ -37,8 +34,5 @@ export const mediaEntrySchema = z.object({
   added: z.coerce.date(),
   finished: z.coerce.date().optional(),
   link: z.string().url(),
-  cover: z.string().url().optional(),
-  rating: z.number().int().min(1).max(5).optional(),
-  note: z.object({ en: z.string().min(1) }).catchall(z.string().min(1)).optional(),
   post: z.string().min(1).optional(),
 });

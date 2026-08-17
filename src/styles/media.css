@@ -1,6 +1,7 @@
 /* === Media pile (/media) =============================================
-   The cards are server-rendered and the filter popup is a React island, so
-   these page-specific global styles cover both sides of that boundary. */
+   A timeline of plain links: one column per media type, side by side.
+   Queued media hangs above the accent band (the future), in-progress media
+   sits inside it (the present), finished media below (the past). */
 
 .media-page {
   margin-top: var(--sl-spacing-lg, 1.5rem);
@@ -39,456 +40,143 @@
   text-transform: uppercase;
 }
 
-.media-grid {
-  column-count: 3;
-  column-gap: 1px;
+/* Rows: type headers / future / the now band / past. The band element spans
+   every column of the "now" row as a backdrop; the per-column lists share
+   that row and stack above it. */
+.media-timeline {
+  display: grid;
+  /* A narrow first column carries the Future/Now/Past labels; each media
+     type gets one of the remaining columns. */
+  grid-template-columns: minmax(3.5rem, auto) repeat(var(--media-columns, 4), minmax(9rem, 1fr));
+  grid-template-rows: auto 1fr auto 1fr;
+  column-gap: 1.5rem;
   margin-top: 1.5rem;
+  overflow-x: auto;
 }
 
-.media-card {
-  position: relative;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  width: 100%;
-  margin: 0 0 1px;
-  overflow: hidden;
-  break-inside: avoid;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--sl-color-bg-nav) 55%, var(--sl-color-bg));
-  color: inherit;
-  cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-.media-card:hover {
-  border-color: var(--sl-color-accent);
-  box-shadow:
-    0 0 0.35rem color-mix(in srgb, var(--sl-color-accent) 45%, transparent),
-    0 0 1.25rem color-mix(in srgb, var(--sl-color-accent) 25%, transparent);
-}
-
-.media-card:has(.media-card-target:focus-visible) {
-  outline: 2px solid var(--sl-color-accent-high);
-  outline-offset: 3px;
-}
-
-.media-card-target {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  border-radius: inherit;
-}
-
-.media-art {
-  display: grid;
-  place-items: center;
-  min-height: 0;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--sl-color-accent) 22%, transparent), transparent 50%),
-    var(--sl-color-gray-6);
-  color: var(--sl-color-gray-3);
-}
-
-.media-art img {
-  display: block;
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-}
-
-.media-art svg {
-  width: 4rem;
-  height: 4rem;
-}
-
-.media-art:has(svg) {
-  min-height: 8rem;
-}
-
-.media-card-body {
-  display: flex;
-  flex-direction: column;
-  padding: 1rem;
-}
-
-.media-card-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-top: 0.45rem;
-}
-
-.media-chips {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  flex: none;
-  flex-wrap: nowrap;
-  justify-content: flex-end;
-  gap: 0;
-  margin: 0 0 0 auto;
-  min-height: 1.45rem;
-}
-
-.media-chip {
-  padding: 0.12rem 0.5rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 999px;
-  color: var(--sl-color-gray-2);
-  font-family: var(--sl-font-mono);
-  font-size: 0.68rem;
-  line-height: 1.5;
-  text-transform: uppercase;
-}
-
-.media-chip--type,
-.media-chip--status {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  padding-inline: 0;
-}
-
-.media-chip--type svg,
-.media-chip--status svg {
-  width: 0.9rem;
-  height: 0.9rem;
-}
-
-.media-chip--consuming {
-  border-color: var(--sl-color-accent);
-}
-
-.media-chip--abandoned {
-  opacity: 0.75;
-}
-
-.media-recommended {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  align-self: center;
-  width: 1rem;
-  color: var(--sl-color-gray-2);
-  font-size: 0.9rem;
-  line-height: 1;
-}
-
-.media-chips [data-tooltip] {
-  position: relative;
-}
-
-.media-chips [data-tooltip]::after {
-  position: absolute;
-  right: 0;
-  bottom: calc(100% + 0.35rem);
-  z-index: 3;
-  padding: 0.2rem 0.4rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 2px;
-  background: var(--sl-color-bg);
-  box-shadow: 0 0.25rem 0.75rem color-mix(in srgb, #000 30%, transparent);
-  color: var(--sl-color-gray-2);
-  content: attr(data-tooltip);
-  font-family: var(--sl-font-mono);
-  font-size: 0.68rem;
-  font-weight: 400;
-  line-height: 1.2;
-  opacity: 0;
-  pointer-events: none;
-  text-transform: capitalize;
-  transform: translateY(2px);
-  transition: opacity 0.08s ease, transform 0.08s ease, visibility 0s linear 0.08s;
-  visibility: hidden;
-  white-space: nowrap;
-}
-
-.media-chips [data-tooltip]:hover::after {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.08s, 0.08s, 0s;
-  visibility: visible;
-}
-
-.media-card h2 {
+/* Starlight's content flow adds sibling margins (margin-top: 1rem) to
+   everything inside .sl-markdown-content; inside the grid they knock items
+   out of their rows and keep the band from stretching. The :is() lifts
+   specificity above that rule. */
+.media-timeline > :is(h2, ul, div, span) {
   margin: 0;
-  font-size: 1.2rem;
-  line-height: 1.25;
 }
 
-.media-card h2 {
+.media-type {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  grid-row: 1;
+  padding-bottom: 0.75rem;
   color: var(--sl-color-white);
+  font-size: 1.05rem;
 }
 
-.media-byline,
-.media-note,
-.media-rating {
-  margin: 0.45rem 0 0;
+.media-type > span {
+  flex: none;
+  font-size: 1rem;
 }
 
-.media-byline {
-  flex: 1;
-  min-width: 0;
+ul.media-list {
   margin: 0;
-  color: var(--sl-color-gray-3);
+  padding: 0;
+  list-style: none;
+}
+
+.media-list li {
+  margin: 0;
+  padding: 0.15rem 0;
   font-size: var(--sl-text-sm);
 }
 
-.media-rating {
-  color: #f6c453;
-  letter-spacing: 0.08em;
-}
-
-.media-note {
-  color: var(--sl-color-gray-2);
-  font-size: var(--sl-text-sm);
-  line-height: 1.55;
-}
-
-.media-card-footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.45rem 0.75rem;
-  margin-top: auto;
-  padding-top: 1rem;
-  color: var(--sl-color-gray-3);
-  font-family: var(--sl-font-mono);
-  font-size: 0.7rem;
-}
-
-.media-post {
-  position: relative;
-  z-index: 2;
-  color: var(--sl-color-accent-high);
+.media-list a {
+  color: var(--sl-color-white);
   text-decoration: none;
 }
 
-.media-post:hover {
+.media-list a:hover {
+  color: var(--sl-color-accent-high);
   text-decoration: underline;
 }
 
-.media-post {
-  flex-basis: 100%;
+/* The future sits on top of the band, so its lists bottom-align. The ul.
+   prefix keeps these paddings ahead of ul.media-list's reset. */
+ul.media-future {
+  grid-row: 2;
+  align-self: end;
+  padding-bottom: 0.75rem;
 }
 
-.media-filter {
-  display: grid;
-  gap: 0.5rem;
-  margin: 1.5rem 0 0;
-  padding: 0.75rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--sl-color-bg-nav) 55%, var(--sl-color-bg));
-}
-
-.media-filter > * {
-  margin: 0;
-}
-
-.media-filter-line {
+ul.media-now {
+  z-index: 1;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
+  flex-direction: column;
+  grid-row: 3;
+  justify-content: center;
+  padding-block: 1.5rem;
 }
 
-.media-filter-label,
-.media-filter-text > span {
-  flex: 0 0 4.5rem;
-  color: var(--sl-color-gray-3);
+ul.media-past {
+  grid-row: 4;
+  padding-top: 0.75rem;
+}
+
+/* The present: an accent-tinted band across every column, labeled with the
+   direction of time on its edges. */
+.media-band {
+  position: relative;
+  z-index: 0;
+  grid-row: 3;
+  grid-column: 1 / -1;
+  min-height: 5rem;
+  border-top: 1px solid color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--sl-color-accent) 55%, transparent);
+  background: color-mix(in srgb, var(--sl-color-accent) 14%, transparent);
+}
+
+/* The time labels live in the first grid column: Future bottom-aligned just
+   above the band, Now vertically centered inside it, Past just below. */
+.media-label {
+  z-index: 1;
+  grid-column: 1;
+  color: var(--sl-color-accent-high);
   font-family: var(--sl-font-mono);
   font-size: var(--sl-text-xs);
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.media-filter-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-  margin: 0;
+.media-label-future {
+  grid-row: 2;
+  align-self: end;
+  padding-bottom: 0.3rem;
 }
 
-.media-filter-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin: 0;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.35rem;
-  color: var(--sl-color-gray-2);
-  font-size: var(--sl-text-sm);
-  cursor: pointer;
+.media-label-now {
+  grid-row: 3;
+  align-self: center;
 }
 
-.media-filter-item:hover {
-  background: var(--sl-color-gray-6);
-  color: var(--sl-color-white);
+.media-label-past {
+  grid-row: 4;
+  padding-top: 0.3rem;
 }
 
-.media-filter-item span {
-  text-transform: capitalize;
-}
-
-.media-filter-item input[type="checkbox"] {
-  display: grid;
-  flex: none;
-  width: 1rem;
-  height: 1rem;
-  margin: 0;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 3px;
-  appearance: none;
-  background: transparent;
-  cursor: pointer;
-  place-content: center;
-  transition: border-color 0.12s ease, background-color 0.12s ease, box-shadow 0.12s ease;
-}
-
-.media-filter-item input[type="checkbox"]::before {
-  width: 0.5rem;
-  height: 0.28rem;
-  border-bottom: 2px solid var(--sl-color-gray-2);
-  border-left: 2px solid var(--sl-color-gray-2);
-  content: "";
-  transform: translateY(-1px) rotate(-45deg) scale(0);
-  transform-origin: center;
-  transition: transform 0.1s ease;
-}
-
-.media-filter-item:hover input[type="checkbox"] {
-  border-color: var(--sl-color-gray-3);
-}
-
-.media-filter-item input[type="checkbox"]:is(:checked, :indeterminate) {
-  border-color: var(--sl-color-gray-4);
-  background: transparent;
-}
-
-.media-filter-item input[type="checkbox"]:checked::before {
-  transform: translateY(-1px) rotate(-45deg) scale(1);
-}
-
-.media-filter-item input[type="checkbox"]:indeterminate::before {
-  width: 0.5rem;
-  height: 2px;
-  border: 0;
-  background: var(--sl-color-gray-2);
-  transform: scale(1);
-}
-
-.media-filter-item input[type="checkbox"]:focus-visible {
-  outline: 2px solid var(--sl-color-gray-2);
-  outline-offset: 2px;
-}
-
-.media-filter-details {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-  margin: 0;
-}
-
-.media-filter-text {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-}
-
-.media-filter-text:first-child input {
-  width: 7rem;
-}
-
-.media-filter-text:nth-child(2) {
-  flex: 1;
-  min-width: 16rem;
-}
-
-.media-filter-text input {
-  width: 100%;
-  min-width: 0;
-  padding: 0.4rem 0.5rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 2px;
-  background: var(--sl-color-bg);
-  color: var(--sl-color-white);
-  font: inherit;
-  font-size: var(--sl-text-sm);
-}
-
-.media-filter-text input:focus {
-  border-color: var(--sl-color-accent);
-  outline: 1px solid var(--sl-color-accent);
-}
-
-.media-filter-recommended {
-  flex: none;
-}
-
-.media-filter + .media-grid {
-  margin-top: 1rem;
-}
-
-.media-empty {
-  margin-top: 2rem;
-  padding: 3rem 1rem;
-  border: 1px dashed var(--sl-color-gray-5);
-  border-radius: 0.75rem;
+.media-abandoned a:first-child {
   color: var(--sl-color-gray-3);
-  text-align: center;
+  text-decoration: line-through;
 }
 
-.media-card[hidden],
-.media-empty[hidden] {
-  display: none;
+.media-recommended {
+  margin-left: 0.35rem;
+  color: var(--sl-color-gray-3);
+  font-size: 0.85em;
 }
 
-@media (max-width: 40rem) {
-  .media-grid {
-    column-count: 1;
-  }
-
-  .media-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .media-filter-line {
-    align-items: flex-start;
-  }
-
-  .media-filter-text:nth-child(2) {
-    min-width: 100%;
-  }
-
-  .media-card {
-    grid-template-columns: 7rem 1fr;
-    grid-template-rows: none;
-  }
-
-  .media-art {
-    min-height: 12rem;
-  }
-}
-
-@media (min-width: 40.001rem) and (max-width: 64rem) {
-  .media-grid {
-    column-count: 2;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .media-card {
-    transition: none;
-  }
+.media-post {
+  display: inline-block;
+  margin-left: 0.5rem;
+  color: var(--sl-color-accent-high);
+  font-size: var(--sl-text-xs);
 }
