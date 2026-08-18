@@ -68,10 +68,23 @@ assert.ok([4, 5].includes(monthOf(basilRepots[0])));
 
 // isDue is pure UTC: the same date string always answers the same.
 const date = new Date('2026-06-04T00:00:00Z');
-assert.equal(
-  isDue(basil.care.watering, date, 'test-basil:watering'),
-  isDue(basil.care.watering, new Date(date), 'test-basil:watering'),
-);
+assert.equal(isDue(basil.care.watering, date), isDue(basil.care.watering, new Date(date)));
+
+// Shared grid: every care day sits on the even-day grid, so plants overlap
+// instead of scattering — no more than every other day has work.
+for (const day of year) {
+  assert.equal((Date.parse(day.id) / 86_400_000) % 2, 0, `${day.id} is off the shared grid`);
+}
+
+// Odd intervals stay within ±1 of their cadence while snapping to the grid.
+const mint = { slug: 'test-mint', care: { watering: { every: 3, unit: 'days' } } };
+const mintDays = generateCalendar({ plants: [mint], start: { year: 2026, month: 1 }, months: 12 })
+  .filter((d) => d.watering?.includes('test-mint'))
+  .map((d) => Date.parse(d.id) / 86_400_000);
+for (let i = 1; i < mintDays.length; i += 1) {
+  const gap = mintDays[i] - mintDays[i - 1];
+  assert.ok(gap >= 2 && gap <= 4, `3-day watering gap of ${gap} days`);
+}
 
 // CLI argument parsing.
 assert.deepEqual(parseArgs([]), { months: 12 });
