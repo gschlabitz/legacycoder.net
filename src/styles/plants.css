@@ -13,26 +13,14 @@
   font-size: var(--sl-text-sm);
 }
 
-.plant-info > div {
-  display: contents;
-}
-
-.plant-info dt {
-  color: var(--sl-color-gray-3);
-}
-
-.plant-info dd {
-  margin: 0;
-  color: var(--sl-color-white);
-}
+.plant-info > div { display: contents; }
+.plant-info dt { color: var(--sl-color-gray-3); }
+.plant-info dd { margin: 0; color: var(--sl-color-white); }
 
 table.plant-care {
   border-collapse: collapse;
   border-top: 1px solid var(--sl-color-gray-5);
   border-left: 1px solid var(--sl-color-gray-5);
-  /* Same fit-content fix as .trn-card: Starlight makes doc tables block
-     boxes, which otherwise leaves an empty bordered strip past the last
-     column. */
   width: fit-content;
 }
 
@@ -43,252 +31,137 @@ table.plant-care {
   padding: 0.4rem 0.75rem;
 }
 
-.plant-care tbody th {
-  text-align: left;
-  white-space: nowrap;
-}
+.plant-care tbody th { text-align: left; white-space: nowrap; }
 
-/* The care calendar on the plants index (PlantCareCalendar.astro). */
+/* Seasonal care guide on the plants index. */
 
-.care-cal-stale {
-  color: var(--sl-color-orange, var(--sl-color-gray-2));
-}
+.seasonal-care { --care-line: var(--sl-color-gray-5); }
 
-.care-cal-month + .care-cal-month {
-  margin-top: 2.5rem;
-}
-
-.care-cal-tip {
-  margin: 0.15rem 0 0.6rem;
-  font-size: var(--sl-text-xs);
-  color: var(--sl-color-gray-3);
-  font-style: italic;
-}
-
-table.care-cal {
-  /* Starlight makes doc tables block boxes; a calendar wants a real grid. */
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-}
-
-.care-cal th {
-  padding: 0.25rem 0;
-  font-size: var(--sl-text-xs);
-  font-weight: 500;
-  color: var(--sl-color-gray-3);
-  text-align: center;
-  border: none;
-}
-
-.care-cal td {
-  height: 3.4rem;
-  padding: 0.2rem 0.35rem;
-  vertical-align: top;
-  border: 1px solid var(--sl-color-gray-6);
-}
-
-.care-cal td.care-cal-blank {
-  border: none;
-}
-
-.care-cal-day {
-  display: block;
-  font-size: var(--sl-text-xs);
-  color: var(--sl-color-gray-3);
-}
-
-.care-cal-tasks {
-  display: block;
-  margin-top: 0.1rem;
-  font-size: var(--sl-text-sm);
-  line-height: 1.5;
-  letter-spacing: 0.15em;
-}
-
-.care-cal-count {
-  font-size: 0.65em;
-  color: var(--sl-color-gray-2);
-  vertical-align: super;
-  letter-spacing: normal;
-}
-
-td.care-cal-today {
-  outline: 2px solid var(--sl-color-text-accent);
-  outline-offset: -2px;
-  border-radius: 2px;
-}
-
-td.care-cal-today .care-cal-day {
-  color: var(--sl-color-text-accent);
-  font-weight: 600;
-}
-
-td.care-cal-past {
-  opacity: 0.4;
-}
-
-/* Instant CSS tooltip, same convention as the media chips (media.css) but
-   multi-line with bulleted plant lists and anchored per column so the
-   edge cells don't clip: the left half of the week opens rightward, the
-   right half leftward. */
-
-.care-cal td[data-tooltip] {
-  position: relative;
-  cursor: default;
-}
-
-.care-cal td[data-tooltip]::after {
-  position: absolute;
-  bottom: calc(100% + 0.35rem);
-  z-index: 3;
-  min-width: max-content;
-  max-width: 18rem;
-  padding: 0.3rem 0.5rem;
-  border: 1px solid var(--sl-color-gray-5);
-  border-radius: 2px;
-  background: var(--sl-color-bg);
-  box-shadow:
-    0 0.15rem 0.3rem color-mix(in srgb, #000 15%, transparent),
-    0 0.5rem 1.5rem color-mix(in srgb, #000 25%, transparent);
-  color: var(--sl-color-gray-2);
-  content: attr(data-tooltip);
-  font-size: var(--sl-text-xs);
-  line-height: 1.4;
-  letter-spacing: normal;
-  opacity: 0;
-  pointer-events: none;
-  text-align: left;
-  transform: translateY(2px);
-  transition: opacity 0.08s ease, transform 0.08s ease, visibility 0s linear 0.08s;
-  visibility: hidden;
-  white-space: pre-line;
-}
-
-.care-cal td[data-tooltip]:nth-child(-n + 4)::after {
-  left: 0;
-}
-
-.care-cal td[data-tooltip]:nth-child(n + 5)::after {
-  right: 0;
-}
-
-.care-cal td[data-tooltip]:hover::after {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.08s, 0.08s, 0s;
-  visibility: visible;
-}
-
-:not([data-theme="light"]) .care-cal td[data-tooltip]::after {
-  border-color: color-mix(in srgb, var(--sl-color-accent) 50%, var(--sl-color-gray-5));
-  box-shadow:
-    0 0 0.35rem color-mix(in srgb, var(--sl-color-accent) 40%, transparent),
-    0 0 1.25rem color-mix(in srgb, var(--sl-color-accent) 20%, transparent);
-}
-
-.care-cal td[data-tooltip].show::after,
-.care-cal td[data-tooltip]:focus-visible::after {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.08s, 0.08s, 0s;
-  visibility: visible;
-}
-
-/* On touch devices disable hover (prevents ghost hovers); tap toggles .show
-   instead.  Keyboard users get the tooltip via :focus-visible above. */
-@media (hover: none) {
-  .care-cal td[data-tooltip]:hover::after {
-    opacity: 0;
-    transform: translateY(2px);
-    visibility: hidden;
-  }
-}
-
-/* Today card — server-rendered legend; script fills in today's plants. */
-
-.care-cal-today-card {
-  margin-bottom: 1.5rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--sl-color-gray-5);
+.seasonal-care-intro {
+  margin: 0.5rem 0 2.75rem;
+  padding: 1.1rem 1.25rem;
   border-left: 3px solid var(--sl-color-text-accent);
-  border-radius: 4px;
-  background: var(--sl-color-gray-7, var(--sl-color-gray-6));
+  background: linear-gradient(110deg, color-mix(in srgb, var(--sl-color-accent) 12%, transparent), transparent 75%);
 }
 
-.care-cal-today-card h3 {
-  margin: 0 0 0.5rem;
-  font-size: var(--sl-text-base);
+.seasonal-care-intro p { margin: 0; max-width: 46rem; }
+.seasonal-care-intro .seasonal-care-eyebrow {
+  margin-bottom: 0.35rem;
+  color: var(--sl-color-text-accent);
+  font-size: var(--sl-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.care-cal-today-columns {
+.seasonal-care-section + .seasonal-care-section { margin-top: 3.5rem; }
+.seasonal-care-section > h2 { margin-bottom: 0.35rem; }
+.seasonal-care-section > h2 + p { margin-top: 0; max-width: 48rem; color: var(--sl-color-gray-3); }
+
+.care-rhythm-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
 }
 
-@media (max-width: 40rem) {
-  .care-cal-today-columns {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.care-rhythm-card {
+  position: relative;
+  padding: 1.1rem 1.15rem 1rem;
+  overflow: hidden;
+  border: 1px solid var(--care-line);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--sl-color-gray-6) 54%, transparent);
 }
 
-.care-cal-today-column {
-  display: grid;
-  grid-template-columns: 1.2em 1fr;
-  gap: 0 0.35rem;
-  /* Pack rows to the top: otherwise columns with fewer rows stretch and
-     their headers drift out of line with fuller columns. */
-  align-content: start;
-  font-size: var(--sl-text-sm);
-  opacity: 0.45;
+.care-rhythm-icon {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  font-size: 1.4rem;
+  opacity: 0.85;
 }
 
-.care-cal-today-column-active {
-  opacity: 1;
-}
+.care-rhythm-card h3 { margin: 0; padding-right: 2rem; font-size: var(--sl-text-lg); }
+.care-rhythm-card > p { margin: 0.5rem 0 0.9rem; color: var(--sl-color-gray-3); font-size: var(--sl-text-sm); line-height: 1.55; }
 
-.care-cal-today-column-icon {
-  grid-column: 1;
-  grid-row: 1;
-  text-align: left;
-  line-height: 1;
-}
-
-.care-cal-today-column-label {
-  grid-column: 2;
-  grid-row: 1;
-  white-space: nowrap;
-  font-weight: 500;
-}
-
-.care-cal-today-column-plants {
-  grid-column: 1 / -1;
+.care-plant-list {
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  margin-top: 0.35rem;
-}
-
-/* Same 1.2em + gap tracks as the column header, so the checkbox shares the
-   emoji's left edge and the plant name lines up with the label. */
-.care-cal-today-plant {
-  display: grid;
-  grid-template-columns: 1.2em 1fr;
-  column-gap: 0.35rem;
-  align-items: center;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.care-cal-today-plant input[type="checkbox"] {
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin: 0;
-  justify-self: start;
-  accent-color: var(--sl-color-text-accent);
+  padding: 0;
+  list-style: none;
 }
 
-.care-cal-today-plant:has(input:checked) {
-  text-decoration: line-through;
-  opacity: 0.5;
+.care-plant-list a {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--care-line);
+  border-radius: 999px;
+  background: var(--sl-color-bg);
+  font-size: var(--sl-text-xs);
+  text-decoration: none;
+}
+
+.care-plant-list a:hover { border-color: var(--sl-color-text-accent); }
+
+.annual-care-list {
+  margin: 1rem 0 0;
+  border-top: 1px solid var(--care-line);
+}
+
+.annual-care-list > div {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: 1.25rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--care-line);
+}
+
+.annual-care-list dt { color: var(--sl-color-text-accent); font-weight: 700; }
+.annual-care-list dd { margin: 0; }
+
+.seasonal-months {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.seasonal-month {
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid var(--care-line);
+  border-radius: 0.65rem;
+  background: color-mix(in srgb, var(--sl-color-gray-6) 38%, transparent);
+}
+
+.seasonal-month-current {
+  border-color: var(--sl-color-text-accent);
+  box-shadow: inset 0 0 0 1px var(--sl-color-text-accent);
+}
+
+.seasonal-month-heading { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+.seasonal-month-season { margin: 0 0 0.15rem; color: var(--sl-color-gray-3); font-size: var(--sl-text-xs); letter-spacing: 0.04em; text-transform: uppercase; }
+.seasonal-month h3 { margin: 0; font-size: var(--sl-text-xl); }
+.seasonal-month-now {
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: var(--sl-color-text-accent);
+  color: var(--sl-color-black);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.seasonal-month-focus { margin: 0.65rem 0 0.55rem; font-weight: 650; }
+.seasonal-month ul { margin: 0; padding-left: 1.1rem; }
+.seasonal-month li { margin-top: 0.35rem; color: var(--sl-color-gray-2); font-size: var(--sl-text-sm); line-height: 1.5; }
+
+@media (max-width: 42rem) {
+  .care-rhythm-grid,
+  .seasonal-months { grid-template-columns: 1fr; }
+
+  .annual-care-list > div { grid-template-columns: 1fr; gap: 0.2rem; }
 }

@@ -82,22 +82,11 @@ const plant = z.object({
     trimming: careTask.optional(),
     repotting: careTask,
   }),
-  // Opt-in to the care dashboard on the plants index — pots actually being
+  // Opt-in to the seasonal guide on the plants index — pots actually being
   // kept, as opposed to reference-only pages.
   schedule: z.boolean().default(false),
   culinary: z.boolean().default(false),
   medicinal: z.boolean().default(false),
-});
-
-// One day of the materialized care schedule (src/data/care-calendar.yaml,
-// regenerated with `npm run care-calendar`): plant slugs per due task, keyed
-// by ISO date. The calendar page renders this fixed data — it computes no
-// schedules itself.
-const careDay = z.object({
-  watering: z.array(z.string()).optional(),
-  fertilizing: z.array(z.string()).optional(),
-  trimming: z.array(z.string()).optional(),
-  repotting: z.array(z.string()).optional(),
 });
 
 export const collections = {
@@ -128,9 +117,5 @@ export const collections = {
   media: defineCollection({
     loader: file('./src/data/media.yaml'),
     schema: mediaEntrySchema,
-  }),
-  careCalendar: defineCollection({
-    loader: file('./src/data/care-calendar.yaml'),
-    schema: careDay,
   }),
 };

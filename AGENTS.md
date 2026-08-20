@@ -46,18 +46,10 @@ lead image. Swapping in your own photo later means replacing the image in
 `src/assets/plants/` and rewriting its `.json` sidecar; the page markup
 stays unchanged.
 
-The plants index renders `src/data/care-calendar.yaml` — a materialized,
-committed schedule derived deterministically from each plant's `plant.care`
-frontmatter (only pages with `plant.schedule: true`). After adding a plant or
-changing an interval, regenerate it with:
-
-```
-npm run care-calendar
-```
-
-Existing dates stay put across regenerations. Pass `--start 2027-01` and
-`--months 18` to control the span; the page asks for a regenerate once the
-span has run out.
+The plants index is a hand-curated seasonal guide. `plant.schedule: true`
+means the plant belongs to the current collection; when adding or removing
+one, update the watering groups and relevant month notes in
+`src/components/PlantCareCalendar.astro` in both languages.
 
 ## Documentation
 

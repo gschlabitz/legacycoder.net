@@ -1,306 +1,166 @@
 ---
-// The care calendar on the plants index, rendered from the materialized
-// schedule in src/data/care-calendar.yaml (regenerate with `npm run
-// care-calendar` — scripts/care-calendar.mjs owns the schedule math). The
-// dates are fixed data, so the whole calendar is server-rendered; a small
-// client script handles the only viewer-dependent part: hiding months
-// already past, highlighting today, and asking for a regenerate when the
-// file has run out.
+// A seasonal guide rather than a generated list of due dates. The groups and
+// month notes distill the care prose from the plants actually in the collection.
 import { getCollection } from 'astro:content';
 
 const locale = Astro.currentLocale === 'de' ? 'de' : 'en';
 const prefix = locale === 'de' ? 'de/plants/' : 'plants/';
-
-const STRINGS = {
-  en: {
-    tasks: { watering: 'Watering', fertilizing: 'Fertilizing', trimming: 'Trimming', repotting: 'Repotting' },
-    stale: 'The schedule file has run out — regenerate it with `npm run care-calendar`.',
-  },
-  de: {
-    tasks: { watering: 'Gießen', fertilizing: 'Düngen', trimming: 'Schneiden', repotting: 'Umtopfen' },
-    stale: 'Die Plandatei ist abgelaufen — mit `npm run care-calendar` neu erzeugen.',
-  },
-}[locale];
-
-const ICONS = { watering: '💧', fertilizing: '🌱', trimming: '✂️', repotting: '🪴' } as const;
-const ORDER = ['watering', 'fertilizing', 'trimming', 'repotting'] as const;
-const todayLabel = locale === 'de' ? 'Heute' : 'Today';
-const tomorrowLabel = locale === 'de' ? 'Morgen' : 'Tomorrow';
-
-const MONTH_EMOJI: Record<number, string> = {
-  1: '❄️', 2: '🌧️', 3: '🌱', 4: '🌸', 5: '🌿', 6: '☀️',
-  7: '🌞', 8: '🍂', 9: '🍁', 10: '🎃', 11: '🌧️', 12: '❄️',
-};
-
-const TIPS: Record<string, Record<number, string>> = {
-  en: {
-    1: 'Protect rosemary and tender herbs from cold windowsills.',
-    2: 'Start tomato and herb seeds indoors under grow lights.',
-    3: 'Repot root-bound plants before the spring growth spurt.',
-    4: 'Remove tomato suckers early to focus energy on fruit.',
-    5: 'Harden off and move potted plants outdoors after last frost.',
-    6: 'Harvest herbs frequently — cutting encourages bushy growth.',
-    7: 'Water potted plants twice daily during heatwaves.',
-    8: 'Take semi-ripe cuttings from herbs for propagation.',
-    9: 'Move tender potted plants indoors before first frost nights.',
-    10: 'Bring outdoor pots inside or wrap them for winter protection.',
-    11: 'Move indoor plants closer to windows for maximum light.',
-    12: 'Check stored bulbs and tubers for mold or rot.',
-  },
-  de: {
-    1: 'Rosmarin und empfindliche Kräuter vor kalten Fensterbänken schützen.',
-    2: 'Tomaten- und Kräutersamen indoors unter Pflanzlicht vorziehen.',
-    3: 'Wurzelgebundene Pflanzen vor dem Frühjahrswachstum umtopfen.',
-    4: 'Tomatentriebe rechtzeitig ausbrechen, damit die Kraft in die Früchte geht.',
-    5: 'Abhärten und nach dem letzten Frost nach draußen stellen.',
-    6: 'Kräuter regelmäßig ernten — häufiges Schneiden fördert buschiges Wachstum.',
-    7: 'Pflanzen bei Hitzewellen zweimal täglich gießen.',
-    8: 'Halbverholzte Stecklinge von Kräutern zur Vermehrung schneiden.',
-    9: 'Empfindliche Pflanzen vor den ersten Frostnachten reinholen.',
-    10: 'Balkonpflanzen reinholen oder für den Winterschutz einpacken.',
-    11: 'Zimmerpflanzen näher an die Fenster stellen für mehr Licht.',
-    12: 'Lagernde Knollen und Zwiebeln auf Schimmel oder Fäulnis prüfen.',
-  },
-}[locale];
-
-// Localized plant titles for the tooltips: slug -> this locale's page title.
-const pages = await getCollection('docs', (entry) => entry.id.startsWith(prefix) && !!entry.data.plant);
+const hrefPrefix = locale === 'de' ? '/de/plants/' : '/plants/';
+const pages = await getCollection(
+  'docs',
+  (entry) => entry.id.startsWith(prefix) && entry.data.plant?.schedule,
+);
 const titles = new Map(pages.map((entry) => [entry.id.slice(prefix.length), entry.data.title]));
 
-const days = (await getCollection('careCalendar')).sort((a, b) => a.id.localeCompare(b.id));
-const byDate = new Map(days.map((entry) => [entry.id, entry.data]));
-const months = [...new Set(days.map((entry) => entry.id.slice(0, 7)))].sort();
+const copy = {
+  en: {
+    eyebrow: 'The rhythm, not a deadline',
+    intro: 'A practical year for the pots on this site, tuned to southern Illinois. Check the soil before watering and the forecast before moving anything: heat, rain, pot size, and indoor light matter more than a date.',
+    groupsTitle: 'The watering rhythm',
+    groupsIntro: 'Keep these groups together when you make the rounds. In winter, stretch every rhythm and let the soil—not the weekday—call the next round.',
+    groups: [
+      {
+        icon: '☀️', title: 'Daily in hot weather',
+        note: 'Check every morning during midsummer heat. Keep evenly moist, never swampy; tomatoes suffer when they swing from dry to soaked.',
+        plants: ['sweet-basil', 'roma-tomato', 'husky-cherry-tomato'],
+      },
+      {
+        icon: '💧', title: 'The moisture crew',
+        note: 'Check every two or three days in active growth. Water when the surface just begins to dry.',
+        plants: ['coriander', 'curly-parsley', 'wax-begonia', 'sprengers-asparagus'],
+      },
+      {
+        icon: '🪴', title: 'Watering weekend',
+        note: 'A weekly check is usually enough. Wait for the top few centimeters to dry, then water thoroughly and empty the saucer.',
+        plants: ['christmas-cactus', 'citronella'],
+      },
+      {
+        icon: '🏜️', title: 'The dry-pot club',
+        note: 'Let the pot dry right through. Soak fully, drain fully, and skip the round if the mix still feels cool or damp.',
+        plants: ['lavender', 'rosemary', 'german-thyme', 'silver-squill'],
+      },
+    ],
+    annualTitle: 'The big annual moves',
+    annual: [
+      ['Mid-May', 'Move pots onto the patio after frost risk has passed and nights stay above 10 °C. Harden them off over 7–10 days; basil and tomatoes wait for reliably warm nights.'],
+      ['Late September', 'Start watching night temperatures. Bring basil, wax begonia, citronella, Sprenger’s asparagus, silver squill, and Christmas cactus in before nights fall below 10 °C; tomatoes finish at frost.'],
+      ['March & April', 'Repot root-bound plants before strong growth. Citronella, wax begonia, coriander, and parsley get fresh starts; asparagus, Mediterranean herbs, cactus, and squill only move up when their own cycle or roots call for it.'],
+      ['Autumn & winter', 'Give Christmas cactus cool, dark evenings for buds. Keep silver squill bulbs high and dry, reduce all feeding, and inspect indoor pots for pests and rot.'],
+    ],
+    calendarTitle: 'Month by month',
+    now: 'Now',
+    seasons: ['Deep winter', 'Deep winter', 'Early spring', 'Spring', 'Patio season', 'Early summer', 'High summer', 'Late summer', 'Early fall', 'Fall transition', 'Indoor season', 'Winter rest'],
+    months: [
+      ['January', 'Rest and observe', ['Keep rosemary cool and bright; barely water lavender and silver squill.', 'After its bloom, let Christmas cactus dry a little longer between drinks.', 'No routine feeding. Turn indoor pots weekly and check leaf undersides for pests.']],
+      ['February', 'Prepare the next crop', ['Late in the month, start tomatoes indoors if growing from seed.', 'Sow parsley early; begin a small coriander pot and plan another every few weeks.', 'Gather pots and gritty mix, but leave settled perennials alone until growth starts.']],
+      ['March', 'The spring reset', ['Prune citronella hard and cut yellow or bare asparagus stems at the base.', 'Repot wax begonia and citronella; resow parsley and coriander rather than nursing tired plants.', 'Check asparagus roots, Mediterranean herbs, Christmas cactus, and silver squill. Repot only if due or crowded; divide squill with its bulbs left above the mix.']],
+      ['April', 'Wake everything gently', ['Resume light feeding as new growth appears: monthly for most leafy pots, only every other month for Mediterranean herbs and squill.', 'Divide crowded supermarket basil and begin pinching once it branches.', 'On mild days, start hardening patio plants in shade and bring them back inside at night.']],
+      ['May', 'Move to the patio', ['After the last frost and once nights hold above 10 °C, move plants out gradually. Keep basil and tomatoes back until nights are reliably warm.', 'Plant each tomato deeply in its own large pot; use at least 30 cm for Roma and 25 cm for Husky Cherry.', 'Begin tomato feed after flowering or fruit set. Shape rosemary lightly after flowering—never cut bare wood.']],
+      ['June', 'Build the summer routine', ['Pinch basil tips and flowers; harvest coriander and parsley from the outside.', 'Feed tomatoes every two weeks. Give basil, coriander, parsley, begonia, citronella, asparagus, and cactus a half-strength monthly feed.', 'Remove yellow lower leaves from Roma; thin Husky Cherry only enough for airflow.']],
+      ['July', 'Heat rules the calendar', ['Check basil and both tomatoes every morning; in extreme heat they may need a second evening drink.', 'Give coriander and parsley afternoon shade and keep them evenly moist; resow coriander when it bolts.', 'Trim thyme by one third after flowering, staying above green growth. Never leave any pot standing in water.']],
+      ['August', 'Harvest and renew', ['Cut lavender back by one third after flowering and harvest the flower spikes; never cut into leafless wood.', 'Keep pinching basil, tomatoes, and begonia. Continue tomato feed while they are producing.', 'Take citronella, begonia, rosemary, or thyme cuttings as insurance and future replacements.']],
+      ['September', 'Prepare the return indoors', ['Stop feeding Mediterranean herbs first; taper the rest late in the month.', 'Inspect pots, rinse foliage, and treat pests before anything crosses the threshold.', 'Bring tender plants in before nights fall below 10 °C. Take citronella and begonia cuttings if the parent pots are too large.']],
+      ['October', 'Settle into indoor life', ['Give Christmas cactus cool nights and uninterrupted darkness for 12–14 hours; stop moving it when buds appear.', 'Finish or compost basil and tomatoes when cold ends their season. Parsley can continue in a cool bright spot.', 'Reduce watering as growth and light slow. Rosemary prefers a cool bright room, not a warm dim one.']],
+      ['November', 'Follow the light', ['Move indoor pots to their brightest suitable windows and rotate them weekly.', 'Water only after checking the mix; the dry-pot group may skip several rounds.', 'Remove dead foliage, keep leaves dry overnight, and continue the indoor pest watch.']],
+      ['December', 'Bloom and winter rest', ['Enjoy the Christmas cactus bloom without moving the pot; keep it away from heaters and cold drafts.', 'Keep silver squill almost dry and inspect exposed bulbs for softness or rot.', 'Plan next year’s seeds, pot sizes, and which crowded plants truly need a March repot.']],
+    ],
+  },
+  de: {
+    eyebrow: 'Ein Rhythmus, kein Abgabetermin',
+    intro: 'Ein praktisches Jahr für die Töpfe auf dieser Website, abgestimmt auf Süd-Illinois. Vor dem Gießen die Erde und vor dem Umzug den Wetterbericht prüfen: Hitze, Regen, Topfgröße und Zimmerlicht zählen mehr als ein Datum.',
+    groupsTitle: 'Der Gießrhythmus',
+    groupsIntro: 'Diese Gruppen bei der Runde zusammenhalten. Im Winter jeden Rhythmus strecken und die Erde—nicht den Wochentag—über die nächste Runde entscheiden lassen.',
+    groups: [
+      { icon: '☀️', title: 'Bei Hitze täglich', note: 'In der Hochsommerhitze jeden Morgen prüfen. Gleichmäßig feucht halten, nie sumpfig; Tomaten leiden unter dem Wechsel von trocken zu klatschnass.', plants: ['sweet-basil', 'roma-tomato', 'husky-cherry-tomato'] },
+      { icon: '💧', title: 'Die Feuchtigkeitsgruppe', note: 'Im Wachstum alle zwei bis drei Tage prüfen. Gießen, sobald die Oberfläche zu trocknen beginnt.', plants: ['coriander', 'curly-parsley', 'wax-begonia', 'sprengers-asparagus'] },
+      { icon: '🪴', title: 'Gießwochenende', note: 'Eine wöchentliche Kontrolle reicht meist. Erst die oberen Zentimeter trocknen lassen, dann durchdringend gießen und den Untersetzer leeren.', plants: ['christmas-cactus', 'citronella'] },
+      { icon: '🏜️', title: 'Der Trockentopf-Club', note: 'Den Topf ganz austrocknen lassen. Durchdringend gießen, vollständig ablaufen lassen und aussetzen, wenn die Erde noch kühl oder feucht ist.', plants: ['lavender', 'rosemary', 'german-thyme', 'silver-squill'] },
+    ],
+    annualTitle: 'Die großen Aufgaben im Jahr',
+    annual: [
+      ['Mitte Mai', 'Nach dem letzten Frost und bei Nächten über 10 °C auf die Terrasse ziehen. Über 7–10 Tage abhärten; Basilikum und Tomaten warten auf zuverlässig warme Nächte.'],
+      ['Ende September', 'Die Nachttemperaturen beobachten. Basilikum, Wachsbegonie, Citronella, Sprengers Zier-Spargel, Silberblatt-Blaustern und Weihnachtskaktus vor Nächten unter 10 °C hereinholen; Tomaten enden mit dem Frost.'],
+      ['März & April', 'Wurzelgebundene Pflanzen vor dem starken Wachstum umtopfen. Citronella, Wachsbegonie, Koriander und Petersilie bekommen einen Neustart; Spargel, Mittelmeerkräuter, Kaktus und Blaustern nur nach ihrem eigenen Rhythmus oder bei Platzmangel.'],
+      ['Herbst & Winter', 'Dem Weihnachtskaktus kühle, dunkle Abende für den Knospenansatz geben. Die Blaustern-Zwiebeln hoch und trocken halten, das Düngen reduzieren und Zimmerpflanzen auf Schädlinge und Fäulnis prüfen.'],
+    ],
+    calendarTitle: 'Monat für Monat',
+    now: 'Jetzt',
+    seasons: ['Tiefer Winter', 'Tiefer Winter', 'Vorfrühling', 'Frühling', 'Terrassensaison', 'Frühsommer', 'Hochsommer', 'Spätsommer', 'Frühherbst', 'Herbstübergang', 'Zimmerpflanzenzeit', 'Winterruhe'],
+    months: [
+      ['Januar', 'Ruhen und beobachten', ['Rosmarin kühl und hell halten; Lavendel und Silberblatt-Blaustern kaum gießen.', 'Nach der Blüte den Weihnachtskaktus zwischen den Wassergaben etwas länger trocknen lassen.', 'Nicht routinemäßig düngen. Zimmertöpfe wöchentlich drehen und Blattunterseiten auf Schädlinge prüfen.']],
+      ['Februar', 'Die nächste Ernte vorbereiten', ['Ende des Monats Tomaten drinnen aussäen, falls sie aus Samen gezogen werden.', 'Petersilie früh säen; einen kleinen Koriandertopf beginnen und alle paar Wochen den nächsten einplanen.', 'Töpfe und durchlässiges Substrat bereitstellen, eingewachsene Stauden aber bis zum Austrieb in Ruhe lassen.']],
+      ['März', 'Frühjahrsneustart', ['Citronella kräftig zurückschneiden und gelbe oder kahle Spargeltriebe an der Basis entfernen.', 'Wachsbegonie und Citronella umtopfen; Petersilie und Koriander lieber neu säen als müde Pflanzen zu pflegen.', 'Spargelwurzeln, Mittelmeerkräuter, Weihnachtskaktus und Blaustern prüfen. Nur bei Fälligkeit oder Enge umtopfen; Blaustern teilen und Zwiebeln über der Erde lassen.']],
+      ['April', 'Sanft aufwecken', ['Mit dem Neuaustrieb wieder leicht düngen: die meisten Blatttöpfe monatlich, Mittelmeerkräuter und Blaustern nur alle zwei Monate.', 'Eng stehendes Supermarkt-Basilikum teilen und ab der Verzweigung auskneifen.', 'An milden Tagen Terrassenpflanzen im Schatten abhärten und nachts wieder hereinholen.']],
+      ['Mai', 'Auf die Terrasse', ['Nach dem letzten Frost und bei Nächten über 10 °C schrittweise hinausstellen. Basilikum und Tomaten warten auf zuverlässig warme Nächte.', 'Jede Tomate tief in einen eigenen großen Topf setzen: mindestens 30 cm für Roma und 25 cm für Husky Cherry.', 'Nach Blüte oder Fruchtansatz mit Tomatendünger beginnen. Rosmarin nach der Blüte leicht formen—nie ins kahle Holz.']],
+      ['Juni', 'Die Sommerroutine aufbauen', ['Basilikumspitzen und Blüten kneifen; Koriander und Petersilie von außen ernten.', 'Tomaten alle zwei Wochen düngen. Basilikum, Koriander, Petersilie, Begonie, Citronella, Spargel und Kaktus monatlich halb dosiert versorgen.', 'Gelbe untere Blätter der Roma entfernen; Husky Cherry nur für bessere Luftzirkulation ausdünnen.']],
+      ['Juli', 'Die Hitze bestimmt den Kalender', ['Basilikum und beide Tomaten jeden Morgen prüfen; bei extremer Hitze kann abends ein zweites Gießen nötig sein.', 'Koriander und Petersilie nachmittags beschatten und gleichmäßig feucht halten; geschossenen Koriander neu säen.', 'Thymian nach der Blüte um ein Drittel kürzen und im grünen Bereich bleiben. Keinen Topf im Wasser stehen lassen.']],
+      ['August', 'Ernten und erneuern', ['Lavendel nach der Blüte um ein Drittel kürzen und Blüten ernten; nie ins blattlose Holz schneiden.', 'Basilikum, Tomaten und Begonie weiter auskneifen. Tragende Tomaten weiter düngen.', 'Stecklinge von Citronella, Begonie, Rosmarin oder Thymian als Versicherung und Nachwuchs nehmen.']],
+      ['September', 'Die Rückkehr vorbereiten', ['Zuerst bei den Mittelmeerkräutern das Düngen beenden; bei den übrigen Ende des Monats ausschleichen.', 'Töpfe kontrollieren, Blätter abspülen und Schädlinge behandeln, bevor etwas über die Schwelle kommt.', 'Empfindliche Pflanzen vor Nächten unter 10 °C hereinholen. Von zu großen Citronella- und Begonientöpfen Stecklinge nehmen.']],
+      ['Oktober', 'Drinnen einleben', ['Dem Weihnachtskaktus kühle Nächte und 12–14 Stunden ungestörte Dunkelheit geben; nach dem Knospenansatz nicht mehr umstellen.', 'Basilikum und Tomaten beenden oder kompostieren, wenn die Kälte ihre Saison beendet. Petersilie kann kühl und hell weiterwachsen.', 'Mit sinkendem Licht und Wachstum weniger gießen. Rosmarin mag es kühl und hell, nicht warm und dunkel.']],
+      ['November', 'Dem Licht folgen', ['Zimmerpflanzen an ihre hellsten passenden Fenster rücken und wöchentlich drehen.', 'Nur nach Erdprobe gießen; der Trockentopf-Club kann mehrere Runden auslassen.', 'Totes Laub entfernen, Blätter über Nacht trocken halten und weiter auf Schädlinge achten.']],
+      ['Dezember', 'Blüte und Winterruhe', ['Die Weihnachtskaktusblüte genießen, ohne den Topf zu bewegen; Heizungen und kalte Zugluft meiden.', 'Silberblatt-Blaustern fast trocken halten und freiliegende Zwiebeln auf weiche Stellen oder Fäulnis prüfen.', 'Saatgut, Topfgrößen und die wirklich nötigen Umtopfaktionen für März planen.']],
+    ],
+  },
+}[locale];
 
-// Calendar dates are plain strings, so all date math stays in UTC.
-const monthName = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric', timeZone: 'UTC' });
-const weekdayName = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: 'UTC' });
-// Monday-first weekday headers (2024-01-01 was a Monday).
-const weekdays = Array.from({ length: 7 }, (_, i) => weekdayName.format(new Date(Date.UTC(2024, 0, 1 + i))));
-
-interface Cell {
-  id: string;
-  day: number;
-  badges: { icon: string; count: number }[];
-  lines: string[];
-  ariaLabel: string;
-  tasks: { key: string; task: string; icon: string; plants: string[] }[];
-}
-
-// A month's cells as Monday-first weeks; null pads the partial edge weeks.
-function monthGrid(month: string): (Cell | null)[][] {
-  const [year, mo] = month.split('-').map(Number);
-  const daysInMonth = new Date(Date.UTC(year, mo, 0)).getUTCDate();
-  const lead = (new Date(Date.UTC(year, mo - 1, 1)).getUTCDay() + 6) % 7;
-  const cells: (Cell | null)[] = Array.from({ length: lead }, () => null);
-  for (let day = 1; day <= daysInMonth; day++) {
-    const id = `${month}-${String(day).padStart(2, '0')}`;
-    const data = byDate.get(id);
-    const due = data ? ORDER.filter((task) => data[task]) : [];
-    cells.push({
-      id,
-      day,
-      badges: due.map((task) => ({ icon: ICONS[task], count: data![task]!.length })),
-      lines: due.flatMap((task) => {
-        const plants = data![task]!.map((slug) => titles.get(slug) ?? slug);
-        return [`${STRINGS.tasks[task]}:`, ...plants.map((p) => `  · ${p}`)];
-      }),
-      ariaLabel: due
-        .map((task) => {
-          const plants = data![task]!.map((slug) => titles.get(slug) ?? slug).join(', ');
-          return `${STRINGS.tasks[task]}: ${plants}`;
-        })
-        .join('; '),
-      tasks: due.map((task) => ({
-        key: task,
-        task: STRINGS.tasks[task],
-        icon: ICONS[task],
-        plants: data![task]!.map((slug) => titles.get(slug) ?? slug),
-      })),
-    });
-  }
-  while (cells.length % 7) cells.push(null);
-  const weeks = [];
-  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
-  return weeks;
-}
+const plantLink = (slug: string) => ({ href: `${hrefPrefix}${slug}/`, title: titles.get(slug) ?? slug });
 ---
 
-<div class="care-cal-root" data-care-cal data-locale={locale}>
-  <p class="care-cal-stale" hidden>{STRINGS.stale}</p>
-  {/* not-content: keep Starlight's prose sibling-margins out of the card grid,
-      or every column after the first drops by 1rem. */}
-  <div class="care-cal-today-card not-content" data-care-cal-today>
-    <h3 data-care-cal-today-heading>{todayLabel}</h3>
-    <div class="care-cal-today-columns">
-      {ORDER.map((task) => (
-        <div class="care-cal-today-column" data-task={task}>
-          <span class="care-cal-today-column-icon">{ICONS[task]}</span>
-          <span class="care-cal-today-column-label">{STRINGS.tasks[task]}</span>
-          <div class="care-cal-today-column-plants" />
-        </div>
+<div class="seasonal-care" data-seasonal-care>
+  <header class="seasonal-care-intro">
+    <p class="seasonal-care-eyebrow">{copy.eyebrow}</p>
+    <p>{copy.intro}</p>
+  </header>
+
+  <section class="seasonal-care-section" aria-labelledby="watering-rhythm">
+    <h2 id="watering-rhythm">{copy.groupsTitle}</h2>
+    <p>{copy.groupsIntro}</p>
+    <div class="care-rhythm-grid not-content">
+      {copy.groups.map((group) => (
+        <article class="care-rhythm-card">
+          <span class="care-rhythm-icon" aria-hidden="true">{group.icon}</span>
+          <h3>{group.title}</h3>
+          <p>{group.note}</p>
+          <ul class="care-plant-list" aria-label={group.title}>
+            {group.plants.map((slug) => {
+              const plant = plantLink(slug);
+              return <li><a href={plant.href}>{plant.title}</a></li>;
+            })}
+          </ul>
+        </article>
       ))}
     </div>
-  </div>
-  <div class="care-cal-today-card not-content" data-care-cal-tomorrow>
-    <h3 data-care-cal-tomorrow-heading>{tomorrowLabel}</h3>
-    <div class="care-cal-today-columns">
-      {ORDER.map((task) => (
-        <div class="care-cal-today-column" data-task={task}>
-          <span class="care-cal-today-column-icon">{ICONS[task]}</span>
-          <span class="care-cal-today-column-label">{STRINGS.tasks[task]}</span>
-          <div class="care-cal-today-column-plants" />
-        </div>
+  </section>
+
+  <section class="seasonal-care-section" aria-labelledby="annual-moves">
+    <h2 id="annual-moves">{copy.annualTitle}</h2>
+    <dl class="annual-care-list not-content">
+      {copy.annual.map(([when, task]) => <div><dt>{when}</dt><dd>{task}</dd></div>)}
+    </dl>
+  </section>
+
+  <section class="seasonal-care-section" aria-labelledby="month-by-month">
+    <h2 id="month-by-month">{copy.calendarTitle}</h2>
+    <div class="seasonal-months not-content">
+      {copy.months.map(([month, focus, notes], index) => (
+        <article class="seasonal-month" data-month={index + 1}>
+          <div class="seasonal-month-heading">
+            <div><p class="seasonal-month-season">{copy.seasons[index]}</p><h3>{month}</h3></div>
+            <span class="seasonal-month-now" hidden>{copy.now}</span>
+          </div>
+          <p class="seasonal-month-focus">{focus}</p>
+          <ul>{notes.map((note) => <li>{note}</li>)}</ul>
+        </article>
       ))}
     </div>
-  </div>
-  {
-    months.map((month) => {
-      const mo = Number(month.split('-')[1]);
-      const tip = TIPS[mo];
-      return (
-        <section class="care-cal-month" data-month={month}>
-          <h2>{MONTH_EMOJI[mo]} {monthName.format(new Date(`${month}-01T00:00:00Z`))}</h2>
-          {tip && <p class="care-cal-tip">{tip}</p>}
-          <table class="care-cal">
-          <thead>
-            <tr>{weekdays.map((name) => <th scope="col">{name}</th>)}</tr>
-          </thead>
-          <tbody>
-            {monthGrid(month).map((week) => (
-              <tr>
-                {week.map((cell) =>
-                  cell ? (
-                    <td
-                      data-date={cell.id}
-                      data-tooltip={cell.lines.length ? cell.lines.join('\n') : undefined}
-                      data-today-tasks={cell.tasks.length ? JSON.stringify(cell.tasks) : undefined}
-                      tabindex={cell.lines.length ? 0 : undefined}
-                      aria-label={cell.ariaLabel ? `${cell.day}. ${cell.ariaLabel}` : undefined}
-                    >
-                      <span class="care-cal-day">{cell.day}</span>
-                      {cell.badges.length > 0 && (
-                        <span class="care-cal-tasks">
-                          {cell.badges.map((badge) => (
-                            <span>
-                              {badge.icon}
-                              {badge.count > 1 && <small class="care-cal-count">{badge.count}</small>}
-                            </span>
-                          ))}
-                        </span>
-                      )}
-                    </td>
-                  ) : (
-                    <td class="care-cal-blank" />
-                  ),
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </section>
-      );
-    })
-  }
+  </section>
 </div>
 
 <script>
-  // The only viewer-dependent work: everything else is fixed data.
-  const root = document.querySelector<HTMLElement>('[data-care-cal]');
-  if (root) {
-    const locale = root.dataset.locale ?? 'en';
-    const todayLabel = locale === 'de' ? 'Heute' : 'Today';
-    const tomorrowLabel = locale === 'de' ? 'Morgen' : 'Tomorrow';
-    const now = new Date();
-    const pad = (n: number) => String(n).padStart(2, '0');
-    const today = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-    const thisMonth = today.slice(0, 7);
-
-    const sections = [...root.querySelectorAll<HTMLElement>('[data-month]')];
-    for (const section of sections) section.hidden = section.dataset.month! < thisMonth;
-    if (sections.every((section) => section.hidden)) {
-      // The generated span is over: show it all and ask for a regenerate.
-      for (const section of sections) section.hidden = false;
-      root.querySelector('.care-cal-stale')?.removeAttribute('hidden');
-    }
-
-    for (const cell of root.querySelectorAll<HTMLElement>('td[data-date]')) {
-      if (cell.dataset.date === today) cell.classList.add('care-cal-today');
-      else if (cell.dataset.date! < today) cell.classList.add('care-cal-past');
-    }
-
-    // Tap-to-toggle tooltips for touch/keyboard.
-    const tooltipCells = [...root.querySelectorAll<HTMLElement>('td[data-tooltip]')];
-    const dismiss = () => {
-      for (const c of tooltipCells) c.classList.remove('show');
-    };
-    for (const cell of tooltipCells) {
-      cell.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const showing = cell.classList.toggle('show');
-        for (const c of tooltipCells) {
-          if (c !== cell) c.classList.remove('show');
-        }
-        // Keep focus for keyboard users so :focus-within can mirror .show.
-        if (showing) cell.focus();
-      });
-      cell.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          cell.classList.remove('show');
-          cell.blur();
-        }
-      });
-    }
-    document.addEventListener('click', dismiss);
-    document.addEventListener('touchstart', dismiss);
-
-    // Populate a today/tomorrow card: set heading, fill in plants for active tasks.
-    function fillCard(
-      card: HTMLElement | null,
-      headingSelector: string,
-      dateStr: string,
-      label: string,
-      dateId: string,
-    ) {
-      if (!card) return;
-      const heading = card.querySelector<HTMLElement>(headingSelector);
-      if (heading) heading.textContent = `${dateStr} — ${label}`;
-
-      const cell = (root as HTMLElement).querySelector<HTMLElement>(`td[data-date="${dateId}"]`);
-      if (cell?.dataset.todayTasks) {
-        const tasks: { key: string; plants: string[] }[] = JSON.parse(cell.dataset.todayTasks);
-        const taskMap = new Map(tasks.map((t) => [t.key, t.plants]));
-        for (const col of card.querySelectorAll<HTMLElement>('[data-task]')) {
-          const plants = taskMap.get(col.dataset.task!);
-          if (plants) {
-            const container = col.querySelector('.care-cal-today-column-plants')!;
-            for (const name of plants) {
-              const lbl = document.createElement('label');
-              lbl.className = 'care-cal-today-plant';
-              const cb = document.createElement('input');
-              cb.type = 'checkbox';
-              lbl.appendChild(cb);
-              lbl.appendChild(document.createTextNode(name));
-              container.appendChild(lbl);
-            }
-            col.classList.add('care-cal-today-column-active');
-          }
-        }
-      }
-    }
-
-    const dateFmt = new Intl.DateTimeFormat(locale, {
-      month: 'long',
-      day: 'numeric',
-      timeZone: 'UTC',
-    });
-    const [ty, tm, td] = today.split('-').map(Number);
-    const todayDateStr = dateFmt.format(new Date(Date.UTC(ty, tm - 1, td)));
-    fillCard(root.querySelector('[data-care-cal-today]'), '[data-care-cal-today-heading]', todayDateStr, todayLabel, today);
-
-    // Tomorrow: add one day, handling month/year rollover.
-    const tomorrowDate = new Date(Date.UTC(ty, tm - 1, td + 1));
-    const tomorrow = `${tomorrowDate.getUTCFullYear()}-${pad(tomorrowDate.getUTCMonth() + 1)}-${pad(tomorrowDate.getUTCDate())}`;
-    const tomorrowDateStr = dateFmt.format(tomorrowDate);
-    fillCard(root.querySelector('[data-care-cal-tomorrow]'), '[data-care-cal-tomorrow-heading]', tomorrowDateStr, tomorrowLabel, tomorrow);
+  const root = document.querySelector<HTMLElement>('[data-seasonal-care]');
+  const month = root?.querySelector<HTMLElement>(`[data-month="${new Date().getMonth() + 1}"]`);
+  if (month) {
+    month.classList.add('seasonal-month-current');
+    month.querySelector<HTMLElement>('.seasonal-month-now')?.removeAttribute('hidden');
   }
 </script>
