@@ -1,0 +1,81 @@
+---
+title: Tile Playground
+description: Scratch page for experimenting with pixel-art tilesheets for the plant calendar.
+# Draft: visible on the dev server, excluded from production builds.
+# English-only on purpose — no German counterpart while this is a sandbox.
+draft: true
+prev: false
+next: false
+tableOfContents: true
+---
+
+import TileSheetChart from '../../../components/TileSheetChart.astro';
+import '../../../styles/tiles.css';
+import '@fontsource/vt323/latin-400.css';
+
+A scratch page for the farm-sim look of the [plant calendar](/plants/).
+Tiles are cut from the packed sheets in `public/tiles/` with CSS only — one
+`<span class="ts ts-farm t-42">` per tile. Indices match Kenney's individual
+`Tiles/tile_00NN.png` files. Add sheets in `src/data/tilesheets.yaml`, then:
+
+```bash
+npm run tile-css
+```
+
+The `--px` variable is the size of one art pixel (2px, 3px at ≥800px
+viewport, 4px at ≥1400px) — resize the window and everything rescales on
+integer steps.
+
+## Sample strip
+
+A multi-row scene is one `.tile-scene` grid: set `--cols` and list tiles in
+row-major order — they wrap into seamless rows automatically, like a tilemap
+file. A bare `<span class="ts"></span>` (no sheet class) is an empty cell.
+
+<div class="tile-scene" style="--cols: 10; margin-block: 1rem;">
+  <span class="ts ts-farm t-37"></span>
+  <span class="ts ts-farm t-56"></span>
+  <span class="ts ts-farm t-72"></span>
+  <span class="ts ts-farm t-88"></span>
+  <span class="tile-text" style="grid-area: 1 / 5 / 2 / 11;">Plant Care</span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-farm t-34"></span>
+</div>
+
+(Indices above are a first guess — use the charts below to find the right
+grass caps, fills, and props, and edit this page freely.)
+
+## Sheet charts
+
+### farm
+
+<TileSheetChart name="farm" />
+
+### stone
+
+<TileSheetChart name="stone" />
+
+### sand
+
+<TileSheetChart name="sand" />
+
+### rock
+
+<TileSheetChart name="rock" />
+
+### marble
+
+<TileSheetChart name="marble" />
+
+---
+
+Tiles: [Kenney](https://kenney.nl) — Pixel Platformer Farm Expansion and
+Pixel Platformer Blocks, both CC0.

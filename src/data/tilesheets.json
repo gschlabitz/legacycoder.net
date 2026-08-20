@@ -1,0 +1,52 @@
+[
+  {
+    "name": "farm",
+    "file": "public/tiles/farm.png",
+    "tileSize": 18,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/pixel-platformer-farm-expansion",
+    "url": "/tiles/farm.png",
+    "cols": 16,
+    "rows": 7
+  },
+  {
+    "name": "marble",
+    "file": "public/tiles/marble.png",
+    "tileSize": 18,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
+    "url": "/tiles/marble.png",
+    "cols": 9,
+    "rows": 9
+  },
+  {
+    "name": "rock",
+    "file": "public/tiles/rock.png",
+    "tileSize": 18,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
+    "url": "/tiles/rock.png",
+    "cols": 9,
+    "rows": 9
+  },
+  {
+    "name": "sand",
+    "file": "public/tiles/sand.png",
+    "tileSize": 18,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
+    "url": "/tiles/sand.png",
+    "cols": 9,
+    "rows": 9
+  },
+  {
+    "name": "stone",
+    "file": "public/tiles/stone.png",
+    "tileSize": 18,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
+    "url": "/tiles/stone.png",
+    "cols": 9,
+    "rows": 9
+  }
+]
