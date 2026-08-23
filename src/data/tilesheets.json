@@ -48,5 +48,75 @@
     "url": "/tiles/stone.png",
     "cols": 9,
     "rows": 9
+  },
+  {
+    "name": "tiny-farm",
+    "file": "public/tiles/tiny-farm.png",
+    "tileSize": 16,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/tiny-farm",
+    "url": "/tiles/tiny-farm.png",
+    "cols": 12,
+    "rows": 11
+  },
+  {
+    "name": "tiny-town",
+    "file": "public/tiles/tiny-town.png",
+    "tileSize": 16,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/tiny-town",
+    "url": "/tiles/tiny-town.png",
+    "cols": 12,
+    "rows": 11
+  },
+  {
+    "name": "tiny-battle",
+    "file": "public/tiles/tiny-battle.png",
+    "tileSize": 16,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/tiny-battle",
+    "url": "/tiles/tiny-battle.png",
+    "cols": 18,
+    "rows": 11
+  },
+  {
+    "name": "tiny-dungeon",
+    "file": "public/tiles/tiny-dungeon.png",
+    "tileSize": 16,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/tiny-dungeon",
+    "url": "/tiles/tiny-dungeon.png",
+    "cols": 12,
+    "rows": 11
+  },
+  {
+    "name": "tiny-ski",
+    "file": "public/tiles/tiny-ski.png",
+    "tileSize": 16,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/tiny-ski",
+    "url": "/tiles/tiny-ski.png",
+    "cols": 12,
+    "rows": 11
+  },
+  {
+    "name": "pico8-city",
+    "file": "public/tiles/pico8-city.png",
+    "tileSize": 8,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/pico-8-city",
+    "url": "/tiles/pico8-city.png",
+    "cols": 24,
+    "rows": 15
+  },
+  {
+    "name": "platformer",
+    "file": "public/tiles/platformer.png",
+    "tileSize": 21,
+    "author": "Kenney",
+    "source": "https://kenney.nl/assets/platformer-art-pixel-redux",
+    "url": "/tiles/platformer.png",
+    "cols": 30,
+    "rows": 30
   }
 ]

@@ -31,3 +31,38 @@
   tileSize: 18
   author: Kenney
   source: https://kenney.nl/assets/pixel-platformer-blocks
+- name: tiny-farm
+  file: public/tiles/tiny-farm.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-farm
+- name: tiny-town
+  file: public/tiles/tiny-town.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-town
+- name: tiny-battle
+  file: public/tiles/tiny-battle.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-battle
+- name: tiny-dungeon
+  file: public/tiles/tiny-dungeon.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-dungeon
+- name: tiny-ski
+  file: public/tiles/tiny-ski.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-ski
+- name: pico8-city
+  file: public/tiles/pico8-city.png
+  tileSize: 8
+  author: Kenney
+  source: https://kenney.nl/assets/pico-8-city
+- name: platformer
+  file: public/tiles/platformer.png
+  tileSize: 21
+  author: Kenney
+  source: https://kenney.nl/assets/platformer-art-pixel-redux
