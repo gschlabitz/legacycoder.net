@@ -46,10 +46,11 @@ lead image. Swapping in your own photo later means replacing the image in
 `src/assets/plants/` and rewriting its `.json` sidecar; the page markup
 stays unchanged.
 
-The plants index is a hand-curated seasonal guide. `plant.schedule: true`
-means the plant belongs to the current collection; when adding or removing
-one, update the watering groups and relevant month notes in
-`src/components/PlantCareCalendar.astro` in both languages.
+The plants index is a hand-curated seasonal guide written as static
+Markdown. `plant.schedule: true` means the plant belongs to the current
+collection; when adding or removing one, update the watering groups and
+relevant month notes in `src/content/docs/plants/index.mdx` and
+`src/content/docs/de/plants/index.mdx`.
 
 ## Documentation
 

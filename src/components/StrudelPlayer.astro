@@ -298,6 +298,17 @@ const icon = {
 
     connectedCallback() {
       if (this.#initialized) return
+
+      // Starlight's `.main-pane` is isolated (isolation: isolate), so inside
+      // it this fixed player's z-index cannot rise above the sibling
+      // table-of-contents column, which spans the full page height and would
+      // swallow clicks. Re-homing to <body> lets z-index apply page-wide;
+      // the move re-triggers connectedCallback, which then initializes.
+      if (this.parentElement !== document.body) {
+        document.body.appendChild(this)
+        return
+      }
+
       this.#initialized = true
 
       for (const name of (this.dataset.tunes || '').split(' ').filter(Boolean)) {

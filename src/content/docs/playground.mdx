@@ -1,17 +1,19 @@
 ---
-title: Tile Playground
-description: Scratch page for experimenting with pixel-art tilesheets for the plant calendar.
+title: Playground
+description: Scratch page for site experiments — pixel-art tilesheets, tunes, whatever is in flight.
 # Draft: visible on the dev server, excluded from production builds.
 # English-only on purpose — no German counterpart while this is a sandbox.
+# Kept out of the sidebar via the sidebar-sections `exclude` in astro.config.
 draft: true
-prev: false
-next: false
-tableOfContents: true
+template: splash
 ---
 
-import TileSheetChart from '../../../components/TileSheetChart.astro';
-import '../../../styles/tiles.css';
+import TileSheetChart from '../../components/TileSheetChart.astro';
+import StrudelPlayer from '../../components/StrudelPlayer.astro';
+import '../../styles/tiles.css';
 import '@fontsource/vt323/latin-400.css';
+
+<StrudelPlayer tune="grid" position="bottom right" />
 
 A scratch page for the farm-sim look of the [plant calendar](/plants/).
 Tiles are cut from the packed sheets in `public/tiles/` with CSS only — one

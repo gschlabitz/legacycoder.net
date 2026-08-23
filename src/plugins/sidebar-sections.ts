@@ -5,8 +5,9 @@ import type { StarlightPlugin } from '@astrojs/starlight/types'
 
 export interface StarlightSidebarSectionsUserConfig {
   /**
-   * Top-level directories to leave out of the sidebar entirely. Locale
-   * directories are excluded automatically — they are routing, not sections.
+   * Top-level entries to leave out of the sidebar entirely — directory names
+   * or page filenames with extension (`playground.mdx`). Locale directories
+   * are excluded automatically — they are routing, not sections.
    */
   exclude?: string[]
   /**
