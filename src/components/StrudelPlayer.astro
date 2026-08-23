@@ -11,10 +11,13 @@ type PlayerPosition =
   | 'bottom right'
 
 interface Props {
+  /** Tune ids — filenames in `src/tunes/` without the extension. */
+  tune: string | string[]
   position?: PlayerPosition
 }
 
-const { position = 'bottom right' } = Astro.props
+const { tune, position = 'bottom right' } = Astro.props
+const tunes = [tune].flat()
 const labels = Astro.currentLocale === 'de'
   ? {
       play: 'Stück abspielen',
@@ -41,6 +44,7 @@ const icon = {
 ---
 <tune-player
     data-position={position}
+    data-tunes={tunes.join(' ')}
     data-label-play={labels.play}
     data-label-pause={labels.pause}
     data-label-loading={labels.loading}
@@ -74,7 +78,7 @@ const icon = {
 </tune-player>
 
 <script>
-  import { getTunes, type Tune } from '../lib/tune'
+  import type { Tune } from '../lib/tune'
 
   const ANALYSER_ID = 'tune-player'
 
@@ -91,6 +95,19 @@ const icon = {
     resetGlobalEffects(): void
   }
 
+  // Every tune module the site ships, keyed by path, loaded on first play.
+  // The id in `tune="…"` is the filename, so pages hold no code, only names.
+  const tuneModules = import.meta.glob<{ default: Tune }>('../tunes/*.ts')
+
+  const loadTune = async (name: string): Promise<Tune | null> => {
+    const loader = tuneModules[`../tunes/${name}.ts`]
+    if (!loader) {
+      console.error(`Unknown tune "${name}" — expected src/tunes/${name}.ts`)
+      return null
+    }
+    return (await loader()).default
+  }
+
   let audioContext: AudioContext | null = null
   let strudelModule: StrudelModule | null = null
   let enginePromise: Promise<Repl> | null = null
@@ -100,6 +117,7 @@ const icon = {
     cps: number
     pulse?: Tune['pulse']
   } | null = null
+  let pageTunes: string[] = []
   let currentName = ''
   let loading = false
 
@@ -118,10 +136,9 @@ const icon = {
   }
 
   const play = async (name: string): Promise<boolean> => {
-    const tune = getTunes().find((candidate) => candidate.name === name)
+    const [repl, tune] = await Promise.all([loadEngine(), loadTune(name)])
     if (!tune) return false
 
-    const repl = await loadEngine()
     let pattern = tune.pattern()
     if (typeof tune.gain === 'number') {
       const gainControl = (globalThis as unknown as { gain: (value: number) => unknown }).gain
@@ -148,8 +165,6 @@ const icon = {
     playing = null
     stopScope()
   }
-
-  const pageTunes = (): string[] => getTunes().map((tune) => tune.name)
 
   // Any page may add a larger `[data-scope]` canvas without expanding the
   // player's interface. The player owns the one animation loop and audio tap.
@@ -243,7 +258,7 @@ const icon = {
   }
 
   const renderAll = (): void => {
-    const hasPlaylist = pageTunes().length > 1
+    const hasPlaylist = pageTunes.length > 1
     document.querySelectorAll<HTMLElement>('tune-player').forEach((player) => {
       player.querySelectorAll<HTMLButtonElement>('[data-action="prev"], [data-action="next"]').forEach((button) => {
         button.hidden = !hasPlaylist
@@ -284,7 +299,11 @@ const icon = {
     connectedCallback() {
       if (this.#initialized) return
       this.#initialized = true
-      currentName ||= pageTunes()[0] || ''
+
+      for (const name of (this.dataset.tunes || '').split(' ').filter(Boolean)) {
+        if (!pageTunes.includes(name)) pageTunes.push(name)
+      }
+      currentName ||= pageTunes[0] || ''
 
       this.querySelectorAll<HTMLButtonElement>('[data-action]').forEach((button) => {
         button.addEventListener('click', () => void this.#transport(button.dataset.action || ''))
@@ -294,22 +313,21 @@ const icon = {
     }
 
     async #transport(action: string) {
-      const tunes = pageTunes()
-      if (tunes.length === 0) return
+      if (pageTunes.length === 0) return
 
       if (action === 'playpause') {
         await withLoading(async () => {
           if (playing) await pause()
-          else await play(currentName || tunes[0]!)
+          else await play(currentName || pageTunes[0]!)
         })
         return
       }
 
-      if ((action === 'prev' || action === 'next') && tunes.length > 1) {
+      if ((action === 'prev' || action === 'next') && pageTunes.length > 1) {
         const step = action === 'next' ? 1 : -1
-        const current = playing?.name || currentName || tunes[0]!
-        const index = Math.max(0, tunes.indexOf(current))
-        const next = tunes[(index + step + tunes.length) % tunes.length]!
+        const current = playing?.name || currentName || pageTunes[0]!
+        const index = Math.max(0, pageTunes.indexOf(current))
+        const next = pageTunes[(index + step + pageTunes.length) % pageTunes.length]!
         await withLoading(async () => {
           if (playing) await pause()
           currentName = next
@@ -318,11 +336,6 @@ const icon = {
       }
     }
   }
-
-  window.addEventListener('tune-player:tunes-changed', () => {
-    currentName ||= pageTunes()[0] || ''
-    renderAll()
-  })
 
   if (!customElements.get('tune-player')) customElements.define('tune-player', TunePlayer)
 </script>
