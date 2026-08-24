@@ -11,7 +11,7 @@ plant:
     - Genovese basil
   origin: Tropical Asia
   light: Full sun, sheltered and warm
-  temperature: 15–30 °C, dies below 10 °C
+  temperature: 59–86 °F, dies below 50 °F
   care:
     watering:
       every: 2
@@ -37,8 +37,8 @@ plant:
 ---
 
 import Figure from '../../../components/Figure.astro';
-import PlantInfo from '../../../components/PlantInfo.astro';
-import PlantCare from '../../../components/PlantCare.astro';
+
+*[Ocimum basilicum](https://en.wikipedia.org/wiki/Ocimum_basilicum)*
 
 <Figure
   src="plants/sweet-basil.jpg"
@@ -47,22 +47,38 @@ import PlantCare from '../../../components/PlantCare.astro';
   fullWidth
 />
 
-<PlantInfo plant={frontmatter.plant} />
+## Origin
 
-Sweet basil is a tropical annual and behaves like one: it wants heat, sun,
-steady water, and it dies at the first breath of frost. Supermarket basil
-pots are dozens of seedlings crammed together to look lush on the shelf —
-split the clump into three or four pots and each will outlive the original
-by months. Pinch off flower spikes as they appear; once basil sets seed,
-leaf production stops and the flavor turns sharp.
+Basil comes from tropical Asia — a biome of warmth, sun, and steady
+moisture with no cold season at all. That heritage never left the plant:
+it reads anything below 50 °F as an emergency, has no dormancy to fall
+back on, and so lives fast and dies with the summer.
 
-## Care schedule
+## Care
 
-<PlantCare care={frontmatter.plant.care} />
+- **Light** — full sun, sheltered and warm.
+- **Temperature** — 59–86 °F; dies below 50 °F.
+- **Watering** — every 2 days, daily in midsummer; it wilts dramatically
+  and recovers fast.
+- **Fertilizing** — every 4 weeks, April–September; a heavy feeder in a
+  pot — balanced liquid feed.
+- **Trimming** — every 2 weeks, May–September; pinch stem tips and flower
+  spikes to keep it leafy.
+- **Repotting** — yearly, April–May; an annual — divide crowded
+  supermarket pots on purchase.
 
-Harvest by pinching whole stem tips just above a leaf pair — each cut
-branches into two new stems. Plucking single leaves off the stem is the slow
-way to a bare plant.
+Supermarket basil pots are dozens of seedlings crammed together to look
+lush on the shelf — split the clump into three or four pots and each will
+outlive the original by months.
+
+## Pruning
+
+Pinching is both the harvest and the pruning: take whole stem tips just
+above a leaf pair — each cut branches into two new stems — and remove
+flower spikes on sight, since a basil that sets seed stops making leaves.
+Plucking single leaves off the stem is the slow way to a bare plant. As an
+annual it never needs more surgery than that; a plant that has outgrown
+its pot is a plant ready for pesto.
 
 ## In the kitchen
 

@@ -5,12 +5,11 @@
  * registers itself as core's string parser — so `s("sine*4")` and
  * `note("<c a f e>")` parse without the transpiler. That means no `eval`, and
  * no eval sink handed to adopters through page frontmatter: a page names a
- * tune. Page-specific tune components register these definitions with the
- * reusable player when their page loads.
+ * tune. Tunes live in `src/tunes/`, one default export per file; the player
+ * lazy-loads `src/tunes/<name>.ts` when a page declares
+ * `<StrudelPlayer tune="name" />`, so the filename is the tune's id.
  */
 export interface Tune {
-  /** Stable id used for playback state. */
-  name: string
   /**
    * Cycles per second. Separate from the pattern because the scheduler needs
    * the tempo before the pattern is scheduled.
@@ -53,17 +52,4 @@ export interface StrudelPattern {
 /** Identity helper that gives a tune module its type without a type annotation. */
 export function defineTune(tune: Tune): Tune {
   return tune
-}
-
-const registered = new Map<string, Tune>()
-
-/** Register one page-owned tune with the player on the current page. */
-export function registerTune(tune: Tune): void {
-  registered.set(tune.name, tune)
-  window.dispatchEvent(new CustomEvent('tune-player:tunes-changed'))
-}
-
-/** The current page's tunes, in registration order. */
-export function getTunes(): Tune[] {
-  return [...registered.values()]
 }

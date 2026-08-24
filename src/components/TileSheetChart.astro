@@ -1,0 +1,60 @@
+---
+// Reference chart for one tilesheet from src/data/tilesheets.json: every
+// tile at its sheet position, labeled with the `t-<i>` index (which matches
+// Kenney's individual Tiles/tile_00NN.png numbering). Regenerate the data
+// with `npm run tile-css` after editing src/data/tilesheets.yaml.
+import sheets from '../data/tilesheets.json';
+import { codeOf } from '../lib/tile-codes';
+import '../styles/tiles.css';
+
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
+const sheet = sheets.find((s) => s.name === name);
+if (!sheet) {
+  throw new Error(`Unknown tilesheet "${name}" — registered: ${sheets.map((s) => s.name).join(', ')}`);
+}
+const tiles = Array.from({ length: sheet.cols * sheet.rows }, (_, i) => i);
+---
+
+<div class="tile-chart" style={`--chart-cols: ${sheet.cols}`}>
+  {tiles.map((i) => (
+    <figure>
+      <span class={`ts ts-${name} t-${i}`} title={`ts-${name} t-${i}${codeOf(name, i) ? ` code ${codeOf(name, i)}` : ''}`}></span>
+      <figcaption>
+        <b>{codeOf(name, i) ?? '·'}</b> {i}
+      </figcaption>
+    </figure>
+  ))}
+</div>
+
+<style>
+  .tile-chart {
+    display: grid;
+    grid-template-columns: repeat(var(--chart-cols), max-content);
+    gap: 0.25rem;
+    justify-content: start;
+    overflow-x: auto;
+    padding: 0.5rem;
+    /* Checkerboard so transparent tile regions stay visible. */
+    background:
+      repeating-conic-gradient(color-mix(in srgb, currentColor 12%, transparent) 0% 25%, transparent 0% 50%)
+      0 0 / 16px 16px;
+    border-radius: 0.5rem;
+  }
+  .tile-chart figure {
+    margin: 0;
+    text-align: center;
+  }
+  .tile-chart figcaption {
+    font-size: 0.65rem;
+    line-height: 1.4;
+    opacity: 0.7;
+  }
+  .tile-chart figcaption b {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    opacity: 1;
+  }
+</style>

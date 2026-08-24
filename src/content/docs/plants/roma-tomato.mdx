@@ -12,7 +12,7 @@ plant:
     - Plum tomato
   origin: Cultivar (USDA, 1955); species from western South America
   light: Full sun, six hours or more
-  temperature: 15–30 °C, dies at frost
+  temperature: 59–86 °F, dies at frost
   care:
     watering:
       every: 2
@@ -38,8 +38,8 @@ plant:
 ---
 
 import Figure from '../../../components/Figure.astro';
-import PlantInfo from '../../../components/PlantInfo.astro';
-import PlantCare from '../../../components/PlantCare.astro';
+
+*[Solanum lycopersicum 'Roma'](https://en.wikipedia.org/wiki/Roma_tomato)*
 
 <Figure
   src="plants/roma-tomato.jpg"
@@ -48,23 +48,40 @@ import PlantCare from '../../../components/PlantCare.astro';
   fullWidth
 />
 
-<PlantInfo plant={frontmatter.plant} />
+## Origin
 
-Roma is a determinate ("bush") tomato: it grows to about a meter, sets most
-of its fruit in one concentrated flush, and then it is done — exactly what
-you want for a batch of sauce, and why it behaves in a pot where sprawling
-indeterminate varieties need scaffolding. Being determinate also means the
-usual tomato ritual of pinching out side shoots mostly doesn't apply; every
-sucker you leave carries fruit. Plant seedlings deep — the buried stem grows
-roots along its whole length.
+The tomato species comes from western South America; 'Roma' itself is a
+1955 USDA cultivar. It is a determinate ("bush") tomato: it grows to about
+a meter, sets most of its fruit in one concentrated flush, and then it is
+done — exactly what you want for a batch of sauce, and why it behaves in a
+pot where sprawling indeterminate varieties need scaffolding.
 
-## Care schedule
+## Care
 
-<PlantCare care={frontmatter.plant.care} />
+- **Light** — full sun, six hours or more.
+- **Temperature** — 59–86 °F; dies at frost.
+- **Watering** — every 2 days; deep and even — irregular watering causes
+  blossom-end rot and split fruit.
+- **Fertilizing** — every 2 weeks, May–September; tomato feed once the
+  first truss has set.
+- **Trimming** — every 2 weeks, June–August; remove yellowing lower
+  leaves — determinate, so leave the trusses alone.
+- **Repotting** — none; an annual — a fresh plant into a 30+ cm pot each
+  May, buried deep.
 
+Plant seedlings deep — the buried stem grows roots along its whole length.
 Blossom-end rot — the black leathery patch on the fruit's base — is not a
 disease but a calcium-transport failure caused by uneven watering. In a pot
 that means one thing: never let it cycle between bone dry and soaked.
+
+## Pruning
+
+Skip the classic sucker-pinching ritual: Roma is determinate, and every
+side shoot carries part of its one big flush of fruit — pinching just
+costs you sauce. The only cuts are housekeeping: take off yellowing
+leaves below the lowest truss every couple of weeks to keep air moving
+through the pot. As an annual, it ends the season in the compost, not in
+a bigger pot.
 
 ## In the kitchen
 

@@ -1,0 +1,229 @@
+---
+// One month of the annual care calendar, drawn as a hand-crafted tile map.
+// The scene is authored in src/data/plant-map/<month>.txt — one line per
+// row, one CELL per tile, where a cell is two editor columns: an emoji or
+// a two-character ASCII code (`..` = empty). The file starts with a
+// `use: <sheet>` line naming the sheet whose code table applies (codes
+// restart per sheet — see src/lib/tile-codes.ts and the charts on
+// /playground/), and optionally `alias: X=sheet:tile ...` bindings to
+// pull tiles from other sheets. Any tile is also addressable as its
+// base36 index (digit-first, e.g. `0a` = tile 10). The grid's row count
+// IS the month's height; add blank lines for breathing room. The map
+// layer is 48 cells wide and center-anchored: narrow screens crop the
+// edges, so keep the story near cell 24 and let the flanks stay sparse.
+//
+// The ground is a flat per-season color; texture, props, AND the panel
+// behind the care notes are all authored tiles (patio q1–q9, fence f1–f8,
+// soil d1–d9 from tiny-town). The notes themselves are transparent text
+// in a fixed frame: 10 cells wide (map cells 19–28), top edge on map
+// row 2, all text metrics in art-pixel units — so a panel fitted to the
+// text once fits it at every breakpoint. Tile classes come from
+// `npm run tile-css`.
+import '../styles/tiles.css';
+import '@fontsource/vt323/latin-400.css';
+import { sheetCodes, parseNumericCode } from '../lib/tile-codes';
+
+interface Props {
+  month: string;
+}
+
+const { month } = Astro.props;
+
+const MONTHS = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+const monthIndex = MONTHS.indexOf(month);
+if (monthIndex === -1) {
+  throw new Error(`TileMonth: unknown month "${month}"`);
+}
+
+const season = [
+  'winter', 'winter', 'spring', 'spring', 'spring', 'summer',
+  'summer', 'summer', 'autumn', 'autumn', 'autumn', 'winter',
+][monthIndex];
+
+const MAP_COLS = 48;
+
+const maps = import.meta.glob('../data/plant-map/*.txt', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+const raw = maps[`../data/plant-map/${month.toLowerCase()}.txt`];
+if (raw === undefined) {
+  throw new Error(`TileMonth: no map file src/data/plant-map/${month.toLowerCase()}.txt`);
+}
+
+// Header lines (`use:`, `alias:`) configure the code space; the grid is
+// everything after them, with surrounding blank lines trimmed.
+const file = `${month.toLowerCase()}.txt`;
+let primary: string | undefined;
+const aliases: Record<string, [string, number]> = {};
+const gridLines: string[] = [];
+raw.replace(/\n+$/, '').split('\n').forEach((line, i) => {
+  if (line.startsWith('#')) {
+    // Comment/ruler line (e.g. `##0102…47`, the column ruler) — never a
+    // grid row, wherever it appears.
+  } else if (/^use:/.test(line)) {
+    primary = line.slice(4).trim();
+  } else if (/^alias:/.test(line)) {
+    for (const token of line.slice(6).trim().split(/\s+/).filter(Boolean)) {
+      const m = token.match(/^(.+?)=([\w-]+):(\d+)$/u);
+      if (!m) throw new Error(`TileMonth: bad alias "${token}" in ${file}:${i + 1} — expected X=sheet:tile`);
+      aliases[m[1]] = [m[2], Number(m[3])];
+    }
+  } else {
+    gridLines.push(line);
+  }
+});
+while (gridLines.length && gridLines[0].trim() === '') gridLines.shift();
+while (gridLines.length && gridLines[gridLines.length - 1].trim() === '') gridLines.pop();
+if (!primary) {
+  throw new Error(`TileMonth: ${file} is missing its "use: <sheet>" header line`);
+}
+// Const rebinding: `primary` is a captured `let`, so its narrowing above
+// doesn't survive into the parsing callbacks below.
+const sheet = primary;
+const codes = sheetCodes(sheet);
+
+const rows = gridLines;
+// Every cell is two editor columns: one emoji grapheme (rendered double-
+// width) or two ASCII characters. Split lines into graphemes first (emoji
+// can be multi-code-point), then consume cells: non-ASCII grapheme = one
+// cell, ASCII grapheme = pair it with the next. `..`/spaces = empty.
+const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+const tiles: { sheet: string; tile: number; x: number; y: number }[] = [];
+rows.forEach((line, y) => {
+  const graphemes = [...segmenter.segment(line)].map((s) => s.segment);
+  let x = 0;
+  for (let g = 0; g < graphemes.length; g++, x++) {
+    let code = graphemes[g];
+    if (code.codePointAt(0)! < 0x80) {
+      const pair = graphemes[g + 1];
+      if (pair === undefined || pair.codePointAt(0)! >= 0x80) {
+        throw new Error(
+          `TileMonth: dangling half-cell "${code}" in ${file} grid row ${y + 1}, cell ${x + 1} — ` +
+            `ASCII codes are two characters (pad empty ground with "..")`,
+        );
+      }
+      code = code + pair;
+      g++;
+    }
+    if (/^[. ]+$/.test(code)) continue;
+    const entry: [string, number] | undefined =
+      aliases[code] ??
+      (codes[code] !== undefined ? [sheet, codes[code]] : undefined) ??
+      (() => {
+        const n = parseNumericCode(code, sheet);
+        return n === undefined ? undefined : ([sheet, n] as [string, number]);
+      })();
+    if (!entry) {
+      throw new Error(
+        `TileMonth: unknown cell code "${code}" in ${file} grid row ${y + 1}, cell ${x + 1} — ` +
+          `not in ${sheet}'s code table (see /plants/playground/), not a valid base36 index, and no alias defines it`,
+      );
+    }
+    if (x >= MAP_COLS) {
+      throw new Error(`TileMonth: tile beyond cell ${MAP_COLS} in ${file} grid row ${y + 1}`);
+    }
+    tiles.push({ sheet: entry[0], tile: entry[1], x, y });
+  }
+});
+---
+
+<section class={`tile-month tile-month--${season}`} style={`--h: ${rows.length};`}>
+  <div class="tile-month__map" aria-hidden="true">
+    {tiles.map(({ sheet, tile, x, y }) => (
+      <span
+        class={`ts ts-${sheet} t-${tile}`}
+        style={`left: calc(${x} * 16 * var(--px)); top: calc(${y} * 16 * var(--px));`}
+      ></span>
+    ))}
+  </div>
+  <h2 class="tile-text tile-month__title" id={month.toLowerCase()}>{month}</h2>
+  <div class="tile-month__bubble">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .tile-month {
+    background-color: var(--ground-color);
+    /* Every section is --h tiles tall (the map file's row count), so all
+       seams land exactly on tile rows. The map layer is center-anchored
+       and wider than most screens: clip horizontally, let text overflow
+       show vertically if a month's budget is ever too tight. */
+    height: calc(var(--h) * 16 * var(--px));
+    overflow-x: clip;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-block: 0 !important;
+    margin-inline: calc(-1 * var(--sl-content-pad-x, 1rem));
+    padding-block: 0;
+  }
+  .tile-month--winter { --ground-color: #edf8fe; }
+  .tile-month--spring { --ground-color: #84c669; }
+  .tile-month--summer { --ground-color: #84c669; }
+  .tile-month--autumn { --ground-color: #d3a96a; }
+
+  .tile-month__map {
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: calc(48 * 16 * var(--px));
+    transform: translateX(-50%);
+  }
+  .tile-month__map .ts {
+    position: absolute;
+  }
+
+  .tile-month__title {
+    /* Starlight heading resets: the map owns the geometry. */
+    margin: 0 !important;
+    position: relative;
+    justify-content: center;
+    min-height: calc(16 * var(--px));
+    color: #434a5f;
+    text-shadow:
+      calc(1 * var(--px) / 2) calc(1 * var(--px) / 2) 0 rgb(255 255 255 / 0.55);
+  }
+  .tile-month--winter .tile-month__title,
+  .tile-month--autumn .tile-month__title {
+    text-shadow: none;
+  }
+
+  .tile-month__bubble {
+    /* Transparent text block over the hand-drawn map: the panel behind it
+       is authored as tiles (q/f/d families) in the month's map file.
+       Everything here is sized in art-pixel units, so the wrapped text
+       layout is IDENTICAL in tile terms at every breakpoint: the block is
+       exactly 10 cells wide (map cells 19–28 of 48, both centered) and
+       its top edge sits on map row 2 (title row + 1-cell margin). Fit the
+       panel to the text once and it fits on every screen. */
+    position: relative;
+    width: calc(10 * 16 * var(--px));
+    margin-block: calc(16 * var(--px)) 0 !important;
+    margin-inline: auto;
+    color: #434a5f;
+  }
+
+  /* All text metrics in art-pixel units — no rem creep, so line counts
+     never change across breakpoints. 8px line-height = 2 lines per tile. */
+  .tile-month__bubble :global(li),
+  .tile-month__bubble :global(p) {
+    color: #434a5f;
+    font-family: 'VT323', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: calc(7 * var(--px));
+    line-height: calc(8 * var(--px));
+    margin-block: calc(2 * var(--px)) !important;
+  }
+  .tile-month__bubble :global(a) {
+    color: #1d5b43;
+  }
+  .tile-month__bubble :global(ul) {
+    margin: 0;
+    padding-inline-start: calc(10 * var(--px));
+  }
+</style>

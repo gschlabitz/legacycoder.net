@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "node tests/media-meta.mjs && node tests/plant-meta.mjs && node tests/care-calendar.mjs && node tests/player-click.mjs",
+    "test": "node tests/media-meta.mjs && node tests/plant-meta.mjs && node tests/player-click.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "stop": "astro dev stop",
@@ -16,7 +16,7 @@
     "geocode": "node scripts/geocode.mjs",
     "media-meta": "node scripts/media-meta.mjs",
     "plant-meta": "node scripts/plant-meta.mjs",
-    "care-calendar": "node scripts/care-calendar.mjs",
+    "tile-css": "node scripts/tile-css.mjs",
     "morph:warm": "node scripts/morph/warm.mjs",
     "morph:hot": "node scripts/morph/hot.mjs",
     "morph:task": "node scripts/morph/task.mjs",

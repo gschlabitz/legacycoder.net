@@ -1,0 +1,35 @@
+# Registry of pixel-art tilesheets under public/tiles. `npm run tile-css`
+# reads this file, measures each PNG, and regenerates src/styles/tiles.css
+# plus src/data/tilesheets.json. Sheets must be the *packed* variant
+# (edge-to-edge tiles, no spacing) — the generator errors when the image
+# dimensions are not an exact multiple of tileSize.
+#
+# Standardized on Kenney's "Tiny" collection: 16px tiles only, so every
+# sheet shares one grid and mixes freely in the plant-map files.
+# All sheets: Kenney (kenney.nl), CC0.
+
+- name: tiny-farm
+  file: public/tiles/tiny-farm.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-farm
+- name: tiny-town
+  file: public/tiles/tiny-town.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-town
+- name: tiny-battle
+  file: public/tiles/tiny-battle.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-battle
+- name: tiny-dungeon
+  file: public/tiles/tiny-dungeon.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-dungeon
+- name: tiny-ski
+  file: public/tiles/tiny-ski.png
+  tileSize: 16
+  author: Kenney
+  source: https://kenney.nl/assets/tiny-ski
