@@ -11,6 +11,25 @@ A personal website built with [Astro](https://astro.build/) and
 - `npm run preview` — preview the build locally
 - `npm test` — run the script tests
 
+## Deployment
+
+The site deploys as a Cloudflare Worker named `legacycoder-net` that serves
+the static build output ([`wrangler.jsonc`](wrangler.jsonc) — assets-only, no
+Worker code). Pushing to `main` triggers a Workers Builds deploy; there is no
+GitHub Action and no local deploy step.
+
+- [Worker dashboard](https://dash.cloudflare.com/?to=/:account/workers/services/view/legacycoder-net)
+  — build status, deployment history, logs, and metrics (the `?to=` link
+  resolves to the right account after Cloudflare login)
+- Manual deploy, should the git integration ever be down:
+
+  ```bash
+  npm run build
+  npx wrangler deploy
+  ```
+
+  (needs `npx wrangler login` first)
+
 ## Where the docs live
 
 Documentation is colocated with its subject:
