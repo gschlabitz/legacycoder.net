@@ -1,0 +1,45 @@
+---
+// Closing section of the calendar's tile map: winter ground (December
+// sits directly above), carrying the attribution (slot) right-aligned in
+// the pixel face.
+import '../styles/tiles.css';
+import '@fontsource/vt323/latin-400.css';
+---
+
+<section class="tile-cal-footer">
+  <div class="tile-cal-footer__credit">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .tile-cal-footer {
+    background-image: url('/tiles/single/snow.png');
+    background-color: #edf8fe;
+    background-size: calc(16 * var(--px));
+    background-repeat: repeat;
+    image-rendering: pixelated;
+    /* Tile-multiple height, like every map section (see TileMonth). */
+    height: calc(4 * 16 * var(--px));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-block: 0 !important;
+    margin-inline: calc(-1 * var(--sl-content-pad-x, 1rem));
+    padding-block: calc(4 * var(--px));
+    padding-inline: calc(4 * var(--px));
+  }
+  .tile-cal-footer__credit {
+    text-align: right;
+    font-family: 'VT323', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+  .tile-cal-footer__credit :global(p) {
+    margin: 0 !important;
+    font-size: calc(6 * var(--px));
+    line-height: 1.3;
+    color: #434a5f;
+  }
+  .tile-cal-footer__credit :global(a) {
+    color: #1d5b43;
+  }
+</style>

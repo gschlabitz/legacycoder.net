@@ -1,92 +1,111 @@
 ---
-title: Annual Care Calendar
+title: Patio Gardening
 description: Simple annual care guide for my patio plants.
+# Full-width tile map: no sidebars, content width unlocked by
+# TileCalendarHeader's page-scoped CSS.
+template: splash
 prev: false
 next: false
+# Month headings render inside TileMonth scenes, invisible to the TOC.
+tableOfContents: false
 ---
 
-Annual care calendar for my plethora of patio pots in [USDA zone 6a](https://planthardiness.ars.usda.gov/).
+import TileMonth from '../../../components/TileMonth.astro';
+import TileCalendarHeader from '../../../components/TileCalendarHeader.astro';
+import TileCalendarFooter from '../../../components/TileCalendarFooter.astro';
 
-Also, see [watering schedule](/plants/watering/).
+<TileCalendarHeader>
+Annual care calendar for my plethora of patio pots.
 
-## January
+[USDA zone 6a](https://planthardiness.ars.usda.gov/)
 
+[Watering schedule](/plants/watering/)
+
+</TileCalendarHeader>
+
+<TileMonth month="January">
 - Keep rosemary cool and bright
-- Barely water: lavender, silver squill
+- Barely water: silver squill (lavender overwinters in the raised bed)
 - After blooming, water Christmas Cactus every 12 days
 - No feeding
 - Weekends: turn pots, check for pests
+</TileMonth>
 
-## February
-
+<TileMonth month="February">
 - start seeds for parsely, tomatoes (end of month)
 - Sow parsley early, it takes forever to germinate
 - wash empty pots, buy soil mixes
+</TileMonth>
 
-## March
-
+<TileMonth month="March">
 - Prune, divide, and repot after plants wake up
 - When night frost is rare, start sowing schedule for coriander
+</TileMonth>
 
-## April
-
+<TileMonth month="April">
 - Finish repotting root-bound pots before strong growth
 - Resume light feeding as new growth appears
 - Divide crowded supermarket basil and begin pinching once it branches.
 - On mild days, harden plants in shade, bring back inside
+</TileMonth>
 
-## May
-
+<TileMonth month="May">
 - after frost risk has passed and nights hold above 10 °C
   move hardy plants out gradually, hardening them off over 7–10 days
 - Basil and tomatoes wait until nights are warm
 - Begin tomato feed after flowering or fruit set
 - Shape rosemary lightly after flowering, don't cut bare wood
+</TileMonth>
 
-## June
-
+<TileMonth month="June">
 - Keep pinching basil tips and flowers
 - harvest coriander and parsley
 - Every first Sunday, feed all plants
 - Every third Sunday, feed tomatoes only
 - Remove yellow lower leaves from Roma
 - thin cherry tomato only enough for airflow
+</TileMonth>
 
-## July
-
+<TileMonth month="July">
 - Check basil and tomatoes every morning, may need evening drink in extreme heat
 - Give coriander and parsley afternoon shade and keep them evenly moist
 - Pause Coriander schedule for hot months (it just bolts)
 - Trim thyme after flowering
+</TileMonth>
 
-## August
-
+<TileMonth month="August">
 - Cut lavender back one third after flowering, never cut into leafless wood.
-- Take cuttings for citronella, begonia, rosemary, and thyme 
+- Take cuttings for citronella, begonia, rosemary, and thyme
 - Use as replacement if parent dies in winter.
+</TileMonth>
 
-## September
-
+<TileMonth month="September">
 - Stop feeding Mediterranean herbs
 - Clean pots and foliage, treat pests before moving indoors
 - Bring in plants before nights fall below 10 °C
+</TileMonth>
 
-## October
-
+<TileMonth month="October">
+- Unplug the raised bed's water reservoir when fall rains start (lavender hates wet feet)
 - Give Christmas cactus cool nights and 14 h darkness, stop moving it when buds appear.
 - Harvest all tomatoes and Basil at frost
 - Parsley can continue in a cool bright spot.
-- Reduce watering as growth and light slow. 
+- Reduce watering as growth and light slow.
 - Rosemary prefers a cool bright room
+</TileMonth>
 
-## November
-
+<TileMonth month="November">
 - Move indoor pots to brightest windows and rotate weekly
 - Water only after checking soil
 - Remove dead foliage, keep dry overnight
 - watch for pests
+</TileMonth>
 
-## December
-
+<TileMonth month="December">
 - Don't move a blooming Christmas Cactus, keep away from heaters and drafts
 - Keep silver squill almost dry, check for bulb rot
+</TileMonth>
+
+<TileCalendarFooter>
+Tiles: [Kenney](https://kenney.nl) — Tiny Town, Tiny Farm, Tiny Ski (CC0).
+</TileCalendarFooter>

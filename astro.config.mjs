@@ -19,7 +19,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Guido Schlabitz",
-      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css", "./src/styles/media.css", "./src/styles/outline.css"],
+      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css", "./src/styles/media.css", "./src/styles/watering.css", "./src/styles/outline.css"],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
         { icon: "laptop", label: "Upwork", href: "https://www.upwork.com/freelancers/~01385cf1007a0ae63d" },

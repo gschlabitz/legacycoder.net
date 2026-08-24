@@ -1,0 +1,46 @@
+/* Emoji wallpaper on the watering-group cards (plants/watering). Each card
+   body starts with a `.card-emoji` span; it hugs the right edge, spans the
+   card's height, and overflows past the edge, clipped by the card. */
+
+.watering-cards .card {
+  position: relative;
+  overflow: hidden;
+  /* Own stacking context, so the emoji's negative z-index stays inside the
+     card — above its background, below its text. */
+  isolation: isolate;
+}
+
+.watering-cards .card-emoji {
+  position: absolute;
+  bottom: var(--emoji-bottom, -0.2em);
+  right: var(--emoji-right, -0.2em);
+  /* Behind the card's text, in front of its background. */
+  z-index: -1;
+  font-size: var(--emoji-size, 16rem);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Per-emoji knobs — each glyph carries different internal whitespace, so
+   tune size and offsets here without disturbing the others. */
+.watering-cards .card-emoji--heavy-drinker {
+    --emoji-bottom: -0.45em;
+}
+
+.watering-cards .card-emoji--moist-critikal {
+  /* The wave is a wide glyph — smaller and further off-edge than the rest,
+     and flipped to curl toward the card's interior. */
+  --emoji-size: 16rem;
+  --emoji-right: -0.1em;
+  --emoji-bottom: -0.3em;
+
+}
+
+.watering-cards .card-emoji--weekend-waterer {
+    --emoji-bottom: -0.14em;
+}
+
+.watering-cards .card-emoji--dry-pot-club {
+    --emoji-bottom: -0.35em;
+}

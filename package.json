@@ -17,6 +17,7 @@
     "media-meta": "node scripts/media-meta.mjs",
     "plant-meta": "node scripts/plant-meta.mjs",
     "tile-css": "node scripts/tile-css.mjs",
+    "tile-extract": "node scripts/tile-extract.mjs",
     "morph:warm": "node scripts/morph/warm.mjs",
     "morph:hot": "node scripts/morph/hot.mjs",
     "morph:task": "node scripts/morph/task.mjs",
