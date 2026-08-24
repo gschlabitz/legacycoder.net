@@ -4,6 +4,7 @@
 // Kenney's individual Tiles/tile_00NN.png numbering). Regenerate the data
 // with `npm run tile-css` after editing src/data/tilesheets.yaml.
 import sheets from '../data/tilesheets.json';
+import { codeOf } from '../lib/tile-codes';
 import '../styles/tiles.css';
 
 interface Props {
@@ -21,8 +22,10 @@ const tiles = Array.from({ length: sheet.cols * sheet.rows }, (_, i) => i);
 <div class="tile-chart" style={`--chart-cols: ${sheet.cols}`}>
   {tiles.map((i) => (
     <figure>
-      <span class={`ts ts-${name} t-${i}`} title={`ts-${name} t-${i}`}></span>
-      <figcaption>{i}</figcaption>
+      <span class={`ts ts-${name} t-${i}`} title={`ts-${name} t-${i}${codeOf(name, i) ? ` code ${codeOf(name, i)}` : ''}`}></span>
+      <figcaption>
+        <b>{codeOf(name, i) ?? '·'}</b> {i}
+      </figcaption>
     </figure>
   ))}
 </div>
@@ -49,5 +52,9 @@ const tiles = Array.from({ length: sheet.cols * sheet.rows }, (_, i) => i);
     font-size: 0.65rem;
     line-height: 1.4;
     opacity: 0.7;
+  }
+  .tile-chart figcaption b {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    opacity: 1;
   }
 </style>

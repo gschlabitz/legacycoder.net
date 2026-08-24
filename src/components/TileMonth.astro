@@ -1,14 +1,27 @@
 ---
-// One month of the annual care calendar, drawn as a cozy farm-sim scene.
-// The twelve months stack seamlessly into one continuous tile map: each
-// section is full-bleed seasonal ground with zero block margins, holding a
-// title strip (name left, props right), the care notes (slot) on a narrow
-// centered stone slab (border-image 9-patch), and a decoration band that
-// doubles as the transition into the next month. Tile classes come from
-// src/styles/tiles.css (`npm run tile-css`), the ground and slab images
-// from `npm run tile-extract`.
+// One month of the annual care calendar, drawn as a hand-crafted tile map.
+// The scene is authored in src/data/plant-map/<month>.txt — one line per
+// row, one CELL per tile, where a cell is two editor columns: an emoji or
+// a two-character ASCII code (`..` = empty). The file starts with a
+// `use: <sheet>` line naming the sheet whose code table applies (codes
+// restart per sheet — see src/lib/tile-codes.ts and the charts on
+// /playground/), and optionally `alias: X=sheet:tile ...` bindings to
+// pull tiles from other sheets. Any tile is also addressable as its
+// base36 index (digit-first, e.g. `0a` = tile 10). The grid's row count
+// IS the month's height; add blank lines for breathing room. The map
+// layer is 48 cells wide and center-anchored: narrow screens crop the
+// edges, so keep the story near cell 24 and let the flanks stay sparse.
+//
+// The ground is a flat per-season color; texture, props, AND the panel
+// behind the care notes are all authored tiles (patio q1–q9, fence f1–f8,
+// soil d1–d9 from tiny-town). The notes themselves are transparent text
+// in a fixed frame: 10 cells wide (map cells 19–28), top edge on map
+// row 2, all text metrics in art-pixel units — so a panel fitted to the
+// text once fits it at every breakpoint. Tile classes come from
+// `npm run tile-css`.
 import '../styles/tiles.css';
 import '@fontsource/vt323/latin-400.css';
+import { sheetCodes, parseNumericCode } from '../lib/tile-codes';
 
 interface Props {
   month: string;
@@ -30,166 +43,148 @@ const season = [
   'summer', 'summer', 'autumn', 'autumn', 'autumn', 'winter',
 ][monthIndex];
 
-// Title-strip props per month: [sheet, tile, column]. The strip is a
-// full-width flex band — title on the left, props clustered on the right;
-// the column values only set the spacing *within* the cluster (kept from
-// the 12-column layout: 8–12). Tile numbers are the t-<i> indices — look
-// them up on /plants/playground/.
-const SCENES = [
-  [['tiny-ski', 6, 9], ['tiny-ski', 69, 10], ['tiny-ski', 30, 12]], // Jan: pines, snowman
-  [['tiny-ski', 30, 8], ['tiny-farm', 33, 10], ['tiny-farm', 5, 11]], // Feb: seed sack, first sprout
-  [['tiny-farm', 124, 9], ['tiny-farm', 5, 11], ['tiny-farm', 65, 12]], // Mar: pot, sprouts
-  [['tiny-town', 5, 8], ['tiny-farm', 53, 10], ['tiny-farm', 29, 11]], // Apr: tree, growing plants
-  [['tiny-farm', 122, 9], ['tiny-farm', 29, 10], ['tiny-farm', 6, 12]], // May: chicken, carrot tops
-  [['tiny-town', 4, 8], ['tiny-farm', 121, 10], ['tiny-farm', 30, 12]], // Jun: tree, cow, corn
-  [['tiny-farm', 30, 9], ['tiny-farm', 120, 11], ['tiny-farm', 32, 12]], // Jul: corn, sheep
-  [['tiny-farm', 96, 8], ['tiny-farm', 30, 10], ['tiny-farm', 122, 11]], // Aug: hay, corn, chicken
-  [['tiny-town', 3, 9], ['tiny-farm', 96, 11], ['tiny-farm', 124, 12]], // Sep: autumn tree, hay
-  [['tiny-town', 9, 8], ['tiny-town', 21, 9], ['tiny-farm', 43, 11]], // Oct: autumn trees, roots
-  [['tiny-town', 10, 9], ['tiny-farm', 43, 10], ['tiny-ski', 7, 12]], // Nov: bare trees
-  [['tiny-ski', 6, 8], ['tiny-ski', 69, 10], ['tiny-ski', 7, 11]], // Dec: snowman again
-];
-// Cluster spacing: gaps between consecutive props, in tiles.
-const sorted = [...SCENES[monthIndex]].sort((a, b) => a[2] - b[2]);
-const props = sorted.map(([sheet, tile, col], i) => [
-  sheet,
-  tile,
-  i === 0 ? 0 : col - sorted[i - 1][2] - 1,
-]);
+const MAP_COLS = 48;
 
-// Decoration band below the slab: sparse props on open ground, where
-// month-to-month transitions can grow. Columns shift per month so
-// consecutive bands don't repeat.
-const GAP_PROPS = {
-  winter: [['tiny-ski', 30], ['tiny-ski', 7]],
-  spring: [['tiny-farm', 65], ['tiny-town', 5]],
-  summer: [['tiny-farm', 53], ['tiny-farm', 32]],
-  autumn: [['tiny-farm', 43], ['tiny-town', 21]],
-};
-const shift = monthIndex % 3;
-const gapProps = GAP_PROPS[season].map(([sheet, tile], i) => [
-  sheet,
-  tile,
-  i === 0 ? 2 + shift : 9 + shift,
-]);
+const maps = import.meta.glob('../data/plant-map/*.txt', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+const raw = maps[`../data/plant-map/${month.toLowerCase()}.txt`];
+if (raw === undefined) {
+  throw new Error(`TileMonth: no map file src/data/plant-map/${month.toLowerCase()}.txt`);
+}
 
-// Border sampler: every month shows a different slab treatment (one per
-// extracted 9-patch, plus three pure-CSS ones and one with no panel at
-// all). Styles live in the <style> block below as bubble modifiers.
-const BORDER = [
-  'slab', // Jan: stone patio (tiny-town)
-  'bare', // Feb: no panel — notes straight on the snow
-  'soil', // Mar: dirt seed bed (tiny-town)
-  'fence', // Apr: wooden fence enclosure (tiny-town)
-  'parchment', // May: pure CSS paper panel
-  'marble', // Jun: beveled marble block
-  'sand', // Jul: beveled sand block
-  'field', // Aug: orange harvest field (pixel-platformer farm)
-  'stone', // Sep: beveled stone block
-  'rock', // Oct: beveled rock block
-  'overcast', // Nov: pure CSS light slate panel
-  'frost', // Dec: pure CSS frosted panel
-][monthIndex];
+// Header lines (`use:`, `alias:`) configure the code space; the grid is
+// everything after them, with surrounding blank lines trimmed.
+const file = `${month.toLowerCase()}.txt`;
+let primary: string | undefined;
+const aliases: Record<string, [string, number]> = {};
+const gridLines: string[] = [];
+raw.replace(/\n+$/, '').split('\n').forEach((line, i) => {
+  if (line.startsWith('#')) {
+    // Comment/ruler line (e.g. `##0102…47`, the column ruler) — never a
+    // grid row, wherever it appears.
+  } else if (/^use:/.test(line)) {
+    primary = line.slice(4).trim();
+  } else if (/^alias:/.test(line)) {
+    for (const token of line.slice(6).trim().split(/\s+/).filter(Boolean)) {
+      const m = token.match(/^(.+?)=([\w-]+):(\d+)$/u);
+      if (!m) throw new Error(`TileMonth: bad alias "${token}" in ${file}:${i + 1} — expected X=sheet:tile`);
+      aliases[m[1]] = [m[2], Number(m[3])];
+    }
+  } else {
+    gridLines.push(line);
+  }
+});
+while (gridLines.length && gridLines[0].trim() === '') gridLines.shift();
+while (gridLines.length && gridLines[gridLines.length - 1].trim() === '') gridLines.pop();
+if (!primary) {
+  throw new Error(`TileMonth: ${file} is missing its "use: <sheet>" header line`);
+}
+// Const rebinding: `primary` is a captured `let`, so its narrowing above
+// doesn't survive into the parsing callbacks below.
+const sheet = primary;
+const codes = sheetCodes(sheet);
 
-// Dithered ground strip into the next season's ground, rendered at the
-// very bottom of the month before the seam (images from tile-extract).
-const TRANSITION = { 1: 'melt', 4: 'bloom', 7: 'harvest', 10: 'frost' }[monthIndex];
-
-// Section height in tiles. Fixing every section to a tile multiple keeps
-// the ground pattern continuous across the whole map with no runtime
-// alignment — the price is that a month's height is a manual budget:
-// sized for the narrowest layout (phone), which wraps the most lines. If
-// content grows and overflows a slab, bump the month's number here; extra
-// height is deliberate breathing room for decorations.
-const HEIGHT = [13, 10, 10, 13, 15, 15, 14, 12, 12, 16, 13, 10][monthIndex];
+const rows = gridLines;
+// Every cell is two editor columns: one emoji grapheme (rendered double-
+// width) or two ASCII characters. Split lines into graphemes first (emoji
+// can be multi-code-point), then consume cells: non-ASCII grapheme = one
+// cell, ASCII grapheme = pair it with the next. `..`/spaces = empty.
+const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+const tiles: { sheet: string; tile: number; x: number; y: number }[] = [];
+rows.forEach((line, y) => {
+  const graphemes = [...segmenter.segment(line)].map((s) => s.segment);
+  let x = 0;
+  for (let g = 0; g < graphemes.length; g++, x++) {
+    let code = graphemes[g];
+    if (code.codePointAt(0)! < 0x80) {
+      const pair = graphemes[g + 1];
+      if (pair === undefined || pair.codePointAt(0)! >= 0x80) {
+        throw new Error(
+          `TileMonth: dangling half-cell "${code}" in ${file} grid row ${y + 1}, cell ${x + 1} — ` +
+            `ASCII codes are two characters (pad empty ground with "..")`,
+        );
+      }
+      code = code + pair;
+      g++;
+    }
+    if (/^[. ]+$/.test(code)) continue;
+    const entry: [string, number] | undefined =
+      aliases[code] ??
+      (codes[code] !== undefined ? [sheet, codes[code]] : undefined) ??
+      (() => {
+        const n = parseNumericCode(code, sheet);
+        return n === undefined ? undefined : ([sheet, n] as [string, number]);
+      })();
+    if (!entry) {
+      throw new Error(
+        `TileMonth: unknown cell code "${code}" in ${file} grid row ${y + 1}, cell ${x + 1} — ` +
+          `not in ${sheet}'s code table (see /plants/playground/), not a valid base36 index, and no alias defines it`,
+      );
+    }
+    if (x >= MAP_COLS) {
+      throw new Error(`TileMonth: tile beyond cell ${MAP_COLS} in ${file} grid row ${y + 1}`);
+    }
+    tiles.push({ sheet: entry[0], tile: entry[1], x, y });
+  }
+});
 ---
 
-<section class={`tile-month tile-month--${season}`} style={`--h: ${HEIGHT};`}>
-  <div class="tile-month__strip">
-    <h2 class="tile-text tile-month__title" id={month.toLowerCase()}>{month}</h2>
-    <div class="tile-month__props">
-      {props.map(([sheet, tile, gap]) => (
-        <span
-          class={`ts ts-${sheet} t-${tile}`}
-          style={gap ? `margin-left: calc(${gap} * 16 * var(--px));` : undefined}
-        ></span>
-      ))}
-    </div>
-  </div>
-  <div class={`tile-month__bubble tile-month__bubble--${BORDER}`}>
-    <slot />
-  </div>
-  <div class="tile-month__gap">
-    {gapProps.map(([sheet, tile], i) => (
+<section class={`tile-month tile-month--${season}`} style={`--h: ${rows.length};`}>
+  <div class="tile-month__map" aria-hidden="true">
+    {tiles.map(({ sheet, tile, x, y }) => (
       <span
         class={`ts ts-${sheet} t-${tile}`}
-        style={`margin-left: calc(${i === 0 ? 12 : 48}% + ${shift} * 16 * var(--px));`}
+        style={`left: calc(${x} * 16 * var(--px)); top: calc(${y} * 16 * var(--px));`}
       ></span>
     ))}
   </div>
-  {TRANSITION && (
-    <div class="tile-month__transition" style={`--strip: url('/tiles/single/${TRANSITION}.png');`}></div>
-  )}
+  <h2 class="tile-text tile-month__title" id={month.toLowerCase()}>{month}</h2>
+  <div class="tile-month__bubble">
+    <slot />
+  </div>
 </section>
 
 <style>
   .tile-month {
-    background-image: var(--ground);
-    /* Fallback under the image: the ground's average color, so even a
-       subpixel rendering crack at a seam shows ground, not page. */
     background-color: var(--ground-color);
-    background-size: calc(16 * var(--px));
-    background-repeat: repeat;
-    image-rendering: pixelated;
-    /* One continuous map: every section is --h tiles tall (see HEIGHT in
-       the frontmatter), so all seams land exactly on tile rows and the
-       pattern runs unbroken with no runtime alignment. Flex column: the
-       decoration band soaks up the leftover budget, the transition strip
-       sinks to the bottom edge. */
+    /* Every section is --h tiles tall (the map file's row count), so all
+       seams land exactly on tile rows. The map layer is center-anchored
+       and wider than most screens: clip horizontally, let text overflow
+       show vertically if a month's budget is ever too tight. */
     height: calc(var(--h) * 16 * var(--px));
+    overflow-x: clip;
+    position: relative;
     display: flex;
     flex-direction: column;
     margin-block: 0 !important;
     margin-inline: calc(-1 * var(--sl-content-pad-x, 1rem));
-    padding-block: calc(8 * var(--px)) 0;
-    padding-inline: calc(4 * var(--px));
+    padding-block: 0;
   }
-  .tile-month--winter { --ground: url('/tiles/single/snow.png'); --ground-color: #edf8fe; }
-  .tile-month--spring { --ground: url('/tiles/single/grass.png'); --ground-color: #84c669; }
-  .tile-month--summer { --ground: url('/tiles/single/flower-grass.png'); --ground-color: #98c368; }
-  .tile-month--autumn { --ground: url('/tiles/single/dirt.png'); --ground-color: #d3a96a; }
+  .tile-month--winter { --ground-color: #edf8fe; }
+  .tile-month--spring { --ground-color: #84c669; }
+  .tile-month--summer { --ground-color: #84c669; }
+  .tile-month--autumn { --ground-color: #d3a96a; }
 
-  /* Full-width bands: they stretch with the viewport, so a phone and an
-     ultrawide both span edge to edge — the ground repeats, the props just
-     sit further apart. The strip centers the title between equal side
-     tracks; props right-align in the third track. */
-  .tile-month__strip {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: end;
-    min-height: calc(16 * var(--px));
+  .tile-month__map {
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    width: calc(48 * 16 * var(--px));
+    transform: translateX(-50%);
   }
+  .tile-month__map .ts {
+    position: absolute;
+  }
+
   .tile-month__title {
-    grid-column: 2;
-  }
-  .tile-month__props {
-    grid-column: 3;
-    justify-self: end;
-    display: flex;
-  }
-  .tile-month__gap {
-    display: flex;
-    align-items: center;
-    min-height: calc(16 * var(--px));
-    /* Soak up the section's leftover height budget — this is the open
-       decoration space between months. */
-    flex: 1;
-  }
-  .tile-month__title {
-    /* Starlight heading resets: the strip owns the geometry. */
+    /* Starlight heading resets: the map owns the geometry. */
     margin: 0 !important;
-    justify-content: flex-start;
-    padding-inline-start: calc(2 * var(--px));
+    position: relative;
+    justify-content: center;
+    min-height: calc(16 * var(--px));
     color: #434a5f;
     text-shadow:
       calc(1 * var(--px) / 2) calc(1 * var(--px) / 2) 0 rgb(255 255 255 / 0.55);
@@ -200,88 +195,35 @@ const HEIGHT = [13, 10, 10, 13, 15, 15, 14, 12, 12, 16, 13, 10][monthIndex];
   }
 
   .tile-month__bubble {
-    /* Narrow and centered — the open ground on both sides is part of the
-       scene, reserved for decorations. Each month gets its own panel via
-       a --<name> modifier below. */
-    image-rendering: pixelated;
-    max-width: min(30rem, 72%);
-    margin-block: calc(4 * var(--px)) !important;
+    /* Transparent text block over the hand-drawn map: the panel behind it
+       is authored as tiles (q/f/d families) in the month's map file.
+       Everything here is sized in art-pixel units, so the wrapped text
+       layout is IDENTICAL in tile terms at every breakpoint: the block is
+       exactly 10 cells wide (map cells 19–28 of 48, both centered) and
+       its top edge sits on map row 2 (title row + 1-cell margin). Fit the
+       panel to the text once and it fits on every screen. */
+    position: relative;
+    width: calc(10 * 16 * var(--px));
+    margin-block: calc(16 * var(--px)) 0 !important;
     margin-inline: auto;
     color: #434a5f;
   }
 
-  /* 9-patch panels: a 3×3 tile block stretched by border-image. The
-     slice at --px scale keeps the pixel rims exact (16px tiny sheets,
-     18px block sheets — see tile-extract.mjs). */
-  .tile-month__bubble--slab,
-  .tile-month__bubble--soil,
-  .tile-month__bubble--fence {
-    border: calc(16 * var(--px)) solid transparent;
-    border-image: var(--panel) 16 fill repeat;
-  }
-  .tile-month__bubble--marble,
-  .tile-month__bubble--sand,
-  .tile-month__bubble--field,
-  .tile-month__bubble--stone,
-  .tile-month__bubble--rock {
-    border: calc(18 * var(--px)) solid transparent;
-    border-image: var(--panel) 18 fill repeat;
-  }
-  .tile-month__bubble--slab { --panel: url('/tiles/single/patio-9.png'); }
-  .tile-month__bubble--soil { --panel: url('/tiles/single/dirtpatch-9.png'); }
-  .tile-month__bubble--fence { --panel: url('/tiles/single/fence-9.png'); }
-  .tile-month__bubble--marble { --panel: url('/tiles/single/marble-9.png'); }
-  .tile-month__bubble--sand { --panel: url('/tiles/single/sand-9.png'); }
-  .tile-month__bubble--field { --panel: url('/tiles/single/field-9.png'); }
-  .tile-month__bubble--stone { --panel: url('/tiles/single/stone-9.png'); }
-  .tile-month__bubble--rock { --panel: url('/tiles/single/rock-9.png'); }
-
-  /* Pure-CSS panels. */
-  .tile-month__bubble--bare {
-    padding: calc(4 * var(--px));
-  }
-  .tile-month__bubble--parchment {
-    background: #e7dad4;
-    border: calc(1 * var(--px)) solid #434a5f;
-    box-shadow: calc(1 * var(--px)) calc(1 * var(--px)) 0 #434a5f;
-    padding: calc(6 * var(--px));
-  }
-  .tile-month__bubble--overcast {
-    /* November sky: Kenney's light slate, slightly translucent so the
-       dirt ground grays through. */
-    background: rgb(220 225 231 / 0.88);
-    border: calc(1 * var(--px)) solid #959ab1;
-    padding: calc(6 * var(--px));
-  }
-  .tile-month__bubble--frost {
-    background: rgb(255 255 255 / 0.6);
-    border: calc(1 * var(--px)) dashed #434a5f;
-    padding: calc(6 * var(--px));
-  }
-
-  /* Season seam: dithered strip of the next season's ground, full bleed
-     at the very bottom of the section. */
-  .tile-month__transition {
-    height: calc(32 * var(--px));
-    margin-inline: calc(-4 * var(--px));
-    background-image: var(--strip);
-    background-size: calc(64 * var(--px)) calc(32 * var(--px));
-    background-repeat: repeat-x;
-    image-rendering: pixelated;
-  }
-  /* Content sits on the light slab in both themes — pin readable colors,
-     and set the pixel face (sized off the art-pixel scale). */
+  /* All text metrics in art-pixel units — no rem creep, so line counts
+     never change across breakpoints. 8px line-height = 2 lines per tile. */
   .tile-month__bubble :global(li),
   .tile-month__bubble :global(p) {
     color: #434a5f;
     font-family: 'VT323', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
     font-size: calc(7 * var(--px));
-    line-height: 1.3;
+    line-height: calc(8 * var(--px));
+    margin-block: calc(2 * var(--px)) !important;
   }
   .tile-month__bubble :global(a) {
     color: #1d5b43;
   }
   .tile-month__bubble :global(ul) {
     margin: 0;
+    padding-inline-start: calc(10 * var(--px));
   }
 </style>

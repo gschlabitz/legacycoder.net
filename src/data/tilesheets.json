@@ -1,55 +1,5 @@
 [
   {
-    "name": "farm",
-    "file": "public/tiles/farm.png",
-    "tileSize": 18,
-    "author": "Kenney",
-    "source": "https://kenney.nl/assets/pixel-platformer-farm-expansion",
-    "url": "/tiles/farm.png",
-    "cols": 16,
-    "rows": 7
-  },
-  {
-    "name": "marble",
-    "file": "public/tiles/marble.png",
-    "tileSize": 18,
-    "author": "Kenney",
-    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
-    "url": "/tiles/marble.png",
-    "cols": 9,
-    "rows": 9
-  },
-  {
-    "name": "rock",
-    "file": "public/tiles/rock.png",
-    "tileSize": 18,
-    "author": "Kenney",
-    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
-    "url": "/tiles/rock.png",
-    "cols": 9,
-    "rows": 9
-  },
-  {
-    "name": "sand",
-    "file": "public/tiles/sand.png",
-    "tileSize": 18,
-    "author": "Kenney",
-    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
-    "url": "/tiles/sand.png",
-    "cols": 9,
-    "rows": 9
-  },
-  {
-    "name": "stone",
-    "file": "public/tiles/stone.png",
-    "tileSize": 18,
-    "author": "Kenney",
-    "source": "https://kenney.nl/assets/pixel-platformer-blocks",
-    "url": "/tiles/stone.png",
-    "cols": 9,
-    "rows": 9
-  },
-  {
     "name": "tiny-farm",
     "file": "public/tiles/tiny-farm.png",
     "tileSize": 16,
@@ -98,25 +48,5 @@
     "url": "/tiles/tiny-ski.png",
     "cols": 12,
     "rows": 11
-  },
-  {
-    "name": "pico8-city",
-    "file": "public/tiles/pico8-city.png",
-    "tileSize": 8,
-    "author": "Kenney",
-    "source": "https://kenney.nl/assets/pico-8-city",
-    "url": "/tiles/pico8-city.png",
-    "cols": 24,
-    "rows": 15
-  },
-  {
-    "name": "platformer",
-    "file": "public/tiles/platformer.png",
-    "tileSize": 21,
-    "author": "Kenney",
-    "source": "https://kenney.nl/assets/platformer-art-pixel-redux",
-    "url": "/tiles/platformer.png",
-    "cols": 30,
-    "rows": 30
   }
 ]

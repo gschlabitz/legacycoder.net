@@ -4,33 +4,10 @@
 # (edge-to-edge tiles, no spacing) — the generator errors when the image
 # dimensions are not an exact multiple of tileSize.
 #
-# All sheets so far: Kenney (kenney.nl), CC0.
+# Standardized on Kenney's "Tiny" collection: 16px tiles only, so every
+# sheet shares one grid and mixes freely in the plant-map files.
+# All sheets: Kenney (kenney.nl), CC0.
 
-- name: farm
-  file: public/tiles/farm.png
-  tileSize: 18
-  author: Kenney
-  source: https://kenney.nl/assets/pixel-platformer-farm-expansion
-- name: marble
-  file: public/tiles/marble.png
-  tileSize: 18
-  author: Kenney
-  source: https://kenney.nl/assets/pixel-platformer-blocks
-- name: rock
-  file: public/tiles/rock.png
-  tileSize: 18
-  author: Kenney
-  source: https://kenney.nl/assets/pixel-platformer-blocks
-- name: sand
-  file: public/tiles/sand.png
-  tileSize: 18
-  author: Kenney
-  source: https://kenney.nl/assets/pixel-platformer-blocks
-- name: stone
-  file: public/tiles/stone.png
-  tileSize: 18
-  author: Kenney
-  source: https://kenney.nl/assets/pixel-platformer-blocks
 - name: tiny-farm
   file: public/tiles/tiny-farm.png
   tileSize: 16
@@ -56,13 +33,3 @@
   tileSize: 16
   author: Kenney
   source: https://kenney.nl/assets/tiny-ski
-- name: pico8-city
-  file: public/tiles/pico8-city.png
-  tileSize: 8
-  author: Kenney
-  source: https://kenney.nl/assets/pico-8-city
-- name: platformer
-  file: public/tiles/platformer.png
-  tileSize: 21
-  author: Kenney
-  source: https://kenney.nl/assets/platformer-art-pixel-redux

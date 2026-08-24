@@ -17,8 +17,12 @@ import '@fontsource/vt323/latin-400.css';
 
 A scratch page for the farm-sim look of the [plant calendar](/plants/).
 Tiles are cut from the packed sheets in `public/tiles/` with CSS only — one
-`<span class="ts ts-farm t-42">` per tile. Indices match Kenney's individual
-`Tiles/tile_00NN.png` files. Add sheets in `src/data/tilesheets.yaml`, then:
+`<span class="ts ts-tiny-town t-5">` per tile. Indices match Kenney's
+individual `Tiles/tile_00NN.png` files; the bold character on each chart
+tile is its map code for the `src/data/plant-map/` files (semantic codes in
+`src/lib/tile-codes.ts`, or any tile as its base36 index, digit-first).
+Everything is Kenney's Tiny collection — one 16px grid. Add sheets in
+`src/data/tilesheets.yaml`, then:
 
 ```bash
 npm run tile-css
@@ -35,29 +39,24 @@ row-major order — they wrap into seamless rows automatically, like a tilemap
 file. A bare `<span class="ts"></span>` (no sheet class) is an empty cell.
 
 <div class="tile-scene" style="--cols: 10; margin-block: 1rem;">
-  <span class="ts ts-farm t-37"></span>
-  <span class="ts ts-farm t-56"></span>
-  <span class="ts ts-farm t-72"></span>
-  <span class="ts ts-farm t-88"></span>
+  <span class="ts ts-tiny-town t-5"></span>
+  <span class="ts ts-tiny-town t-17"></span>
+  <span class="ts ts-tiny-town t-29"></span>
+  <span class="ts ts-tiny-town t-83"></span>
   <span class="tile-text" style="grid-area: 1 / 5 / 2 / 11;">Plant Care</span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
-  <span class="ts ts-farm t-34"></span>
+  <span class="ts ts-tiny-town t-0"></span>
+  <span class="ts ts-tiny-town t-1"></span>
+  <span class="ts ts-tiny-town t-2"></span>
+  <span class="ts ts-tiny-town t-0"></span>
+  <span class="ts ts-tiny-town t-1"></span>
+  <span class="ts ts-tiny-town t-0"></span>
+  <span class="ts ts-tiny-town t-2"></span>
+  <span class="ts ts-tiny-town t-1"></span>
+  <span class="ts ts-tiny-town t-0"></span>
+  <span class="ts ts-tiny-town t-1"></span>
 </div>
 
-(Indices above are a first guess — use the charts below to find the right
-grass caps, fills, and props, and edit this page freely.)
-
 ## Sheet charts
-
-### Top-down (16px)
 
 #### tiny-farm
 
@@ -78,40 +77,6 @@ grass caps, fills, and props, and edit this page freely.)
 #### tiny-ski
 
 <TileSheetChart name="tiny-ski" />
-
-### Top-down (8px)
-
-#### pico8-city
-
-<TileSheetChart name="pico8-city" />
-
-### Side-view (18px)
-
-#### farm
-
-<TileSheetChart name="farm" />
-
-#### stone
-
-<TileSheetChart name="stone" />
-
-#### sand
-
-<TileSheetChart name="sand" />
-
-#### rock
-
-<TileSheetChart name="rock" />
-
-#### marble
-
-<TileSheetChart name="marble" />
-
-### Side-view (21px)
-
-#### platformer
-
-<TileSheetChart name="platformer" />
 
 ---
 
