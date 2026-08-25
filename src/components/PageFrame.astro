@@ -1,12 +1,40 @@
 ---
 import Default from '@astrojs/starlight/components/PageFrame.astro';
+import SplashBurger from './SplashBurger.astro';
 
 // Per-page wallpaper (`backgroundImage` in frontmatter — see
 // src/content.config.ts). The image layers over the skin's
 // `--sl-color-bg`, so pages without one are untouched. Content and TOC
 // get a translucent veil in the skin's background color so text stays
 // legible over the image.
-const { backgroundImage } = Astro.locals.starlightRoute.entry.data;
+const { backgroundImage, plant } = Astro.locals.starlightRoute.entry.data;
+const { hasSidebar } = Astro.locals.starlightRoute;
+
+// Plant pages are many one-paragraph sections; full-size h2s overpower
+// them, so render their section headings at h6 scale. Anchor links wrap
+// each heading in a .sl-heading-wrapper that carries the h2 font-size and
+// the em-based top margin, so size and margins go on the wrapper too.
+const plantCss =
+  plant &&
+  `
+  .sl-markdown-content :is(h2, .sl-heading-wrapper.level-h2) {
+    /* Starlight defines no --sl-text-h6; a real h6 inherits the body size. */
+    font-size: var(--sl-text-h6, var(--sl-text-base, 1rem));
+  }
+  .sl-markdown-content
+    :not(h1, h2, h3, h4, h5, h6)
+    + :is(h2, .sl-heading-wrapper.level-h2) {
+    margin-top: 1.5rem;
+  }
+  .sl-markdown-content :is(h2, .sl-heading-wrapper.level-h2) + * {
+    margin-top: 0.75rem;
+  }
+  /* The binomial line sits flush under the page title. */
+  .main-pane .content-panel + .content-panel,
+  .main-pane .content-panel + .content-panel .sl-container {
+    padding-block-start: 0;
+  }
+`;
 
 const wallpaperCss =
   backgroundImage &&
@@ -51,8 +79,12 @@ const wallpaperCss =
 ---
 
 {backgroundImage && <style is:inline set:html={wallpaperCss} />}
+{plant && <style is:inline set:html={plantCss} />}
 <Default>
   <slot name="header" slot="header" />
   <slot name="sidebar" slot="sidebar" />
+  {/* Splash pages get their own hamburger — Starlight only renders one
+      when the page has a sidebar. */}
+  {!hasSidebar && <SplashBurger />}
   <slot />
 </Default>

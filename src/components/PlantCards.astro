@@ -1,0 +1,87 @@
+---
+// Image-card index of all plant pages in one locale. Cards are built from
+// each page's frontmatter; the photo is resolved by slug convention —
+// src/assets/plants/<slug>.jpg, the same image the page's <Figure> shows.
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  /** Locale prefix of the pages to list, e.g. "plants" or "de/plants". */
+  prefix: string;
+}
+
+const { prefix } = Astro.props;
+
+const plants = (
+  await getCollection('docs', (entry) => entry.id.startsWith(`${prefix}/`) && entry.data.plant)
+).sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/plants/*.{png,jpg,jpeg,webp,avif}'
+);
+
+const cards = await Promise.all(
+  plants.map(async (entry) => {
+    const slug = entry.id.split('/').pop()!;
+    const loader = images[`/src/assets/plants/${slug}.jpg`];
+    if (!loader) {
+      throw new Error(`<PlantCards>: no photo at src/assets/plants/${slug}.jpg`);
+    }
+    return {
+      href: `/${entry.id}/`,
+      title: entry.data.title,
+      binomial: entry.data.plant!.binomial,
+      image: (await loader()).default,
+    };
+  })
+);
+---
+
+<div class="plant-cards">
+  {cards.map(({ href, title, binomial, image }) => (
+    <a href={href} class="plant-card">
+      <Image src={image} alt="" width={480} height={360} />
+      <span class="plant-card__title">{title}</span>
+      <span class="plant-card__binomial">{binomial}</span>
+    </a>
+  ))}
+</div>
+
+<style>
+  .plant-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .plant-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--sl-color-bg-nav);
+    text-decoration: none;
+    transition: border-color 0.15s;
+  }
+  .plant-card:hover {
+    border-color: var(--sl-color-accent);
+  }
+  .plant-card :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .plant-card__title {
+    padding: 0.6rem 0.75rem 0;
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+  .plant-card__binomial {
+    padding: 0 0.75rem 0.6rem;
+    font-style: italic;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+</style>

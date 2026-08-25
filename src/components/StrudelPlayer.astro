@@ -357,6 +357,16 @@ const icon = {
     position: fixed;
     z-index: 50;
     display: inline-flex;
+    transition: translate 200ms ease;
+  }
+
+  /* The mobile menu's preferences bar lands where a bottom-positioned
+     player floats; lift the player clear while the menu is open. The
+     toggle marks the open state on <body>. */
+  @media (max-width: 49.99rem) {
+    :global(body[data-mobile-menu-expanded]) tune-player[data-position^='bottom'] {
+      translate: 0 -6.5rem;
+    }
   }
 
   tune-player[data-position^='top'] {
@@ -511,6 +521,7 @@ const icon = {
   }
 
   @media (prefers-reduced-motion: reduce) {
+    tune-player,
     .tune-player-trigger,
     .tune-player-scope {
       transition: none;

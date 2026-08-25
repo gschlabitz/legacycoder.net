@@ -7,6 +7,13 @@
 // itself; the frontmatter title still names the tab and sidebar entry.
 import '../styles/tiles.css';
 import '@fontsource/vt323/latin-400.css';
+
+interface Props {
+  /** Localized title drawn on the map; frontmatter still names the tab. */
+  title?: string;
+}
+
+const { title = 'Patio Gardening' } = Astro.props;
 ---
 
 <section class="tile-cal-header">
@@ -15,7 +22,7 @@ import '@fontsource/vt323/latin-400.css';
     <span class="ts ts-tiny-ski t-69"></span>
     <span class="ts ts-tiny-ski t-30"></span>
   </div>
-  <h1 class="tile-cal-header__title">Patio Gardening</h1>
+  <h1 class="tile-cal-header__title">{title}</h1>
   <div class="tile-cal-header__intro">
     <slot />
   </div>

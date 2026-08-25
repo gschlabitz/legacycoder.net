@@ -136,10 +136,13 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
    The sidebar is still a visible column here — Starlight's hamburger does not
    appear until 50em — so its copy is revealed there instead: not a menu, but
    in view and out of the header. The duplicated skin and theme stay hidden,
-   since the header still carries those. */
+   since the header still carries those.
+
+   Scoped to [data-has-sidebar]: splash pages have no sidebar column to hand
+   these to (and no burger until 50rem), so there the header keeps them. */
 @media (max-width: 82rem) {
-  .header .right-group .social-icons a,
-  .header .right-group .language-flags {
+  [data-has-sidebar] .header .right-group .social-icons a,
+  [data-has-sidebar] .header .right-group .language-flags {
     display: none;
   }
 }
@@ -154,22 +157,6 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
 
   .mobile-preferences chameleon-skin-select,
   .mobile-preferences starlight-theme-select {
-    display: none;
-  }
-}
-
-/* Mobile. Starlight hides `.right-group` outright and moves everything into the
-   hamburger. Keep the light/dark toggle in the header; search and the hamburger
-   are Starlight's own and already there. */
-@media (max-width: 50em) {
-  .header .right-group {
-    display: flex;
-    gap: 0;
-  }
-
-  .header .right-group .social-icons a,
-  .header .right-group .language-flags,
-  .header .right-group chameleon-skin-select {
     display: none;
   }
 }
