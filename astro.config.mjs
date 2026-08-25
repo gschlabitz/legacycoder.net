@@ -9,6 +9,11 @@ import react from "@astrojs/react";
 // https://astro.build/config
 export default defineConfig({
   site: "https://legacycoder.net",
+  redirects: {
+    // The watering schedule moved out of plants/ to the docs root.
+    "/plants/watering/": "/watering/",
+    "/de/plants/watering/": "/de/watering/",
+  },
   vite: {
     server: {
       // Morph task instances expose the dev server as
