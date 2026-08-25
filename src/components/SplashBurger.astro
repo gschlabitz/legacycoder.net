@@ -1,0 +1,115 @@
+---
+import MobileMenuToggle from '@astrojs/starlight/components/MobileMenuToggle.astro';
+// The stock footer imports its children (ThemeSelect etc.) through
+// Starlight's virtual modules, so it picks up our SocialIcons and
+// LanguageSelect overrides and Chameleon's ThemeSelect. Only a
+// `MobileMenuFooter` override itself would be bypassed here.
+import MobileMenuFooter from '@astrojs/starlight/components/MobileMenuFooter.astro';
+
+// Splash pages have no sidebar, so Starlight skips its hamburger nav
+// entirely (its PageFrame renders one only when `hasSidebar`). This nav
+// fills the gap on small screens with links to the site's main sections,
+// reusing the stock toggle for icons, a11y labels, and scroll lock.
+const { locale } = Astro.locals.starlightRoute;
+const base = locale ? `/${locale}` : '';
+const t =
+  locale === 'de'
+    ? { home: 'Start', plants: 'Pflanzen', recipes: 'Rezepte' }
+    : { home: 'Home', plants: 'Plants', recipes: 'Recipes' };
+const links = [
+  { label: t.home, href: `${base}/` },
+  { label: 'Blog', href: `${base}/blog/` },
+  { label: 'Links', href: `${base}/links/` },
+  { label: t.plants, href: `${base}/plants/` },
+  { label: t.recipes, href: `${base}/recipes/` },
+  { label: 'Workarounds', href: `${base}/workarounds/` },
+];
+---
+
+<nav class="splash-burger print:hidden" aria-label={Astro.locals.t('sidebarNav.accessibleLabel')}>
+  <MobileMenuToggle />
+  {/* The stock toggle points aria-controls at this id. */}
+  <div id="starlight__sidebar" class="pane">
+    <ul>
+      {links.map(({ label, href }) => (
+        <li>
+          <a href={href}>{label}</a>
+        </li>
+      ))}
+    </ul>
+    <div class="footer">
+      <MobileMenuFooter />
+    </div>
+  </div>
+</nav>
+
+<style>
+  .pane {
+    visibility: hidden;
+    position: fixed;
+    z-index: var(--sl-z-index-menu);
+    inset-block: var(--sl-nav-height) 0;
+    inset-inline-start: 0;
+    width: 100%;
+    background-color: var(--sl-color-black);
+    overflow-y: auto;
+    padding: 1rem var(--sl-sidebar-pad-x);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* The toggle sets aria-expanded on its own custom element; :global()
+     because that element renders in another component's style scope. */
+  :global(starlight-menu-button[aria-expanded='true']) ~ .pane {
+    visibility: visible;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Match the look of Starlight's top-level sidebar links on mobile. */
+  a {
+    display: block;
+    padding: 0.3em 0.5rem;
+    font-size: var(--sl-text-lg);
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--sl-color-white);
+    text-decoration: none;
+    border-radius: 0.25rem;
+  }
+
+  a:hover,
+  a:focus-visible {
+    background-color: var(--sl-color-gray-6);
+  }
+
+  /* Preferences bar pinned to the pane's bottom, as in the stock menu. */
+  .footer {
+    margin-top: auto;
+  }
+
+  @media (min-width: 50rem) {
+    .splash-burger {
+      display: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Splash pages lack [data-has-sidebar] on <html>, so the header never
+     reserves room for the fixed menu button. Same padding Starlight adds
+     when the attribute is set. This stylesheet ships on every page
+     (PageFrame imports the component unconditionally), hence the
+     :not() guard for pages where Starlight pads already. `header.header`
+     because Header.astro nests a second `div.header` inside PageFrame's
+     `header.header` — a bare `.header` pads both and doubles the indent. */
+  @media (max-width: 49.99rem) {
+    :root:not([data-has-sidebar]) header.header {
+      padding-inline-end: calc(var(--sl-nav-gap) + var(--sl-nav-pad-x) + var(--sl-menu-button-size));
+    }
+  }
+</style>

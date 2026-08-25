@@ -1,5 +1,6 @@
 ---
 import Default from '@astrojs/starlight/components/PageFrame.astro';
+import SplashBurger from './SplashBurger.astro';
 
 // Per-page wallpaper (`backgroundImage` in frontmatter — see
 // src/content.config.ts). The image layers over the skin's
@@ -7,6 +8,7 @@ import Default from '@astrojs/starlight/components/PageFrame.astro';
 // get a translucent veil in the skin's background color so text stays
 // legible over the image.
 const { backgroundImage } = Astro.locals.starlightRoute.entry.data;
+const { hasSidebar } = Astro.locals.starlightRoute;
 
 const wallpaperCss =
   backgroundImage &&
@@ -54,5 +56,8 @@ const wallpaperCss =
 <Default>
   <slot name="header" slot="header" />
   <slot name="sidebar" slot="sidebar" />
+  {/* Splash pages get their own hamburger — Starlight only renders one
+      when the page has a sidebar. */}
+  {!hasSidebar && <SplashBurger />}
   <slot />
 </Default>
