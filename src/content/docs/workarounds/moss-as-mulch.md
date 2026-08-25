@@ -3,7 +3,7 @@ title: 🌿 Moss as Mulch for Potted Plants
 description: Pros and cons of moss as a top dressing, tips for collecting wild moss, indoor winter care, and commercial alternatives.
 ---
 
-Using moss as a top dressing for potted plants is both functional and aesthetic. This guide covers the pros and cons, tips for collecting wild moss, indoor winter care, and commercial alternatives.
+Using moss as a top dressing for potted plants is both functional and aesthetic.
 
 ## Pros & Cons of Moss as Mulch
 

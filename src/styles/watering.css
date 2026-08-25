@@ -10,6 +10,13 @@
   isolation: isolate;
 }
 
+/* Bullets flush with the card's content block instead of the UA's 40px
+   indent. `inside` keeps the markers from hanging past the card edge. */
+.watering-cards .card ul {
+  padding-inline-start: 0;
+  list-style-position: inside;
+}
+
 .watering-cards .card-emoji {
   position: absolute;
   bottom: var(--emoji-bottom, -0.2em);
@@ -25,22 +32,43 @@
 /* Per-emoji knobs — each glyph carries different internal whitespace, so
    tune size and offsets here without disturbing the others. */
 .watering-cards .card-emoji--heavy-drinker {
-    --emoji-bottom: -0.45em;
+    --emoji-bottom: -0.25em;
 }
 
-.watering-cards .card-emoji--moist-critikal {
-  /* The wave is a wide glyph — smaller and further off-edge than the rest,
-     and flipped to curl toward the card's interior. */
-  --emoji-size: 16rem;
-  --emoji-right: -0.1em;
-  --emoji-bottom: -0.3em;
-
+.watering-cards .card-emoji--one-glass {
+  --emoji-right: -0.3em;
+  --emoji-bottom: -0.18em;
 }
 
-.watering-cards .card-emoji--weekend-waterer {
-    --emoji-bottom: -0.14em;
+.watering-cards .card-emoji--social-drinker {
+    --emoji-bottom: -0.2em;
+    --emoji-right: -0.22em;
 }
 
-.watering-cards .card-emoji--dry-pot-club {
-    --emoji-bottom: -0.35em;
+.watering-cards .card-emoji--relapser {
+    --emoji-bottom: -0.18em;
+}
+
+/* Small screens: cards stack full-width and shrink, so each glyph gets its
+   own mobile knobs. Matches Starlight's CardGrid single-column breakpoint. */
+@media (max-width: 49.99rem) {
+  .watering-cards .card-emoji--heavy-drinker {
+    --emoji-right: 0;
+    --emoji-bottom: -0.55em;
+  }
+
+  .watering-cards .card-emoji--one-glass {
+    --emoji-right: 0;
+    --emoji-bottom: -0.18em;
+  }
+
+  .watering-cards .card-emoji--social-drinker {
+    --emoji-right: -0.15em;
+    --emoji-bottom: -0.3em;
+  }
+
+  .watering-cards .card-emoji--relapser {
+      --emoji-right: 0;
+      --emoji-bottom: -0.2em;
+  }
 }

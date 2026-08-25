@@ -3,7 +3,7 @@ title: Guido's Link List
 description: My cross-country, cross-device, cross-browser bookmarks.
 ---
 
-My cross-country, cross-device, cross-browser bookmarks. No syncing needed. I just make this my homepage.
+No syncing needed. I just make this my homepage.
 
 # Quick Links
 - [Re:Zero ](https://www.crunchyroll.com/series/GRGG9798R/rezero--starting-life-in-another-world-)

@@ -43,6 +43,8 @@ export default defineConfig({
         Hero: "./src/components/Hero.astro",
         // Stock frame plus the per-page `backgroundImage` wallpaper.
         PageFrame: "./src/components/PageFrame.astro",
+        // Stock title plus the frontmatter description as a subtitle.
+        PageTitle: "./src/components/PageTitle.astro",
       },
       defaultLocale: "root",
       locales: {
