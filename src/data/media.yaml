@@ -132,12 +132,11 @@
 - id: dune-1965
   title: Dune
   type: book
-  status: finished
+  status: queued
   recommended: true
   creator: Frank Herbert
   year: 1965
   added: 2026-08-08
-  finished: 2026-07-24
   link: https://openlibrary.org/works/OL893415W/Dune
 
 - id: cowboy-bebop-1998

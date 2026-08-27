@@ -1,5 +1,5 @@
 ---
-title: 🏠 Bare-Git Dotfiles Across macOS and Linux
+title: 🏠 Dotfiles Repo
 description: One dotfiles repo shared across macOS and CachyOS using the bare-git approach — no symlinks, no extra tooling, secrets kept out of the repo.
 ---
 

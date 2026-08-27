@@ -75,16 +75,29 @@ export default function starlightSidebarSections(
           )
         }
 
-        updateConfig({
-          sidebar: entries.map((entry) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sidebar: any[] = entries.map((entry) =>
             entry.isSection
               ? {
                   label: labels[entry.key] ?? entry.key,
-                  items: [{ autogenerate: { directory: entry.key } }],
+                  items: [{ autogenerate: { directory: entry.key, collapsed: true } }],
                 }
               : { slug: entry.key === 'index' ? '' : entry.key },
-          ),
-        })
+          )
+
+          // Insert the Media page (a regular page, not a docs entry) right
+          // after the landing page so it sits near the top of the sidebar.
+          const indexPos = sidebar.findIndex(
+            (item: Record<string, unknown>) => 'slug' in item && item.slug === '',
+          )
+          if (indexPos !== -1) {
+            sidebar.splice(indexPos + 1, 0, {
+              label: 'Media',
+              link: '/media/',
+            })
+          }
+
+        updateConfig({ sidebar })
 
         // Known limitation: this listing is read once, at config time, so
         // adding or renaming a *top-level* page needs a dev server restart —
