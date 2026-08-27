@@ -1,13 +1,11 @@
 ---
-title: 🏠 Bare-Git Dotfiles Across macOS and Linux
+title: 🏠 Dotfiles Repo
 description: One dotfiles repo shared across macOS and CachyOS using the bare-git approach — no symlinks, no extra tooling, secrets kept out of the repo.
 ---
 
-One dotfiles repo shared across macOS and CachyOS using the **bare-git**
-approach — no symlinks, no extra tooling, files live in their real locations.
-OS differences are handled by conditional logic inside the shared files.
-Secrets never enter the repo (Level 1 below); 1Password integration is
-deferred.
+Files live in their real locations; OS differences are handled by
+conditional logic inside the shared files. Secrets never enter the repo
+(Level 1 below); 1Password integration is deferred.
 
 These steps are meant to be **executed manually** (security + learning).
 

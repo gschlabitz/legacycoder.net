@@ -1,0 +1,21 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+
+const { entry } = Astro.locals.starlightRoute;
+// Blog descriptions are first-sentence excerpts from the 2005–2008 migration;
+// showing them would print each post's opening line twice.
+const isBlogPost = /^(?:[a-z-]+\/)?blog\//.test(entry.id);
+const description = isBlogPost ? undefined : entry.data.description;
+---
+
+<Default><slot /></Default>
+{description && <p class="page-description">{description}</p>}
+
+<style>
+	.page-description {
+		margin-top: 0.5rem;
+		color: var(--sl-color-gray-3);
+		font-size: var(--sl-text-lg);
+		font-style: italic;
+	}
+</style>
