@@ -49,6 +49,29 @@
     --emoji-bottom: -0.18em;
 }
 
+/* Kitchen (fertilizing) cards — same wallpaper treatment, own knobs. */
+.watering-cards .card-emoji--competitive-eater {
+  --emoji-bottom: -0.12em;
+  --emoji-right: 0.1em;
+  font-size: var(--emoji-size, 10rem);
+}
+
+.watering-cards .card-emoji--plate-cleaner {
+  --emoji-bottom: -0.25em;
+  --emoji-right: -0.25em;
+}
+
+.watering-cards .card-emoji--half-portion {
+  --emoji-bottom: -0.18em;
+  --emoji-right: -0.22em;
+}
+
+.watering-cards .card-emoji--nibbler {
+  --emoji-bottom: 0.5em;
+  --emoji-right: 0.5em;
+  font-size: var(--emoji-size, 5rem);
+}
+
 /* Small screens: cards stack full-width and shrink, so each glyph gets its
    own mobile knobs. Matches Starlight's CardGrid single-column breakpoint. */
 @media (max-width: 49.99rem) {
@@ -59,7 +82,7 @@
 
   .watering-cards .card-emoji--one-glass {
     --emoji-right: 0;
-    --emoji-bottom: -0.18em;
+    --emoji-bottom: -0.34em;
   }
 
   .watering-cards .card-emoji--social-drinker {
@@ -70,5 +93,26 @@
   .watering-cards .card-emoji--relapser {
       --emoji-right: 0;
       --emoji-bottom: -0.2em;
+  }
+
+  .watering-cards .card-emoji--competitive-eater {
+    --emoji-right: 0.2em;
+    --emoji-bottom: -0.15em;
+    font-size: var(--emoji-size, 8rem);
+  }
+
+  .watering-cards .card-emoji--plate-cleaner {
+    --emoji-right: -0.2em;
+    --emoji-bottom: -0.4em;
+  }
+
+  .watering-cards .card-emoji--half-portion {
+    --emoji-right: 0;
+    --emoji-bottom: -0.1em;
+  }
+
+  .watering-cards .card-emoji--nibbler {
+    --emoji-right: 0.4em;
+    --emoji-bottom: 0.2em;
   }
 }
