@@ -14,7 +14,7 @@
 }
 
 .header-tooltip,
-.language-flags .flag-link::after,
+.language-toggle .flag-link::after,
 starlight-theme-select .mode-button::after {
   position: absolute;
   top: calc(100% + 0.35rem);
@@ -39,7 +39,7 @@ starlight-theme-select .mode-button::after {
   white-space: nowrap;
 }
 
-.language-flags .flag-link,
+.language-toggle .flag-link,
 starlight-theme-select .mode-button {
   position: relative;
 }
@@ -48,12 +48,12 @@ starlight-theme-select .mode-button::after {
   content: attr(title);
 }
 
-.language-flags .flag-link::after {
+.language-toggle .flag-link::after {
   content: attr(data-tooltip);
 }
 
 .social-icons a:is(:hover, :focus-visible) .header-tooltip,
-.language-flags .flag-link:is(:hover, :focus-visible)::after,
+.language-toggle .flag-link:is(:hover, :focus-visible)::after,
 starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
   opacity: 1;
   transform: translate(-50%, 0);
@@ -62,7 +62,7 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
 }
 
 .mobile-preferences .header-tooltip,
-.mobile-preferences .language-flags .flag-link::after,
+.mobile-preferences .language-toggle .flag-link::after,
 .mobile-preferences starlight-theme-select .mode-button::after {
   top: auto;
   bottom: calc(100% + 0.35rem);
@@ -70,12 +70,12 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
 }
 
 .mobile-preferences .social-icons a:is(:hover, :focus-visible) .header-tooltip,
-.mobile-preferences .language-flags .flag-link:is(:hover, :focus-visible)::after,
+.mobile-preferences .language-toggle .flag-link:is(:hover, :focus-visible)::after,
 .mobile-preferences starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
   transform: translate(-50%, 0);
 }
 
-.header .language-flags .flag-link,
+.header .language-toggle .flag-link,
 .header starlight-theme-select .mode-button {
   inline-size: var(--lc-header-action-size);
   block-size: var(--lc-header-action-size);
@@ -87,7 +87,7 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
   block-size: var(--lc-header-icon-size);
 }
 
-.header .language-flags .flag-link {
+.header .language-toggle .flag-link {
   font-size: var(--lc-header-icon-size);
 }
 
@@ -98,15 +98,9 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
    pitch. Our controls were plain 40px boxes on the group's 16px gap — a 56px
    pitch — which read as a second, more loosely spaced group sitting next to the
    first. Same trick here, so the site's flag and theme controls share that rhythm. */
-.header .language-flags .flag-link,
+.header .language-toggle .flag-link,
 .header starlight-theme-select .mode-button {
   margin-inline: calc(var(--lc-header-action-size) / -5);
-}
-
-/* The flags carried their own tighter gap to compensate for the wide pitch;
-   with the negative margins above they need the group's spacing instead. */
-.header .language-flags {
-  gap: 1rem;
 }
 
 /* ------------------------------------------------------------------ */
@@ -118,10 +112,10 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
    hamburger panel below Starlight's own 50em. Rather than shrink everything as
    the header narrows, hand controls over from the first copy to the second. */
 
-/* The social links and the language flags leave the header early — as soon as
+/* The social links and the language toggle leave the header early — as soon as
    it stops being roomy, rather than once it is already tight. They are the
-   least likely thing a reader wants mid-page, and between them they free about
-   240px, leaving the remaining controls room to breathe.
+   least likely thing a reader wants mid-page, leaving the remaining controls
+   room to breathe.
 
    The sidebar is still a visible column here — Starlight's hamburger does not
    appear until 50em — so its copy is revealed there instead: not a menu, but
@@ -132,7 +126,7 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
    these to (and no burger until 50rem), so there the header keeps them. */
 @media (max-width: 82rem) {
   [data-has-sidebar] .header .right-group .social-icons a,
-  [data-has-sidebar] .header .right-group .language-flags {
+  [data-has-sidebar] .header .right-group .language-toggle {
     display: none;
   }
 }
