@@ -1,9 +1,9 @@
 // Attach to a running instance (issue #11):
 //
-//   ./morph attach                          # newest task/interactive instance, print connect info
-//   ./morph attach <instance-id>
-//   ./morph attach <instance-id> --zed
-//   ./morph attach <instance-id> --cmux
+//   npm run morph:attach                          # newest task/interactive instance, print connect info
+//   npm run morph:attach -- <instance-id>
+//   npm run morph:attach -- <instance-id> --zed
+//   npm run morph:attach -- <instance-id> --cmux
 //
 // Always rewrites ~/.ssh/morph_config (aliases for all live project
 // instances, dead ones pruned) so Zed, cmux, ssh, and git all resolve the
@@ -42,7 +42,7 @@ if (positionals[0]) {
     .sort((a, b) => (b.created ?? 0) - (a.created ?? 0));
   instance = candidates[0];
   if (!instance) {
-    console.error(`No ${PROJECT} instances found. Start one with: ./morph task --issue <n>`);
+    console.error(`No ${PROJECT} instances found. Start one with: npm run morph:task -- --issue <n>`);
     process.exit(1);
   }
 }
@@ -74,6 +74,6 @@ Instance ${instance.id} (${instance.metadata?.task ?? "unnamed"}, ${instance.sta
   agent:    ${agentAttachCommand(alias)}   (detach: Ctrl-b d)
   log:      ssh ${alias} 'tail -f /root/task.log'
   preview:  ${preview ?? "(no dev service exposed)"}
-  zed:      ./morph attach ${instance.id} --zed
-  cmux:     ./morph attach ${instance.id} --cmux`);
+  zed:      npm run morph:attach -- ${instance.id} --zed
+  cmux:     npm run morph:attach -- ${instance.id} --cmux`);
 }

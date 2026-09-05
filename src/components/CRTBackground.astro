@@ -172,19 +172,11 @@ import '@fontsource/vt323/latin-400.css';
     );
   }
 
-  /* Theme wash: a soft radial scrim parked behind the hero (upper middle of
-     the viewport) so title, tagline, and actions keep their contrast, over a
-     light overall tint that lets the code stay vivid toward the edges. */
+  /* A light overall tint; the hero carries its own backing. */
   .crt-tint {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(
-        ellipse 70% 55% at 45% 32%,
-        color-mix(in srgb, var(--sl-color-bg) 88%, transparent) 30%,
-        transparent 75%
-      ),
-      color-mix(in srgb, var(--sl-color-bg) 38%, transparent);
+    background: color-mix(in srgb, var(--sl-color-bg) 38%, transparent);
   }
 
   .crt-pause {

@@ -1,14 +1,12 @@
+import assert from 'node:assert/strict'
 import { readdir } from 'node:fs/promises'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const assets = fileURLToPath(new URL('../dist/_astro/', import.meta.url))
 const moduleName = (await readdir(assets)).find((name) =>
-  /^Player\.astro_astro_type_script_index_0_lang\..+\.js$/.test(name)
+  /^StrudelPlayer\.astro_astro_type_script_index_0_lang\..+\.js$/.test(name)
 )
-const tuneModuleName = (await readdir(assets)).find((name) =>
-  /^FrontPageTune\.astro_astro_type_script_index_0_lang\..+\.js$/.test(name)
-)
-if (!moduleName || !tuneModuleName) throw new Error('Build the site before running the player click test.')
+if (!moduleName) throw new Error('StrudelPlayer build asset missing. Run npm run build before npm test.')
 
 class MockButton {
   dataset = { action: 'playpause', state: 'armed' }
@@ -30,7 +28,9 @@ class MockButton {
 const button = new MockButton()
 let player
 class MockElement {
+  parentElement = null
   dataset = {
+    tunes: 'grid',
     labelPlay: 'Play tune',
     labelPause: 'Pause tune',
     labelLoading: 'Loading tune',
@@ -55,6 +55,12 @@ globalThis.customElements = {
   define: (name, constructor) => registry.set(name, constructor),
 }
 globalThis.document = {
+  body: {
+    appendChild(element) {
+      element.parentElement = this
+      element.connectedCallback()
+    },
+  },
   createElement: () => ({ relList: { supports: () => false } }),
   getElementsByTagName: () => [],
   head: { appendChild() {} },
@@ -71,16 +77,20 @@ globalThis.requestAnimationFrame = () => 1
 globalThis.cancelAnimationFrame = () => {}
 
 await import(pathToFileURL(`${assets}/${moduleName}`))
-await import(pathToFileURL(`${assets}/${tuneModuleName}`))
 const Player = customElements.get('tune-player')
+assert.ok(Player, 'StrudelPlayer must register the tune-player element.')
 player = new Player()
 player.connectedCallback()
+assert.equal(player.parentElement, document.body, 'The player must move out of the page stacking context.')
+assert.equal(button.dataset.state, 'armed')
+assert.equal(button.ariaLabel, 'Play tune')
 button.click()
 
-if (button.dataset.state !== 'loading') {
-  console.error(`Expected a click to show loading immediately; got ${button.dataset.state}.`)
-  process.exit(1)
-}
+assert.equal(button.dataset.state, 'loading', 'A click must show loading immediately.')
+assert.equal(button.disabled, true, 'Disable the button while the audio engine loads.')
+assert.equal(button['aria-busy'], true)
+assert.equal(button.ariaLabel, 'Loading tune')
 
 console.log('Player click shows loading immediately.')
+// This regression checks synchronous click feedback, before Web Audio loads.
 process.exit(0)

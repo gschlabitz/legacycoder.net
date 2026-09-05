@@ -2,7 +2,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightBlog from "starlight-blog";
-import starlightThemeChameleon from "starlight-theme-chameleon";
 import starlightSidebarSections from "./src/plugins/sidebar-sections.ts";
 import react from "@astrojs/react";
 
@@ -24,7 +23,17 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "Guido Schlabitz",
-      customCss: ["./src/styles/pfeffer.css", "./src/styles/bio.css", "./src/styles/header.css", "./src/styles/skills.css", "./src/styles/recipes.css", "./src/styles/media.css", "./src/styles/watering.css", "./src/styles/outline.css"],
+      customCss: [
+        "./src/styles/theme.css",
+        "./src/styles/pfeffer.css",
+        "./src/styles/bio.css",
+        "./src/styles/header.css",
+        "./src/styles/skills.css",
+        "./src/styles/recipes.css",
+        "./src/styles/media.css",
+        "./src/styles/watering.css",
+        "./src/styles/outline.css",
+      ],
       social: [
         { icon: "github", label: "GitHub", href: "https://github.com/gschlabitz" },
         { icon: "laptop", label: "Upwork", href: "https://www.upwork.com/freelancers/~01385cf1007a0ae63d" },
@@ -37,6 +46,8 @@ export default defineConfig({
         // Renders starlight-blog's header link plus our own Links link.
         SiteTitle: "./src/components/SiteTitle.astro",
         LanguageSelect: "./src/components/LanguageSelect.astro",
+        // Cycle light, dark, and auto with the site's icon button.
+        ThemeSelect: "./src/components/ThemeSelect.astro",
         // Stock social icons, but external profiles open in a new tab.
         SocialIcons: "./src/components/SocialIcons.astro",
         // Stock hero plus the CRT typing backdrop behind the whole page.
@@ -66,12 +77,6 @@ export default defineConfig({
         starlightSidebarSections({
           exclude: ["blog", "playground.mdx"],
           labels: { "llm-notebook": "LLM Notebook", plants: "Plants", "recipes": "Recipes", workarounds: "Workarounds" },
-        }),
-        // After starlightBlog so Chameleon sees the final component map (ADR 0003).
-        starlightThemeChameleon({
-          skins: ["nordic", "catppuccin", "home-computer"],
-          skinSelector: "icon",
-          themeSelector: "icon",
         }),
       ],
     }),

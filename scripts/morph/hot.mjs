@@ -6,8 +6,8 @@
 // service cannot start from personal snapshots (its service key can't see
 // them - verified 2026-07), so the dashboard/devbox route is a dead end.
 //
-//   ./morph hot                # branch sandbox/hot
-//   ./morph hot --name errand  # branch sandbox/errand
+//   npm run morph:hot                # branch sandbox/hot
+//   npm run morph:hot -- --name errand  # branch sandbox/errand
 //
 // The box carries secrets on its paused disk - the same exposure as any
 // task box, just longer-lived. Phone auth is a one-time ACCOUNT setting,
@@ -15,7 +15,7 @@
 // consults the VM's authorized_keys (verified 2026-07), so the phone key
 // must be registered as the account's user SSH key instead - see
 // docs/iphone-hot-box-runbook.md. No done signal ever appears here: reap
-// skips hot boxes; finish one with ./morph reap --force <id>.
+// skips hot boxes; finish one with npm run morph:reap -- --force <id>.
 
 import { parseArgs } from "node:util";
 import {
@@ -93,4 +93,4 @@ Preview (also wakes it): ${service?.url ?? "(exposing failed)"}
 Laptop: ${access.sshCommand}
 
 It re-pauses ${flags.ttl} min after each wake. Secrets are on its disk -
-when back at the laptop, finish it with: ./morph reap --force ${instance.id}`);
+when back at the laptop, finish it with: npm run morph:reap -- --force ${instance.id}`);

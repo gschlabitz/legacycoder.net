@@ -1,9 +1,9 @@
 // List account snapshots.
 //
-//   ./morph snapshots list
+//   npm run snapshots:list
 //
 // `snapshots create` was removed (issue #16): it produced purpose-less
-// snapshots that ./morph sweep's debris rule would delete, and task disks
+// snapshots that npm run morph:sweep's debris rule would delete, and task disks
 // carry per-run secrets so snapshotting them was never safe anyway.
 
 import { ageInDays, createClient } from "./client.mjs";

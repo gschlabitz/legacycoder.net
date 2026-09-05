@@ -2,8 +2,8 @@
 // desk" (issue #16). Busy boxes are paused too; memory state survives, and
 // a mid-run agent that errors on resume is recoverable via morph:attach.
 //
-//   ./morph sleep
-//   ./morph sleep --dry-run
+//   npm run morph:sleep
+//   npm run morph:sleep -- --dry-run
 
 import { parseArgs } from "node:util";
 import { createClient, projectInstances } from "./client.mjs";

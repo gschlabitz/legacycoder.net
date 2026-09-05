@@ -2,13 +2,13 @@
 // nothing else. The dev server starts per task, not here, and no secret ever
 // enters a setup() layer - snapshots must stay shareable (issue #11).
 //
-//   ./morph warm
-//   ./morph warm --vcpus 4 --memory 8192 --disk 32768
+//   npm run morph:warm
+//   npm run morph:warm -- --vcpus 4 --memory 8192 --disk 32768
 //
 // Each setup() layer is cached by a chain hash: re-running after a failure
 // resumes from the last completed layer instead of rebuilding. Rebuilds are
 // manual and create a new snapshot; morph:task always picks the latest ready
-// one (metadata purpose=warm-dev). ./morph sweep deletes superseded warm
+// one (metadata purpose=warm-dev). npm run morph:sweep deletes superseded warm
 // snapshots and all purpose-less setup layers - so a swept account rebuilds
 // from scratch, and sweeping mid-build eats the unfinished layers.
 

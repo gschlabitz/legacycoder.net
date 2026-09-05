@@ -2,11 +2,6 @@
 import context from "virtual:starlight/project-context";
 import config from "virtual:starlight/user-config";
 
-const flagLocales = {
-  root: { flag: "🇺🇸", label: "English" },
-  de: { flag: "🇩🇪", label: "Deutsch" },
-};
-
 function stripTrailingSlash(path: string) {
   return path.endsWith("/") ? path.slice(0, -1) : path;
 }
@@ -46,39 +41,34 @@ function localizedPathname(locale: string): string {
 }
 
 const currentLocale = Astro.locals.starlightRoute.locale ?? "root";
-const locales =
-  config.isMultilingual && config.locales
-    ? Object.entries(flagLocales).filter(([code]) => code in config.locales!)
-    : [];
+const target = currentLocale === "de"
+    ? { locale: "root", lang: "en", flag: "🇺🇸", label: "English" }
+  : { locale: "de", lang: "de", flag: "🇩🇪", label: "Deutsch" };
+const canToggle = config.isMultilingual && config.locales
+  && "root" in config.locales && "de" in config.locales;
 ---
 
 {
-  locales.length > 0 && (
-    <nav class="language-flags" aria-label={Astro.locals.t("languageSelect.accessibleLabel")}>
-      {locales.map(([code, locale]) => {
-        const selected = code === currentLocale;
-
-        return (
-          <a
-            class="flag-link"
-            href={localizedPathname(code)}
-            aria-label={locale.label}
-            aria-current={selected ? "true" : undefined}
-            data-tooltip={locale.label}
-          >
-            <span aria-hidden="true">{locale.flag}</span>
-          </a>
-        );
-      })}
+  canToggle && (
+    <nav class="language-toggle" aria-label={Astro.locals.t("languageSelect.accessibleLabel")}>
+      <a
+        class="flag-link"
+        href={localizedPathname(target.locale)}
+        hreflang={target.lang}
+        lang={target.lang}
+        aria-label={target.label}
+        data-tooltip={target.label}
+      >
+        <span aria-hidden="true">{target.flag}</span>
+      </a>
     </nav>
   )
 }
 
 <style>
-  .language-flags {
+  .language-toggle {
     align-items: center;
     display: flex;
-    gap: 0.25rem;
   }
 
   .flag-link {

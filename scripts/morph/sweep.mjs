@@ -7,11 +7,11 @@
 // reproducible build leftovers (single-operator account - anything worth
 // keeping carries a purpose).
 //
-//   ./morph sweep
-//   ./morph sweep --all        # delete the latest warm snapshot too
-//   ./morph sweep --dry-run
+//   npm run morph:sweep
+//   npm run morph:sweep -- --all        # delete the latest warm snapshot too
+//   npm run morph:sweep -- --dry-run
 //
-// Convention, not enforced: don't sweep while a ./morph warm build is
+// Convention, not enforced: don't sweep while a npm run morph:warm build is
 // running - its unfinished layers look like debris.
 
 import { parseArgs } from "node:util";
@@ -70,4 +70,4 @@ for (const snapshot of snapshots) {
 }
 
 console.log(`\n${kept} snapshot(s) kept.`);
-if (flags.all && !dryRun) console.log(`No warm snapshot remains - the next ./morph task needs a ./morph warm first.`);
+if (flags.all && !dryRun) console.log(`No warm snapshot remains - the next npm run morph:task needs a npm run morph:warm first.`);
