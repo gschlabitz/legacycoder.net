@@ -15,6 +15,11 @@
 
   * { box-sizing: border-box; }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   body {
     margin: 0;
     background: #eceef1;
@@ -23,7 +28,9 @@
   }
 
   .sheet {
-    max-width: 8.5in;
+    /* Keep the paper layout on small screens; readers can pan across it. */
+    width: 8.5in;
+    min-height: 11in;
     margin: 2rem auto;
     padding: 0.75in 0.85in;
     background: var(--paper);
@@ -160,7 +167,8 @@
     }
     body { background: none; font-size: 10pt; }
     .sheet {
-      max-width: none;
+      width: auto;
+      min-height: 0;
       margin: 0;
       padding: 0;
       box-shadow: none;
@@ -237,7 +245,12 @@
       </ul>
     </div>
 
-    <div class="job page-break">
+  </section>
+</div>
+
+<div class="sheet page-break">
+  <section aria-label="Experience continued">
+    <div class="job">
       <h3><span class="role"><a href="https://www.upwork.com/freelancers/guidoschlabitz">Freelancing on Upwork</a></span> <span class="when">2024 - Nov 2025</span></h3>
       <p>Some of my clients:</p>
 
