@@ -15,7 +15,6 @@
 
 .header-tooltip,
 .language-flags .flag-link::after,
-chameleon-skin-select[data-variant="icon"] .skin-trigger::after,
 starlight-theme-select .mode-button::after {
   position: absolute;
   top: calc(100% + 0.35rem);
@@ -41,13 +40,10 @@ starlight-theme-select .mode-button::after {
 }
 
 .language-flags .flag-link,
-chameleon-skin-select[data-variant="icon"] .skin-trigger,
 starlight-theme-select .mode-button {
   position: relative;
 }
 
-.language-flags .flag-link::after,
-chameleon-skin-select[data-variant="icon"] .skin-trigger::after,
 starlight-theme-select .mode-button::after {
   content: attr(title);
 }
@@ -58,7 +54,6 @@ starlight-theme-select .mode-button::after {
 
 .social-icons a:is(:hover, :focus-visible) .header-tooltip,
 .language-flags .flag-link:is(:hover, :focus-visible)::after,
-chameleon-skin-select[data-variant="icon"] .skin-trigger:is(:hover, :focus-visible)::after,
 starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
   opacity: 1;
   transform: translate(-50%, 0);
@@ -68,7 +63,6 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
 
 .mobile-preferences .header-tooltip,
 .mobile-preferences .language-flags .flag-link::after,
-.mobile-preferences chameleon-skin-select[data-variant="icon"] .skin-trigger::after,
 .mobile-preferences starlight-theme-select .mode-button::after {
   top: auto;
   bottom: calc(100% + 0.35rem);
@@ -77,19 +71,16 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
 
 .mobile-preferences .social-icons a:is(:hover, :focus-visible) .header-tooltip,
 .mobile-preferences .language-flags .flag-link:is(:hover, :focus-visible)::after,
-.mobile-preferences chameleon-skin-select[data-variant="icon"] .skin-trigger:is(:hover, :focus-visible)::after,
 .mobile-preferences starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
   transform: translate(-50%, 0);
 }
 
 .header .language-flags .flag-link,
-.header chameleon-skin-select[data-variant="icon"] .skin-trigger,
 .header starlight-theme-select .mode-button {
   inline-size: var(--lc-header-action-size);
   block-size: var(--lc-header-action-size);
 }
 
-.header chameleon-skin-select[data-variant="icon"] .icon,
 .header starlight-theme-select .mode-icon,
 .header starlight-theme-select .mode-icon svg {
   inline-size: var(--lc-header-icon-size);
@@ -106,9 +97,8 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
    equal negative margin, so the boxes overlap and the glyphs land on a 40px
    pitch. Our controls were plain 40px boxes on the group's 16px gap — a 56px
    pitch — which read as a second, more loosely spaced group sitting next to the
-   first. Same trick here, so every icon in the header shares one rhythm. */
+   first. Same trick here, so the site's flag and theme controls share that rhythm. */
 .header .language-flags .flag-link,
-.header chameleon-skin-select[data-variant="icon"] .skin-trigger,
 .header starlight-theme-select .mode-button {
   margin-inline: calc(var(--lc-header-action-size) / -5);
 }
@@ -135,8 +125,8 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
 
    The sidebar is still a visible column here — Starlight's hamburger does not
    appear until 50em — so its copy is revealed there instead: not a menu, but
-   in view and out of the header. The duplicated skin and theme stay hidden,
-   since the header still carries those.
+   in view and out of the header. The duplicated theme selector stays hidden,
+   since the header still carries it.
 
    Scoped to [data-has-sidebar]: splash pages have no sidebar column to hand
    these to (and no burger until 50rem), so there the header keeps them. */
@@ -155,7 +145,6 @@ starlight-theme-select .mode-button:is(:hover, :focus-visible)::after {
     display: block;
   }
 
-  .mobile-preferences chameleon-skin-select,
   .mobile-preferences starlight-theme-select {
     display: none;
   }
