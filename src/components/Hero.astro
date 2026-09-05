@@ -12,8 +12,37 @@ import CRTBackground from './CRTBackground.astro';
 
 <style is:global>
   @layer starlight.core {
+    [data-has-hero] {
+      --sl-main-pad: 0;
+    }
+
+    .content-panel:has(> .sl-container > .hero) {
+      min-block-size: calc(100svh - var(--sl-nav-height));
+      display: grid;
+      align-items: center;
+    }
+
+    .sl-container:has(> .hero) {
+      width: 100%;
+    }
+
+    /* The player is fixed; empty content and footer boxes need no spacing. */
+    .sl-container:has(> .hero) > :is(.sl-markdown-content, footer),
+    .sl-container:has(> .hero) > footer .meta {
+      margin-block: 0;
+    }
+
+    .sl-container:has(> .hero) > footer:not(:has(a, time)) {
+      gap: 0;
+    }
+
+    .hero:has(> img[width][height]) {
+      margin-block: 0;
+      padding-block: 0;
+    }
+
     .hero > img[width][height] {
-      --legacy-hero-image-size: min(70vw, 20rem);
+      --legacy-hero-image-size: min(35vw, 10rem);
 
       width: var(--legacy-hero-image-size);
       height: var(--legacy-hero-image-size);
@@ -21,9 +50,54 @@ import CRTBackground from './CRTBackground.astro';
       object-fit: cover;
     }
 
+    .hero > .stack {
+      position: relative;
+      isolation: isolate;
+    }
+
+    /* Follow the text without changing the hero's size or alignment. */
+    .hero > .stack::before {
+      content: '';
+      position: absolute;
+      inset: -1.5rem -0.75rem;
+      z-index: -1;
+      border-radius: 1.5rem;
+      background: color-mix(in srgb, var(--sl-color-bg) 75%, transparent);
+      filter: blur(1rem);
+      pointer-events: none;
+    }
+
     @media (min-width: 50rem) {
+      .hero > .stack::before {
+        inset-inline: -1.5rem;
+      }
+
+      .hero:has(> img[width][height]) {
+        grid-template-columns: fit-content(65%) auto;
+        column-gap: 2rem;
+        justify-content: center;
+      }
+
       .hero > img[width][height] {
-        --legacy-hero-image-size: min(35vw, 25rem);
+        /* Let the text set the grid row height, then fill it with the portrait. */
+        contain: size;
+        width: auto;
+        height: 100%;
+        aspect-ratio: 1;
+        margin-inline: 0;
+        justify-self: start;
+      }
+
+      .hero h1 {
+        /* Atkinson's top inset, for browsers without text-box trimming. */
+        margin-block-start: -0.25em;
+      }
+
+      @supports (text-box: trim-start cap alphabetic) {
+        .hero h1 {
+          margin-block-start: 0;
+          text-box: trim-start cap alphabetic;
+        }
       }
     }
   }
