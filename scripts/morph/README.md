@@ -10,34 +10,36 @@ logged-in local opencode.
 
 ## Commands
 
+Run `npm run` to list commands. Put `--` before arguments passed to a script.
+
 ```sh
-./morph warm                              # build/refresh the warm snapshot (manual, resumable)
-./morph hot [--name <n>]         # paused wake-on-SSH box (secrets + open TUI) for phone sessions
-./morph task --name <name> "task description"   # fresh instance, opencode runs the task
-./morph task --issue 42          # name issue-42 + generated work-this-issue prompt
-./morph cmux --name <name>       # interactive opencode TUI in a cmux workspace
-./morph attach                            # newest instance: connect info
-./morph attach <id> --zed        # open repo in Zed over SSH
-./morph attach <id> --cmux       # cmux workspace: agent session + preview
-./morph status                            # list this project's instances
-./morph snapshots list
-./morph sleep                    # pause ALL project boxes (dry-run: --dry-run)
-./morph reap                     # stop boxes whose done signal exists; skip the rest
-./morph reap --force <id>...     # kill specific boxes unconditionally
-./morph reap --force --all       # kill everything
-./morph sweep                    # keep latest warm snapshot, delete superseded + debris
-./morph sweep --all              # delete the latest warm snapshot too
+npm run morph:warm  # build/refresh the warm snapshot (manual, resumable)
+npm run morph:hot -- [--name <n>]  # paused wake-on-SSH box (secrets + open TUI) for phone sessions
+npm run morph:task -- --name <name> "task description"  # fresh instance, opencode runs the task
+npm run morph:task -- --issue 42  # name issue-42 + generated work-this-issue prompt
+npm run morph:cmux -- --name <name>  # interactive opencode TUI in a cmux workspace
+npm run morph:attach  # newest instance: connect info
+npm run morph:attach -- <id> --zed  # open repo in Zed over SSH
+npm run morph:attach -- <id> --cmux  # cmux workspace: agent session + preview
+npm run morph:status  # list this project's instances
+npm run snapshots:list
+npm run morph:sleep  # pause ALL project boxes (dry-run: --dry-run)
+npm run morph:reap  # stop boxes whose done signal exists; skip the rest
+npm run morph:reap -- --force <id>...  # kill specific boxes unconditionally
+npm run morph:reap -- --force --all  # kill everything
+npm run morph:sweep  # keep latest warm snapshot, delete superseded + debris
+npm run morph:sweep -- --all  # delete the latest warm snapshot too
 ```
 
 ## Running a task
 
-1. `./morph task --issue <n>` for issue work, or `--name <name> "<task>"`
+1. `npm run morph:task -- --issue <n>` for issue work, or `--name <name> "<task>"`
    otherwise — the name becomes the `sandbox/<name>` branch. A fresh
    instance starts every time (never reuse a running one — parallel tasks
    each get their own), the dev server comes up, and `opencode run` works
    in the `agent` tmux session. If it reports no warm snapshot, run
-   `./morph warm` first (minutes, resumable).
-2. Check on it with `./morph attach <id>` for connect info, or
+   `npm run morph:warm` first (minutes, resumable).
+2. Check on it with `npm run morph:attach -- <id>` for connect info, or
    `ssh <alias> 'tail -f /root/task.log'` for the live log. Detach from
    tmux with `Ctrl-b d` — `exit` kills the run.
 3. Follow-ups and PR review feedback go to the *same* box through attach
@@ -51,18 +53,18 @@ logged-in local opencode.
 
 ## Cleanup
 
-- `./morph sleep` pauses every project box immediately (busy or not).
-- `./morph reap` stops boxes whose done signal exists — that file is the
+- `npm run morph:sleep` pauses every project box immediately (busy or not).
+- `npm run morph:reap` stops boxes whose done signal exists — that file is the
   only test. No signal (agent failed, never pushed, or interactive box)
   means the box is left alone for inspection; after post-mortem, finish
-  it with `./morph reap --force <id>`.
-- `./morph sweep` keeps the latest ready warm snapshot and deletes
+  it with `npm run morph:reap -- --force <id>`.
+- `npm run morph:sweep` keeps the latest ready warm snapshot and deletes
   superseded warm snapshots, any hot-dev snapshots (they carry secrets),
   and all purpose-less snapshots (build debris). Never sweep while a warm
   build is running.
-- Hot boxes (`./morph hot`) are paused wake-on-SSH instances for phone
+- Hot boxes (`npm run morph:hot`) are paused wake-on-SSH instances for phone
   sessions; reap always skips them — finish one with
-  `./morph reap --force <id>`.
+  `npm run morph:reap -- --force <id>`.
 - All three take `--dry-run`; reap's dry-run briefly resumes paused boxes
   to check the signal, then re-pauses them.
 

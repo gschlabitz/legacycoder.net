@@ -1,6 +1,6 @@
 # iPhone runbook: work on a hot box from the phone
 
-Goal: `./morph hot` before heading out, then from the phone an SSH app
+Goal: `npm run morph:hot` before heading out, then from the phone an SSH app
 wakes the paused box and drops you into the opencode TUI. One-time setup
 gives the phone a permanent key, so per-outing setup is just updating a
 username.
@@ -64,7 +64,7 @@ Hosts → **+** → New Host:
 ### 4. Build the hot box (laptop, before heading out)
 
 ```sh
-./morph hot
+npm run morph:hot
 ```
 
 It prints the instance id (e.g. `morphvm_2vrcn62h`) and confirms the
@@ -105,8 +105,8 @@ re-pauses on its own after the TTL (default 120 min after each wake).
 ## Back at the laptop
 
 ```sh
-./morph reap --force <instance-id>   # the box (secrets on its disk)
-./morph sweep                        # any stale snapshots
+npm run morph:reap -- --force <instance-id>  # the box (secrets on its disk)
+npm run morph:sweep  # any stale snapshots
 ```
 
 Reap always *skips* hot boxes (they never have a done signal), so the
@@ -118,8 +118,8 @@ targeted `--force` is the intended way to finish one.
   doesn't match the phone — redo step 2 (several lines on sshid.io?
   only one key fits; wrong key type? Morph accepts only ssh-ed25519 and
   ssh-rsa) — or fall back to importing the per-instance key
-  `./morph hot` printed (`~/.ssh/morph/<instance-id>.pem`).
+  `npm run morph:hot` printed (`~/.ssh/morph/<instance-id>.pem`).
 - **Connection times out:** paused boxes take a few seconds to wake;
-  retry once. Check `./morph status` from a laptop if it persists.
+  retry once. Check `npm run morph:status` from a laptop if it persists.
 - **TUI looks garbled:** resize the terminal once (rotate the phone or
   toggle the keyboard) — tmux redraws.

@@ -1,8 +1,8 @@
 // Start an interactive instance and open it as a cmux workspace:
 //
-//   ./morph cmux --name pin-experiments
-//   ./morph cmux --issue 42        # name becomes issue-42
-//   ./morph cmux --name big-thing --ttl 240
+//   npm run morph:cmux -- --name pin-experiments
+//   npm run morph:cmux -- --issue 42        # name becomes issue-42
+//   npm run morph:cmux -- --name big-thing --ttl 240
 //
 // Same launch sequence as morph:task (fresh instance, sandbox branch, dev
 // server, per-run secrets), but the agent tmux session runs the opencode
@@ -37,7 +37,7 @@ const { values: flags } = parseArgs({
 
 const name = flags.name ?? (flags.issue && /^\d+$/.test(flags.issue) ? `issue-${flags.issue}` : undefined);
 if (!name) {
-  console.error("Usage: ./morph cmux --name <name> | --issue <number>  [--ttl <minutes>] [--snapshot <id>]");
+  console.error("Usage: npm run morph:cmux -- --name <name> | --issue <number>  [--ttl <minutes>] [--snapshot <id>]");
   process.exit(1);
 }
 
@@ -79,9 +79,9 @@ const alias = hostAlias(instance);
 console.log(`
 Interactive instance ${instance.id}
   branch:   ${branch}
-  preview:  ${service?.url ?? "(exposing failed - check morph:status)"}
+  preview:  ${service?.url ?? "(exposing failed - check npm run morph:status)"}
   ssh:      ssh ${alias}
-  resume:   ./morph attach ${instance.id} --cmux
+  resume:   npm run morph:attach -- ${instance.id} --cmux
   terminal: ${agentAttachCommand(alias)}
 `);
 

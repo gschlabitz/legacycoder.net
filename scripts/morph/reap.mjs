@@ -3,11 +3,11 @@
 // the file is not reaped, full stop (issue #16). Interactive boxes never
 // have the signal; clean those up with a targeted --force.
 //
-//   ./morph reap                     # whole fleet, done boxes only
-//   ./morph reap <id> [<id>...]      # same rule, only these boxes
-//   ./morph reap --force <id> ...    # kill these, no questions asked
-//   ./morph reap --force --all       # kill everything (deliberate double flag)
-//   ./morph reap --dry-run           # verdicts only; inspects paused boxes
+//   npm run morph:reap                     # whole fleet, done boxes only
+//   npm run morph:reap -- <id> [<id>...]      # same rule, only these boxes
+//   npm run morph:reap -- --force <id> ...    # kill these, no questions asked
+//   npm run morph:reap -- --force --all       # kill everything (deliberate double flag)
+//   npm run morph:reap -- --dry-run           # verdicts only; inspects paused boxes
 //                                    # (briefly resumes them) but stops nothing
 //
 // Paused boxes are resumed to check the signal and re-paused when skipped -
@@ -39,7 +39,7 @@ if (ids.length) {
   targets = ids.map((id) => {
     const match = instances.find((i) => i.id === id);
     if (!match) {
-      console.error(`${id} is not one of this project's instances (see ./morph status).`);
+      console.error(`${id} is not one of this project's instances (see npm run morph:status).`);
       process.exit(1);
     }
     return match;
@@ -94,7 +94,7 @@ for (const instance of targets) {
     const role = instance.metadata?.role;
     const why =
       role === "interactive" || role === "hot"
-        ? `no done signal (${role} box - use ./morph reap --force <id> when finished)`
+        ? `no done signal (${role} box - use npm run morph:reap -- --force <id> when finished)`
         : "no done signal (agent not finished, or work never pushed)";
     console.log(`${instance.id}  skipped: ${why} (${label})`);
   }
